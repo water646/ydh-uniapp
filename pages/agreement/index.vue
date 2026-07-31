@@ -1,8 +1,5 @@
 <template>
-  <view class="agreement">
-    <custom-nav :title="title" />
-    <web-view :src="url" />
-  </view>
+  <web-view :src="url" />
 </template>
 
 <script setup>
@@ -12,7 +9,6 @@
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import customNav from '@/components/custom-nav/custom-nav.vue'
 import { config } from '@/config'
 
 const url = ref('')
@@ -32,9 +28,4 @@ onLoad((opt) => {
 </script>
 
 <style lang="scss" scoped>
-.agreement {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 </style>

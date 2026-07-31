@@ -29,8 +29,19 @@
     </view>
 
     <!-- 篮球/足球切换（对应右侧悬浮钮 + EventBus Boolean） -->
-    <view class="sport-switch" @click="toggleSport">
-      {{ appStore.sport === 'basketball' ? '篮球' : '足球' }}
+    <view class="sport-switch">
+      <image
+        class="sport-item"
+        :class="{ active: appStore.sport === 'basketball' }"
+        :src="ballIcon('basketball', appStore.sport === 'basketball')"
+        @click="selectSport('basketball')"
+      />
+      <image
+        class="sport-item"
+        :class="{ active: appStore.sport === 'football' }"
+        :src="ballIcon('football', appStore.sport === 'football')"
+        @click="selectSport('football')"
+      />
     </view>
 
     <!-- 未结束/已结束 Tab -->
@@ -49,12 +60,11 @@
       <view v-for="group in groups" :key="group.date" class="date-group">
         <view class="date-header">{{ group.date }}</view>
         <view v-for="g in group.games" :key="g.id" class="match-item">
+			
 			<view class="league-headinfo">
 				<view class="league status">{{ statusText(g) }}</view>
 				<view class="league">{{ g.leagueName }}</view>
 			</view>
-			
-			
 			
 			<view class="league-innerinfo" style="display: flex; flex-direction: column; gap:15rpx;">
 				<view class="team-line">
@@ -118,6 +128,27 @@
         </view>
       </view>
     </u-popup>
+
+    <!-- 比赛状态选择弹窗（goMatchSet 弹出，从上到下列出三选项） -->
+    <u-popup :show="showStatusSheet" mode="bottom" :round="20" @close="showStatusSheet = false">
+      <view class="status-sheet">
+        <view class="sheet-title">修改比赛状态</view>
+        <view
+          v-for="s in statusOptions"
+          :key="s.value"
+          class="status-item"
+          :class="{ active: currentGame && currentGame.status && currentGame.status.value === s.value }"
+          @click="onStatusSelect(s)"
+        >
+          <text class="status-text">{{ s.desc }}</text>
+          <text
+            v-if="currentGame && currentGame.status && currentGame.status.value === s.value"
+            class="status-check"
+          >✓</text>
+        </view>
+        <view class="status-cancel" @click="showStatusSheet = false">取消</view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -130,7 +161,7 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
-import { getMatchList } from '@/api/game'
+import { getMatchList, gameStatus } from '@/api/game'
 import { getUserInfo } from '@/api/login'
 import { versionCheck } from '@/api/version'
 import { useUserStore } from '@/store/user'
@@ -152,6 +183,15 @@ const refreshing = ref(false)
 const rawList = ref([])
 const showUpdate = ref(false)
 const versionInfo = ref(null)
+
+// 比赛状态选择弹窗（goMatchSet 弹出）
+const showStatusSheet = ref(false)
+const currentGame = ref(null)
+const statusOptions = [
+  { value: 1, desc: '未开始' },
+  { value: 2, desc: '进行中' },
+  { value: 3, desc: '已结束' }
+]
 
 const groups = computed(() => {
   const map = {}
@@ -202,6 +242,23 @@ function toggleSport() {
   loadList()
 }
 
+/** 直接选择某个运动（两图标点击） */
+function selectSport(sport) {
+  if (appStore.sport === sport) return
+  appStore.setSport(sport)
+  emit(EventBus.SPORT_CHANGE, appStore.sport)
+  loadList()
+}
+
+/** 生成篮球/足球单色 SVG 图标 data URI：选中绿色(#29a871)、未选中灰色(#bbbbbb) */
+function ballIcon(sport, active) {
+  const color = active ? '#29a871' : '#bbbbbb'
+  const svg = sport === 'basketball'
+    ? `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='${color}' stroke-width='6'/><line x1='50' y1='10' x2='50' y2='90' stroke='${color}' stroke-width='6'/><line x1='10' y1='50' x2='90' y2='50' stroke='${color}' stroke-width='6'/><path d='M16 28 Q48 50 16 72' fill='none' stroke='${color}' stroke-width='6'/><path d='M84 28 Q52 50 84 72' fill='none' stroke='${color}' stroke-width='6'/></svg>`
+    : `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='${color}' stroke-width='6'/><polygon points='50,30 67,43 61,63 39,63 33,43' fill='${color}'/><line x1='50' y1='30' x2='50' y2='15' stroke='${color}' stroke-width='6'/><line x1='67' y1='43' x2='82' y2='38' stroke='${color}' stroke-width='6'/><line x1='61' y1='63' x2='74' y2='78' stroke='${color}' stroke-width='6'/><line x1='39' y1='63' x2='26' y2='78' stroke='${color}' stroke-width='6'/><line x1='33' y1='43' x2='18' y2='38' stroke='${color}' stroke-width='6'/></svg>`
+  return 'data:image/svg+xml,' + encodeURIComponent(svg)
+}
+
 function onRefresh() {
   refreshing.value = true
   loadList()
@@ -209,18 +266,51 @@ function onRefresh() {
 
 function statusText(g) {
   const s = g.status && g.status.value
-  if (s === 1) return '进行中'
-  if (s === 2) return '已结束'
+  if (s === 1) return '未开赛'
+  if (s === 2) return '进行中'
+  if (s === 3) return '结束'
   return '未开始'
 }
 
+// 【原 goMatchSet：直接跳赛前设置页，已注释】
+// function goMatchSet(g) {
+//   const sport = appStore.sport
+//   const url =
+//     sport === 'football'
+//       ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+//       : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+//   uni.navigateTo({ url })
+// }
+
+/**
+ * 重写 goMatchSet：点击「技术统计」按钮 -> 弹出窗口，
+ * 从上到下列出比赛状态三个选项（未开始/进行中/已结束）供用户选择修改
+ */
 function goMatchSet(g) {
-  const sport = appStore.sport
-  const url =
-    sport === 'football'
-      ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-      : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-  uni.navigateTo({ url })
+  currentGame.value = g
+  showStatusSheet.value = true
+}
+
+/** 选中某个状态 -> 调 gameStatus 接口修改比赛状态 */
+function onStatusSelect(s) {
+  const g = currentGame.value
+  if (!g) return
+  showStatusSheet.value = false
+  const params = { gameId: g.id, status: s.value }
+  console.log('[gameStatus] 请求参数', params, 'sport=', appStore.sport)
+  gameStatus(params, appStore.sport).then((res) => {
+    console.log('[gameStatus] 响应', res)
+    if (res && res.code === 1) {
+      uni.showToast({ title: `已修改为「${s.desc}」`, icon: 'none' })
+      // 本地即时刷新该项状态
+      g.status = { value: s.value, desc: s.desc }
+    } else {
+      uni.showToast({ title: (res && res.msg) || '修改失败', icon: 'none' })
+    }
+  }).catch((err) => {
+    console.error('[gameStatus] 失败', err)
+    uni.showToast({ title: (err && err.msg) || '修改失败', icon: 'none' })
+  })
 }
 
 function goLive(g) {
@@ -400,21 +490,28 @@ function doUpdate() {
   font-size: 24rpx;
   color: #999999;
 }
-/* 篮球/足球切换 */
+/* 篮球/足球切换（两图标并排，选中绿色） */
 .sport-switch {
   position: fixed;
   right: 30rpx;
   bottom: 200rpx;
-  width: 100rpx;
-  height: 100rpx;
-  line-height: 100rpx;
-  text-align: center;
-  border-radius: 50%;
-  background-color: #29a871;
-  color: #ffffff;
-  font-size: 28rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 50rpx;
+  padding: 10rpx 8rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
   z-index: 10;
+}
+.sport-item {
+  width: 56rpx;
+  height: 56rpx;
+  margin: 0 8rpx;
+}
+.sport-item.active {
+  background-color: #e8f7f0;
+  border-radius: 50%;
 }
 .tabs {
   display: flex;
@@ -526,8 +623,8 @@ function doUpdate() {
   padding: 16rpx 0;
   border-radius: 8rpx;
   font-size: 26rpx;
-  width: 180rpx;
-
+  width: 170rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.3);
 }
 .action-btn.green {
   background-color: #29a871;
@@ -584,5 +681,41 @@ function doUpdate() {
 .ub.confirm {
   background-color: #29a871;
   color: #ffffff;
+}
+/* 比赛状态选择弹窗（从上到下纵向列表） */
+.status-sheet {
+  padding: 30rpx;
+}
+.status-sheet .sheet-title {
+  text-align: center;
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 20rpx;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100rpx;
+  padding: 0 30rpx;
+  border-bottom: 1rpx solid #eeeeee;
+  font-size: 30rpx;
+  color: #333333;
+}
+.status-item.active {
+  color: #29a871;
+  font-weight: bold;
+}
+.status-check {
+  color: #29a871;
+  font-size: 32rpx;
+}
+.status-cancel {
+  margin-top: 20rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  text-align: center;
+  color: #999999;
+  font-size: 28rpx;
 }
 </style>

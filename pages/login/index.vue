@@ -22,6 +22,8 @@
         <text class="link" @click="goAgreement(2)">《隐私政策》</text>
       </view>
     </view>
+    <!-- 底部 logo（对应原 activity_login.xml 的 @mipmap/advertdown） -->
+    <image class="bottom-logo" src="/static/advertdown.png" mode="widthFix" />
   </view>
 </template>
 
@@ -106,6 +108,15 @@ onUnmounted(() => {
 .login {
   min-height: 100vh;
   background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+/* 底部 logo（对应原 @mipmap/advertdown，原布局用 weight=1 占位顶到底部） */
+.bottom-logo {
+  margin-top: auto;
+  width: 240rpx;
+  align-self: center;
+  margin-bottom: 50rpx;
 }
 /* ⚠️【MOCK】静态数据模式横幅 */
 .mock-banner {
