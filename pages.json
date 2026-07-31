@@ -1,0 +1,45 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    { "path": "pages/loading/index", "style": { "navigationStyle": "custom", "disableScroll": true } },
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
+    { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/match-set/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/game-setup/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/match/football-setup", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/statistics/basketball-operate", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/statistics/football-operate", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/statistics/basketball-operate-new", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/statistics/basketball-down", "style": { "navigationStyle": "custom", "pageOrientation": "portrait" } },
+    { "path": "pages/record/record", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/record/record-foot", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/record/record-new", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/game/member-data", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/game/new-member-data", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/game/operation-record", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/game/week-outs", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/live/multiple", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/live/push", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
+    { "path": "pages/live/play", "style": { "navigationStyle": "custom", "pageOrientation": "landscape", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
+    { "path": "pages/photo/photo", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/photos-upload/photos-upload", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/photo/live-photo", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/preview/large-view", "style": { "navigationStyle": "custom", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
+    { "path": "pages/agreement/index", "style": { "navigationBarTitleText": "" } },
+    { "path": "pages/placeholder/index", "style": { "navigationBarTitleText": "" } }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "智能技术台",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8",
+    "app-plus": { "titleNView": false }
+  }
+}

@@ -1,0 +1,64 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+@import 'uview-plus/theme.scss';
+
+/* ========== 品牌色（colors.xml） ========== */
+$primary: #29a871; // 主题绿（核心品牌色，Tab/单选选中）
+$primary-dark: #3fa862; // colorPrimary
+$primary-pressed: #1d754f; // pressed_green
+$accent: #ff4081; // colorAccent
+$record-blue: #2f7ed8; // 记录蓝
+$theme-blue: #009de9; // 主题蓝
+$theme-blue-dark: #004d72; // 深蓝
+$theme-red: #ff3333; // 主题红
+$re-red: #ff2d2d; // 记录/删除红
+$theme-orange: #ff6f21; // 橙
+$pressed-red: #a02825; // 红色按下态
+
+/* ========== 文字层级 ========== */
+$text-black: #000000;
+$text-light-black: #333333;
+$text-gray: #999999;
+$text-gray-light: #aaaaaa;
+$text-blue: #0000ff;
+
+/* ========== 背景与分割线 ========== */
+$bg-white: #ffffff;
+$bg-light: #f8f8f8;
+$bg-gray: #eeeeee;
+$bg-gray-2: #e9e9e9;
+$cut-rule: #d9d9d9;
+$cut-rule-light: #f2f2f2;
+$transparent-bg: #50000000;
+$dialog-bg: #66000000;
+
+/* ========== uView 主题覆盖 ========== */
+$u-primary: $primary;
+$u-primary-light: #5cb98a;
+$u-primary-disabled: #9bd8b6;
+$u-primary-dark: $primary-pressed;
+$u-error: $re-red;
+$u-warning: $theme-orange;
+$u-tips-color: $text-gray;
+$u-light-color: $text-gray-light;
+$u-content-color: $text-light-black;
+$u-main-color: $text-black;
+
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+$font-10: 20rpx;
+$font-11: 22rpx;
+$font-12: 24rpx;
+$font-13: 26rpx;
+$font-14: 28rpx;
+$font-15: 30rpx;
+$font-16: 32rpx;
+$font-17: 34rpx;
+$font-18: 36rpx;
+$font-20: 40rpx;
+
+/* ========== 通用尺寸 ========== */
+$title-height: 100rpx; // 标题栏高 50dp
+$title-line: 1rpx; // 标题栏底线
+$radius-dialog: 14rpx; // 弹窗圆角 7dp

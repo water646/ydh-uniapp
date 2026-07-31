@@ -1,0 +1,16 @@
+{
+  "name": "statistics-uniapp",
+  "version": "2.8.4",
+  "description": "智能技术台 uniapp 版（由 Android 原生项目 com.ydh123.statistics 一比一迁移）",
+  "main": "main.js",
+  "scripts": {
+    "dev:app": "uni -p app",
+    "build:app:release": "uni build -p app"
+  },
+  "dependencies": {
+    "uview-plus": "^3.0.0",
+    "pinia": "^2.1.7",
+    "js-md5": "^0.8.3",
+    "dayjs": "^1.11.10"
+  }
+}

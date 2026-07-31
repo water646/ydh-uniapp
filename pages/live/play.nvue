@@ -1,0 +1,100 @@
+<template>
+  <view class="live-play">
+    <live-player
+      id="player"
+      class="player"
+      :src="playUrl"
+      mode="live"
+      :autoplay="true"
+      :muted="false"
+      object-fit="contain"
+      @statechange="onState"
+      @error="onError"
+    ></live-player>
+
+    <view v-if="!playing" class="no-live">
+      <text class="no-live-text">当前无直播</text>
+    </view>
+
+    <text class="back" @click="back">‹</text>
+  </view>
+</template>
+
+<script setup>
+/**
+ * 拉流播放（对应 VideoPlayActivity）
+ * 用 <live-player> 替代腾讯 TXLivePlayer，支持 RTMP/FLV 拉流
+ * nvue 渲染：App 端 live-player 需 nvue
+ */
+import { ref, onUnmounted } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+
+const playUrl = ref('')
+const playing = ref(false)
+let playerCtx = null
+
+onLoad((opt) => {
+  playUrl.value = decodeURIComponent(opt.url || opt.livepublish || '')
+  // 延迟创建上下文确保组件已挂载
+  setTimeout(() => {
+    playerCtx = uni.createLivePlayerContext('player')
+    if (playerCtx) {
+      playerCtx.play({
+        success: () => {
+          playing.value = true
+        }
+      })
+    }
+  }, 300)
+})
+
+onUnmounted(() => {
+  if (playerCtx) playerCtx.stop()
+})
+
+function onState(e) {
+  // 播放状态变化
+  if (e.detail && e.detail.code === 2004) {
+    playing.value = true
+  }
+}
+
+function onError(e) {
+  playing.value = false
+}
+
+function back() {
+  uni.navigateBack()
+}
+</script>
+
+<style lang="scss" scoped>
+.live-play {
+  flex: 1;
+  background-color: #000000;
+}
+.player {
+  flex: 1;
+}
+.no-live {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+}
+.no-live-text {
+  font-size: 30rpx;
+  color: #999999;
+}
+.back {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  font-size: 50rpx;
+  color: #ffffff;
+  width: 60rpx;
+}
+</style>

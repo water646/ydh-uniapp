@@ -1,0 +1,264 @@
+<template>
+  <view class="live-push">
+    <live-pusher
+      id="pusher"
+      class="pusher"
+      :url="publishUrl"
+      mode="FHD"
+      :enable-camera="true"
+      :auto-focus="true"
+      :beauty="0"
+      :muted="false"
+      device-position="back"
+      @statechange="onState"
+      @error="onError"
+    ></live-pusher>
+
+    <!-- 控制覆盖层（nvue 中 view 可覆盖 live-pusher） -->
+    <view class="overlay">
+      <view class="top">
+        <text class="back" @click="back">‹</text>
+        <text class="status">{{ statusText }}</text>
+        <text class="reconnect" @click="reconnectScore">比分重连</text>
+      </view>
+
+      <!-- 实时比分浮层（降级方案：本地显示，不烧进推流画面） -->
+      <view v-if="showScore" class="score-overlay">
+        <text class="s-team">{{ homeName }}</text>
+        <text class="s-score">{{ hostScore }}</text>
+        <text class="s-colon">:</text>
+        <text class="s-score">{{ guestScore }}</text>
+        <text class="s-team">{{ guestName }}</text>
+      </view>
+      <text v-if="section" class="s-section">{{ section }}</text>
+
+      <view class="bottom">
+        <text v-if="!pushing" class="btn start" @click="startPush">开始直播</text>
+        <text v-else class="btn stop" @click="stopPush">结束直播</text>
+        <text class="btn" @click="switchCamera">翻转</text>
+        <text class="btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
+        <text class="btn" @click="onCompose">生成回放</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup>
+/**
+ * 统一推流页（合并原 TencentCloudActivity / NeWTencentLiveActivity / StreamingFootActivity）
+ * - 用 <live-pusher> 替代腾讯 LiteAV / 网易 / 金山云三套推流 SDK
+ * - WebSocket group=push 接收实时比分，更新本地比分浮层
+ *   （原项目用 Canvas 合成比分 Bitmap 烧进推流画面 setWatermark，
+ *    uniapp live-pusher 仅支持静态水印无法烧动态 Canvas，降级为本地浮层；
+ *    保真需封装 uni 原生插件包装 TXLivePusher.setWatermark）
+ * - 生成回放 POST live/stream/compose
+ * - nvue 渲染：App 端 live-pusher 需 nvue 才能正常显示预览并允许 view 覆盖
+ */
+import { ref, onUnmounted } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+import { connectSocket, closeSocket } from '@/utils/websocket'
+import { getGameDetail } from '@/api/game'
+import { compose } from '@/api/live'
+
+const publishUrl = ref('')
+const gameId = ref('')
+const homeName = ref('主队')
+const guestName = ref('客队')
+const hostScore = ref(0)
+const guestScore = ref(0)
+const section = ref('')
+const showScore = ref(true)
+const pushing = ref(false)
+const statusText = ref('未连接')
+let pusherCtx = null
+
+onLoad((opt) => {
+  publishUrl.value = decodeURIComponent(opt.livepublish || '')
+  gameId.value = opt.gameId || ''
+  homeName.value = opt.name || '直播'
+  loadGameDetail()
+  connectScore()
+})
+
+onUnmounted(() => {
+  stopPush()
+  closeSocket()
+})
+
+function loadGameDetail() {
+  // 拉比赛详情取队名/比分（篮球 game/{id}/detail；足球 soccer/）
+  getGameDetail(gameId.value, 'basketball').then((res) => {
+    if (res.code !== 1) return
+    const page = res.data || {}
+    const g = page.game || page
+    if (g.hostTeamName) homeName.value = g.hostTeamName
+    if (g.guestTeamName) guestName.value = g.guestTeamName
+    hostScore.value = g.hostTeamScore || 0
+    guestScore.value = g.guestTeamScore || 0
+  })
+}
+
+/** 连接 WebSocket 接收实时比分（对应 group=push） */
+function connectScore() {
+  statusText.value = '比分接口连接中…'
+  connectSocket('push', (data) => {
+    if (data.hostTeamScore !== undefined) hostScore.value = data.hostTeamScore
+    if (data.guestTeamScore !== undefined) guestScore.value = data.guestTeamScore
+    if (data.section !== undefined) section.value = data.section
+    statusText.value = '比分接口连接成功'
+  })
+}
+
+function reconnectScore() {
+  closeSocket()
+  connectScore()
+}
+
+function startPush() {
+  pusherCtx = uni.createLivePusherContext('pusher')
+  pusherCtx.start({
+    success: () => {
+      pushing.value = true
+      statusText.value = '直播中'
+    },
+    fail: () => {
+      uni.showToast({ title: '推流失败', icon: 'none' })
+    }
+  })
+}
+
+function stopPush() {
+  if (pusherCtx) {
+    pusherCtx.stop()
+    pushing.value = false
+    statusText.value = '已结束'
+  }
+}
+
+function switchCamera() {
+  if (pusherCtx) pusherCtx.switchCamera()
+}
+
+function toggleScore() {
+  showScore.value = !showScore.value
+}
+
+function onState(e) {
+  // 推流状态变化
+}
+
+function onError(e) {
+  uni.showToast({ title: '推流错误', icon: 'none' })
+}
+
+/** 生成回放（POST live/stream/compose） */
+function onCompose() {
+  compose({ gameId: gameId.value }).then((res) => {
+    uni.showToast({ title: res.code === 1 ? '已生成回放' : '生成失败', icon: 'none' })
+  })
+}
+
+function back() {
+  uni.navigateBack()
+}
+</script>
+
+<style lang="scss" scoped>
+.live-push {
+  flex: 1;
+  background-color: #000000;
+}
+.pusher {
+  flex: 1;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  flex-direction: row;
+  align-items: center;
+  padding: 20rpx;
+  height: 80rpx;
+}
+.back {
+  font-size: 50rpx;
+  color: #ffffff;
+  width: 60rpx;
+}
+.status {
+  flex: 1;
+  text-align: center;
+  color: #ffffff;
+  font-size: 24rpx;
+}
+.reconnect {
+  font-size: 24rpx;
+  color: #009de9;
+}
+.score-overlay {
+  position: absolute;
+  top: 100rpx;
+  left: 20rpx;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+.s-team {
+  font-size: 26rpx;
+  color: #ffffff;
+  margin: 0 10rpx;
+}
+.s-score {
+  font-size: 40rpx;
+  color: #ff6f21;
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+.s-colon {
+  font-size: 32rpx;
+  color: #ffffff;
+}
+.s-section {
+  position: absolute;
+  top: 100rpx;
+  right: 20rpx;
+  font-size: 24rpx;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+.bottom {
+  position: absolute;
+  bottom: 40rpx;
+  left: 0;
+  right: 0;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn {
+  font-size: 26rpx;
+  color: #ffffff;
+  padding: 16rpx 28rpx;
+  margin: 10rpx;
+  border-radius: 30rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.btn.start {
+  background-color: #29a871;
+}
+.btn.stop {
+  background-color: #ff2d2d;
+}
+</style>

@@ -1,0 +1,40 @@
+{
+  "hash": "8057cf80",
+  "configHash": "e3a221a8",
+  "lockfileHash": "d4baee54",
+  "browserHash": "250dd821",
+  "optimized": {
+    "js-md5": {
+      "src": "../../../../../node_modules/js-md5/src/md5.js",
+      "file": "js-md5.js",
+      "fileHash": "51f471b9",
+      "needsInterop": true
+    },
+    "uview-plus": {
+      "src": "../../../../../node_modules/uview-plus/index.js",
+      "file": "uview-plus.js",
+      "fileHash": "96664a5a",
+      "needsInterop": false
+    },
+    "dayjs": {
+      "src": "../../../../../node_modules/dayjs/dayjs.min.js",
+      "file": "dayjs.js",
+      "fileHash": "d0707c84",
+      "needsInterop": true
+    },
+    "dayjs/locale/zh-cn": {
+      "src": "../../../../../node_modules/dayjs/locale/zh-cn.js",
+      "file": "dayjs_locale_zh-cn.js",
+      "fileHash": "459d03f4",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-TWQYKT3U": {
+      "file": "chunk-TWQYKT3U.js"
+    },
+    "chunk-Y2F7D3TJ": {
+      "file": "chunk-Y2F7D3TJ.js"
+    }
+  }
+}
