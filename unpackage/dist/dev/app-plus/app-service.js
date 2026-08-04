@@ -7284,7 +7284,9 @@ This will fail in production.`);
       const useMock = config$1.useMock;
       const userInfo2 = vue.ref(null);
       const appVersion = vue.ref("");
-      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
+      const sysInfo = uni.getSystemInfoSync();
+      const statusBarHeight = sysInfo.statusBarHeight || 0;
+      const refresherMaxDrag = Math.round(300 * sysInfo.windowWidth / 750);
       const drawer = vue.ref(false);
       const tab = vue.ref("no_end");
       const loading = vue.ref(false);
@@ -7379,17 +7381,19 @@ This will fail in production.`);
           return;
         showStatusSheet.value = false;
         const params2 = { gameId: g.id, status: s.value };
-        formatAppLog("log", "at pages/main/index.vue:319", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
+        formatAppLog("log", "at pages/main/index.vue:323", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
         gameStatus(params2, appStore.sport).then((res) => {
-          formatAppLog("log", "at pages/main/index.vue:321", "[gameStatus] 响应", res);
+          formatAppLog("log", "at pages/main/index.vue:325", "[gameStatus] 响应", res);
           if (res && res.code === 1) {
             uni.showToast({ title: `已修改为「${s.desc}」`, icon: "none" });
             g.status = { value: s.value, desc: s.desc };
+            refreshing.value = true;
+            loadList();
           } else {
             uni.showToast({ title: res && res.msg || "修改失败", icon: "none" });
           }
         }).catch((err) => {
-          formatAppLog("error", "at pages/main/index.vue:330", "[gameStatus] 失败", err);
+          formatAppLog("error", "at pages/main/index.vue:337", "[gameStatus] 失败", err);
           uni.showToast({ title: err && err.msg || "修改失败", icon: "none" });
         });
       }
@@ -7466,7 +7470,7 @@ This will fail in production.`);
         );
         dtask.start();
       }
-      const __returned__ = { userStore, appStore, useMock, userInfo: userInfo2, appVersion, statusBarHeight, drawer, tab, loading, refreshing, rawList, showUpdate, versionInfo, showStatusSheet, currentGame, statusOptions, groups, loadUserInfo, loadList, switchTab, toggleSport, selectSport, ballIcon, onRefresh, statusText, goMatchSet, onStatusSelect, goLive, goPhoto, practice, goWeekOuts, logout, checkUpdate, doUpdate, ref: vue.ref, computed: vue.computed, get onShow() {
+      const __returned__ = { userStore, appStore, useMock, userInfo: userInfo2, appVersion, sysInfo, statusBarHeight, refresherMaxDrag, drawer, tab, loading, refreshing, rawList, showUpdate, versionInfo, showStatusSheet, currentGame, statusOptions, groups, loadUserInfo, loadList, switchTab, toggleSport, selectSport, ballIcon, onRefresh, statusText, goMatchSet, onStatusSelect, goLive, goPhoto, practice, goWeekOuts, logout, checkUpdate, doUpdate, ref: vue.ref, computed: vue.computed, get onShow() {
         return onShow;
       }, customNav, emptyLayout, get getMatchList() {
         return getMatchList;
@@ -7652,6 +7656,7 @@ This will fail in production.`);
         class: "list",
         "refresher-enabled": "",
         "refresher-triggered": $setup.refreshing,
+        "refresher-max-drag-distance": $setup.refresherMaxDrag,
         onRefresherrefresh: $setup.onRefresh
       }, [
         (vue.openBlock(true), vue.createElementBlock(
@@ -7776,7 +7781,7 @@ This will fail in production.`);
           key: 1,
           class: "loading-more"
         }, "加载中…")) : vue.createCommentVNode("v-if", true)
-      ], 40, ["refresher-triggered"]),
+      ], 40, ["refresher-triggered", "refresher-max-drag-distance"]),
       vue.createVNode(_component_u_popup, {
         show: $setup.showUpdate,
         mode: "center",

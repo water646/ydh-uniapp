@@ -72,6 +72,7 @@
       class="list"
       refresher-enabled
       :refresher-triggered="refreshing"
+      :refresher-max-drag-distance="refresherMaxDrag"
       @refresherrefresh="onRefresh"
     >
       <view v-for="group in groups" :key="group.date" class="date-group">
@@ -193,8 +194,11 @@ const useMock = config.useMock // ⚠️【MOCK】是否静态数据模式
 
 const userInfo = ref(null)
 const appVersion = ref('')
+const sysInfo = uni.getSystemInfoSync()
 // 状态栏高度（抽屉 fixed top:0，需留出状态栏空间避免与系统时间/电量栏重叠）
-const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
+const statusBarHeight = sysInfo.statusBarHeight || 0
+// 下拉刷新最大拖拽距离 300rpx（scroll-view 的 refresher 属性单位为 px，需换算）
+const refresherMaxDrag = Math.round((300 * sysInfo.windowWidth) / 750)
 const drawer = ref(false)
 const tab = ref('no_end')
 const loading = ref(false)
@@ -323,6 +327,9 @@ function onStatusSelect(s) {
       uni.showToast({ title: `已修改为「${s.desc}」`, icon: 'none' })
       // 本地即时刷新该项状态
       g.status = { value: s.value, desc: s.desc }
+      // 修改成功后自动下拉刷新列表
+      refreshing.value = true
+      loadList()
     } else {
       uni.showToast({ title: (res && res.msg) || '修改失败', icon: 'none' })
     }
