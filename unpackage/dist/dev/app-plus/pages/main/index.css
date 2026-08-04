@@ -1,0 +1,714 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+/**
+ * vue版本动画内置的动画模式有如下：
+ * fade：淡入
+ * zoom：缩放
+ * fade-zoom：缩放淡入
+ * fade-up：上滑淡入
+ * fade-down：下滑淡入
+ * fade-left：左滑淡入
+ * fade-right：右滑淡入
+ * slide-up：上滑进入
+ * slide-down：下滑进入
+ * slide-left：左滑进入
+ * slide-right：右滑进入
+ */
+.u-fade-enter-active[data-v-0573594d],
+.u-fade-leave-active[data-v-0573594d] {
+  transition-property: opacity;
+}
+.u-fade-enter[data-v-0573594d],
+.u-fade-leave-to[data-v-0573594d] {
+  opacity: 0;
+}
+.u-fade-zoom-enter[data-v-0573594d],
+.u-fade-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+  opacity: 0;
+}
+.u-fade-zoom-enter-active[data-v-0573594d],
+.u-fade-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform, opacity;
+}
+.u-fade-down-enter-active[data-v-0573594d],
+.u-fade-down-leave-active[data-v-0573594d],
+.u-fade-left-enter-active[data-v-0573594d],
+.u-fade-left-leave-active[data-v-0573594d],
+.u-fade-right-enter-active[data-v-0573594d],
+.u-fade-right-leave-active[data-v-0573594d],
+.u-fade-up-enter-active[data-v-0573594d],
+.u-fade-up-leave-active[data-v-0573594d] {
+  transition-property: opacity, transform;
+}
+.u-fade-up-enter[data-v-0573594d],
+.u-fade-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+}
+.u-fade-down-enter[data-v-0573594d],
+.u-fade-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+}
+.u-fade-left-enter[data-v-0573594d],
+.u-fade-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+  opacity: 0;
+}
+.u-fade-right-enter[data-v-0573594d],
+.u-fade-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+  opacity: 0;
+}
+.u-slide-down-enter-active[data-v-0573594d],
+.u-slide-down-leave-active[data-v-0573594d],
+.u-slide-left-enter-active[data-v-0573594d],
+.u-slide-left-leave-active[data-v-0573594d],
+.u-slide-right-enter-active[data-v-0573594d],
+.u-slide-right-leave-active[data-v-0573594d],
+.u-slide-up-enter-active[data-v-0573594d],
+.u-slide-up-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-slide-up-enter[data-v-0573594d],
+.u-slide-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+}
+.u-slide-down-enter[data-v-0573594d],
+.u-slide-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+}
+.u-slide-left-enter[data-v-0573594d],
+.u-slide-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+}
+.u-slide-right-enter[data-v-0573594d],
+.u-slide-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+}
+.u-zoom-enter-active[data-v-0573594d],
+.u-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-zoom-enter[data-v-0573594d],
+.u-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-overlay[data-v-35f7c3e5] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-status-bar[data-v-c0b45a48] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-icon[data-v-1c933a9a] {
+  display: flex;
+  align-items: center;
+}
+.u-icon--left[data-v-1c933a9a] {
+  flex-direction: row-reverse;
+  align-items: center;
+}
+.u-icon--right[data-v-1c933a9a] {
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon--top[data-v-1c933a9a] {
+  flex-direction: column-reverse;
+  justify-content: center;
+}
+.u-icon--bottom[data-v-1c933a9a] {
+  flex-direction: column;
+  justify-content: center;
+}
+.u-icon__icon[data-v-1c933a9a] {
+  font-family: uicon-iconfont;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon__icon--primary[data-v-1c933a9a] {
+  color: #29a871;
+}
+.u-icon__icon--success[data-v-1c933a9a] {
+  color: var(--up-success, var(--u-success, #5ac725));
+}
+.u-icon__icon--error[data-v-1c933a9a] {
+  color: #ff2d2d;
+}
+.u-icon__icon--warning[data-v-1c933a9a] {
+  color: #ff6f21;
+}
+.u-icon__icon--info[data-v-1c933a9a] {
+  color: var(--up-info, var(--u-info, #909399));
+}
+.u-icon__img[data-v-1c933a9a] {
+  height: auto;
+  will-change: transform;
+}
+.u-icon__label[data-v-1c933a9a] {
+  line-height: 1;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-safe-bottom[data-v-3ec581de] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-popup[data-v-74921bef] {
+  flex: 1;
+}
+.u-popup__trigger[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__trigger__cover[data-v-74921bef] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.u-popup__content[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__content--round-top[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-left[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-right[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-bottom[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-center[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content__touch-area[data-v-74921bef] {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.3125rem;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.u-popup__content__indicator[data-v-74921bef] {
+  width: 100px;
+  height: 5px;
+  border-radius: 100px;
+  background-color: var(--up-light-color, #c0c4cc);
+}
+.u-popup__content__close[data-v-74921bef] {
+  position: absolute;
+}
+.u-popup__content__close--hover[data-v-74921bef] {
+  opacity: 0.4;
+}
+.u-popup__content__close--top-left[data-v-74921bef] {
+  top: 15px;
+  left: 15px;
+}
+.u-popup__content__close--top-right[data-v-74921bef] {
+  top: 15px;
+  right: 15px;
+}
+.u-popup__content__close--bottom-left[data-v-74921bef] {
+  bottom: 15px;
+  left: 15px;
+}
+.u-popup__content__close--bottom-right[data-v-74921bef] {
+  right: 15px;
+  bottom: 15px;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.custom-nav[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-content[data-v-1b09776d] {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.nav-left[data-v-1b09776d] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back[data-v-1b09776d] {
+  font-size: 1.625rem;
+  color: #333333;
+  line-height: 1;
+}
+.nav-title[data-v-1b09776d] {
+  flex: 1;
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #000000;
+  font-weight: 500;
+}
+.nav-right[data-v-1b09776d] {
+  min-width: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.625rem;
+}
+.nav-line[data-v-1b09776d] {
+  height: 0.03125rem;
+  background-color: #d9d9d9;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.empty-layout[data-v-d6c9915e] {
+  width: 100%;
+}
+.state[data-v-d6c9915e] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.75rem 0;
+}
+.state-text[data-v-d6c9915e] {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  color: #999999;
+}
+.spinner[data-v-d6c9915e] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.125rem solid #eeeeee;
+  border-top-color: #29a871;
+  border-radius: 50%;
+  animation: spin-d6c9915e 0.8s linear infinite;
+}
+@keyframes spin-d6c9915e {
+to {
+    transform: rotate(360deg);
+}
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+/* ⚠️【MOCK】静态数据模式横幅 */
+.mock-banner[data-v-d311227b] {
+  margin: 0.625rem 0.9375rem 0;
+  padding: 0.5rem 0.625rem;
+  background-color: #fff6e6;
+  border: 0.03125rem solid #e6a23c;
+  border-radius: 0.25rem;
+  color: #e6a23c;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.main[data-v-d311227b] {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+.avatar-btn[data-v-d311227b] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar[data-v-d311227b] {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background-color: #eeeeee;
+}
+
+/* 抽屉 */
+.mask[data-v-d311227b] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+.drawer[data-v-d311227b] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80%;
+  background-color: #ffffff;
+  z-index: 21;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open[data-v-d311227b] {
+  transform: translateX(0);
+}
+.drawer-header[data-v-d311227b] {
+  padding: 1.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 0.09375rem solid #333333;
+}
+.avatar-lg[data-v-d311227b] {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+.nick[data-v-d311227b] {
+  color: black;
+  font-size: 0.9375rem;
+  margin-top: 0.625rem;
+  margin-left: 0.46875rem;
+  transform: translateY(-24%);
+}
+.drawer-item[data-v-d311227b] {
+  padding: 0.9375rem 1.25rem;
+  font-size: 0.875rem;
+  color: #333333;
+  border-bottom: 0.03125rem solid #f2f2f2;
+}
+.drawer-item.exit[data-v-d311227b] {
+  color: #ff2d2d;
+}
+.version[data-v-d311227b] {
+  margin-top: auto;
+  text-align: center;
+  padding: 0.9375rem;
+  font-size: 0.75rem;
+  color: #999999;
+}
+
+/* 篮球/足球切换（两图标并排，选中绿色） */
+.sport-switch[data-v-d311227b] {
+  position: fixed;
+  right: 0.9375rem;
+  bottom: 6.25rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 1.5625rem;
+  padding: 0.3125rem 0.25rem;
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+.sport-item[data-v-d311227b] {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0 0.25rem;
+}
+.sport-item.active[data-v-d311227b] {
+  background-color: #e8f7f0;
+  border-radius: 50%;
+}
+.tabs[data-v-d311227b] {
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 0.03125rem solid #eeeeee;
+}
+.tab[data-v-d311227b] {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem 0;
+  font-size: 0.9375rem;
+  color: #333333;
+}
+.tab.active[data-v-d311227b] {
+  color: #29a871;
+  font-weight: bold;
+  border-bottom: 0.125rem solid #29a871;
+}
+.list[data-v-d311227b] {
+  height: calc(100vh - 6.25rem);
+}
+.league-headinfo[data-v-d311227b] {
+  display: flex;
+  justify-content: space-between;
+}
+.team-line[data-v-d311227b] {
+  display: flex;
+  justify-content: space-between;
+}
+.date-group[data-v-d311227b] {
+  margin-bottom: 0.625rem;
+}
+.date-header[data-v-d311227b] {
+  padding: 0.625rem 0.9375rem;
+  font-size: 0.8125rem;
+  color: #999999;
+  background-color: #f8f8f8;
+  display: flex;
+  justify-content: center;
+}
+.match-item[data-v-d311227b] {
+  background-color: #ffffff;
+  margin: 0 0.625rem 0.625rem;
+  padding: 0.9375rem;
+  border-radius: 0.375rem;
+}
+.league[data-v-d311227b] {
+  font-size: 0.75rem;
+  color: #999999;
+  margin-bottom: 0.625rem;
+}
+.teams[data-v-d311227b] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.team[data-v-d311227b] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.team[data-v-d311227b]:last-child {
+  justify-content: flex-end;
+}
+.logo[data-v-d311227b] {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+}
+.team-name[data-v-d311227b] {
+  font-size: 0.875rem;
+  margin-left: 0.46875rem;
+  color: #333333;
+}
+.score[data-v-d311227b] {
+  font-size: 1.09375rem;
+  color: #F53C2F;
+}
+.score[data-v-d311227b]::after {
+  background-color: #EEEEEE;
+  padding: 0.3125rem 0.04688rem;
+  content: "";
+  margin: 0 0.46875rem;
+}
+.vs[data-v-d311227b] {
+  margin: 0 0.9375rem;
+  font-size: 0.875rem;
+  color: #999999;
+}
+.status[data-v-d311227b] {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #29a871;
+}
+.actions[data-v-d311227b] {
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+}
+.action-btn[data-v-d311227b] {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem 0;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  width: 5.3125rem;
+  box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.3);
+}
+.action-btn.green[data-v-d311227b] {
+  background-color: #29a871;
+  color: #ffffff;
+}
+.action-btn.blue[data-v-d311227b] {
+  background-color: #009de9;
+  color: #ffffff;
+}
+.loading-more[data-v-d311227b] {
+  text-align: center;
+  padding: 0.9375rem;
+  font-size: 0.75rem;
+  color: #999999;
+}
+.nav-action[data-v-d311227b] {
+  font-size: 0.8125rem;
+  color: #333333;
+}
+
+/* 版本更新弹窗 */
+.update-dialog[data-v-d311227b] {
+  width: 18.75rem;
+  padding: 1.25rem;
+}
+.update-title[data-v-d311227b] {
+  text-align: center;
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 0.625rem;
+}
+.update-content[data-v-d311227b] {
+  max-height: 9.375rem;
+  font-size: 0.8125rem;
+  color: #666666;
+  line-height: 1.6;
+}
+.update-btns[data-v-d311227b] {
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 0.9375rem;
+}
+.ub[data-v-d311227b] {
+  flex: 1;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+}
+.ub.cancel[data-v-d311227b] {
+  background-color: #f2f2f2;
+  color: #666666;
+}
+.ub.confirm[data-v-d311227b] {
+  background-color: #29a871;
+  color: #ffffff;
+}
+
+/* 比赛状态选择弹窗（从上到下纵向列表） */
+.status-sheet[data-v-d311227b] {
+  padding: 0.9375rem;
+}
+.status-sheet .sheet-title[data-v-d311227b] {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #999999;
+  margin-bottom: 0.625rem;
+}
+.status-item[data-v-d311227b] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.125rem;
+  padding: 0 0.9375rem;
+  border-bottom: 0.03125rem solid #eeeeee;
+  font-size: 0.9375rem;
+  color: #333333;
+}
+.status-item.active[data-v-d311227b] {
+  color: #29a871;
+  font-weight: bold;
+}
+.status-check[data-v-d311227b] {
+  color: #29a871;
+  font-size: 1rem;
+}
+.status-cancel[data-v-d311227b] {
+  margin-top: 0.625rem;
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  text-align: center;
+  color: #999999;
+  font-size: 0.875rem;
+}

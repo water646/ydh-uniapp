@@ -1,0 +1,44 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.container[data-v-dd75091a] {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.top-line[data-v-dd75091a] {
+  width: 100%;
+  height: 1.875rem;
+  background-color: #DDDDDD;
+  padding: 0.625rem;
+  /* 如果不需要padding影响高度，建议调整 box-sizing 或移除 padding */
+  box-sizing: border-box;
+}
+.back-btn[data-v-dd75091a] {
+  position: fixed;
+  bottom: 1.875rem;
+  /* 建议添加 left 或 right 定位，否则 justify-self 在 fixed 定位下可能无效 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4.0625rem;
+  height: 2.03125rem;
+  z-index: 99999;
+  font-size: 0.78125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 示例背景色，便于查看 */
+  color: #fff;
+  /* 示例文字颜色 */
+  border-radius: 0.9375rem;
+  /* 示例圆角 */
+}

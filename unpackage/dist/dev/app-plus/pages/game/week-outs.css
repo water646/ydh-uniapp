@@ -1,0 +1,161 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.empty-layout[data-v-d6c9915e] {
+  width: 100%;
+}
+.state[data-v-d6c9915e] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.75rem 0;
+}
+.state-text[data-v-d6c9915e] {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  color: #999999;
+}
+.spinner[data-v-d6c9915e] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.125rem solid #eeeeee;
+  border-top-color: #29a871;
+  border-radius: 50%;
+  animation: spin-d6c9915e 0.8s linear infinite;
+}
+@keyframes spin-d6c9915e {
+to {
+    transform: rotate(360deg);
+}
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.week-outs[data-v-4f294de8] {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+.top-bar[data-v-4f294de8] {
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.625rem;
+  background-color: #141a66;
+}
+.back[data-v-4f294de8] {
+  font-size: 1.375rem;
+  color: #ffffff;
+  width: 1.875rem;
+}
+.title[data-v-4f294de8] {
+  color: #ffffff;
+  font-size: 1rem;
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
+.body[data-v-4f294de8] {
+  height: calc(100vh - 2.75rem);
+}
+.banner[data-v-4f294de8] {
+  width: 100%;
+}
+.group[data-v-4f294de8] {
+  margin: 0.5rem 0.625rem;
+  background-color: #ffffff;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+.group-banner[data-v-4f294de8] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: #141a66;
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+.arrow[data-v-4f294de8] {
+  font-size: 0.75rem;
+}
+.group-body[data-v-4f294de8] {
+  padding: 0.5rem 0.75rem;
+}
+.game-item[data-v-4f294de8] {
+  padding: 0.5rem 0;
+  border-bottom: 0.03125rem solid #f2f2f2;
+}
+.game-teams[data-v-4f294de8] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+.g-name[data-v-4f294de8] {
+  font-size: 0.8125rem;
+  color: #333333;
+}
+.g-score[data-v-4f294de8] {
+  font-size: 0.9375rem;
+  color: #2f7ed8;
+  font-weight: bold;
+}
+.g-time[data-v-4f294de8] {
+  display: block;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: #999999;
+  margin-top: 0.25rem;
+}
+.kings[data-v-4f294de8] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+.king[data-v-4f294de8] {
+  display: flex;
+  align-items: center;
+  width: calc(50% - 0.25rem);
+  background-color: #fff8e8;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+.king-avatar[data-v-4f294de8] {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+.king-avatar.placeholder[data-v-4f294de8] {
+  background-color: #eeeeee;
+}
+.king-info[data-v-4f294de8] {
+  flex: 1;
+}
+.king-name[data-v-4f294de8] {
+  display: block;
+  font-size: 0.8125rem;
+  color: #333333;
+}
+.king-count[data-v-4f294de8] {
+  display: block;
+  font-size: 0.6875rem;
+  color: #ff6f21;
+  margin-top: 0.125rem;
+}

@@ -1,0 +1,149 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.custom-nav[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-content[data-v-1b09776d] {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.nav-left[data-v-1b09776d] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back[data-v-1b09776d] {
+  font-size: 1.625rem;
+  color: #333333;
+  line-height: 1;
+}
+.nav-title[data-v-1b09776d] {
+  flex: 1;
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #000000;
+  font-weight: 500;
+}
+.nav-right[data-v-1b09776d] {
+  min-width: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.625rem;
+}
+.nav-line[data-v-1b09776d] {
+  height: 0.03125rem;
+  background-color: #d9d9d9;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.login[data-v-d08ef7d4] {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 底部 logo（对应原 @mipmap/advertdown，原布局用 weight=1 占位顶到底部） */
+.bottom-logo[data-v-d08ef7d4] {
+  margin-top: auto;
+  width: 7.5rem;
+  align-self: center;
+  margin-bottom: 1.5625rem;
+}
+
+/* ⚠️【MOCK】静态数据模式横幅 */
+.mock-banner[data-v-d08ef7d4] {
+  margin: 0.625rem 0.9375rem 0;
+  padding: 0.5rem 0.625rem;
+  background-color: #fff6e6;
+  border: 0.03125rem solid #e6a23c;
+  border-radius: 0.25rem;
+  color: #e6a23c;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.logo[data-v-d08ef7d4] {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #29a871;
+  font-weight: bold;
+  padding: 2.5rem 0 1.875rem;
+}
+.form[data-v-d08ef7d4] {
+  padding: 0 1.875rem;
+}
+.input-row[data-v-d08ef7d4] {
+  margin-bottom: 0.9375rem;
+  border-bottom: 0.03125rem solid #eeeeee;
+}
+.input[data-v-d08ef7d4] {
+  height: 2.8125rem;
+  font-size: 0.9375rem;
+}
+.code-row[data-v-d08ef7d4] {
+  display: flex;
+  align-items: center;
+}
+.code-row .input[data-v-d08ef7d4] {
+  flex: 1;
+}
+.code-btn[data-v-d08ef7d4] {
+  font-size: 0.8125rem;
+  color: #29a871;
+  padding: 0.3125rem 0.625rem;
+}
+.code-btn.disabled[data-v-d08ef7d4] {
+  color: #999999;
+}
+.login-btn[data-v-d08ef7d4] {
+  margin-top: 1.875rem;
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  text-align: center;
+  background-color: #29a871;
+  color: #ffffff;
+  font-size: 1rem;
+  border-radius: 1.40625rem;
+}
+.agree[data-v-d08ef7d4] {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #999999;
+  flex-wrap: wrap;
+}
+.checkbox[data-v-d08ef7d4] {
+  width: 1rem;
+  height: 1rem;
+  border: 0.0625rem solid #cccccc;
+  border-radius: 50%;
+  margin-right: 0.3125rem;
+}
+.checkbox.checked[data-v-d08ef7d4] {
+  background-color: #29a871;
+  border-color: #29a871;
+}
+.link[data-v-d08ef7d4] {
+  color: #009de9;
+}

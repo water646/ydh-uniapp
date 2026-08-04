@@ -445,7 +445,7 @@ function doUpdate() {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 70%;
+  width: 80%;
   background-color: #ffffff;
   z-index: 21;
   transform: translateX(-100%);
@@ -457,22 +457,25 @@ function doUpdate() {
   transform: translateX(0);
 }
 .drawer-header {
-  background-color: #29a871;
+  // background-color: #29a871;
   padding: 60rpx 40rpx;
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
   align-items: center;
+  border-bottom:3rpx solid #333333;
 }
 .avatar-lg {
-  width: 120rpx;
-  height: 120rpx;
+  width: 60rpx;
+  height: 60rpx;
   border-radius: 50%;
   background-color: #ffffff;
 }
 .nick {
-  color: #ffffff;
+  color: black;
   font-size: 30rpx;
   margin-top: 20rpx;
+  margin-left: 15rpx;
+  transform: translateY(-24%);	
 }
 .drawer-item {
   padding: 30rpx 40rpx;

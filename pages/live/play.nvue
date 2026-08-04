@@ -16,7 +16,7 @@
       <text class="no-live-text">当前无直播</text>
     </view>
 
-    <text class="back" @click="back">‹</text>
+    <view class="back" @click="back"><text class="back-icon">‹</text></view>
   </view>
 </template>
 
@@ -26,18 +26,23 @@
  * 用 <live-player> 替代腾讯 TXLivePlayer，支持 RTMP/FLV 拉流
  * nvue 渲染：App 端 live-player 需 nvue
  */
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted, getCurrentInstance } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 
 const playUrl = ref('')
 const playing = ref(false)
 let playerCtx = null
+const instance = getCurrentInstance()
 
 onLoad((opt) => {
+  // 锁定竖屏：画面竖屏、按钮横排，均不随手机翻转
+  // #ifdef APP-PLUS
+  plus.screen.lockOrientation('portrait-primary')
+  // #endif
   playUrl.value = decodeURIComponent(opt.url || opt.livepublish || '')
-  // 延迟创建上下文确保组件已挂载
+  // 延迟创建上下文确保组件已挂载（nvue 需传入当前组件实例，否则报 $page undefined）
   setTimeout(() => {
-    playerCtx = uni.createLivePlayerContext('player')
+    playerCtx = uni.createLivePlayerContext('player', instance && instance.proxy)
     if (playerCtx) {
       playerCtx.play({
         success: () => {
@@ -50,6 +55,9 @@ onLoad((opt) => {
 
 onUnmounted(() => {
   if (playerCtx) playerCtx.stop()
+  // #ifdef APP-PLUS
+  plus.screen.unlockOrientation()
+  // #endif
 })
 
 function onState(e) {
@@ -86,15 +94,22 @@ function back() {
   justify-content: center;
 }
 .no-live-text {
-  font-size: 30rpx;
+  font-size: 15rpx;
   color: #999999;
 }
 .back {
   position: absolute;
-  top: 20rpx;
-  left: 20rpx;
-  font-size: 50rpx;
+  top: 12rpx;
+  left: 12rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background-color: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+.back-icon {
+  font-size: 22rpx;
   color: #ffffff;
-  width: 60rpx;
 }
 </style>

@@ -1,0 +1,574 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+/**
+ * vue版本动画内置的动画模式有如下：
+ * fade：淡入
+ * zoom：缩放
+ * fade-zoom：缩放淡入
+ * fade-up：上滑淡入
+ * fade-down：下滑淡入
+ * fade-left：左滑淡入
+ * fade-right：右滑淡入
+ * slide-up：上滑进入
+ * slide-down：下滑进入
+ * slide-left：左滑进入
+ * slide-right：右滑进入
+ */
+.u-fade-enter-active[data-v-0573594d],
+.u-fade-leave-active[data-v-0573594d] {
+  transition-property: opacity;
+}
+.u-fade-enter[data-v-0573594d],
+.u-fade-leave-to[data-v-0573594d] {
+  opacity: 0;
+}
+.u-fade-zoom-enter[data-v-0573594d],
+.u-fade-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+  opacity: 0;
+}
+.u-fade-zoom-enter-active[data-v-0573594d],
+.u-fade-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform, opacity;
+}
+.u-fade-down-enter-active[data-v-0573594d],
+.u-fade-down-leave-active[data-v-0573594d],
+.u-fade-left-enter-active[data-v-0573594d],
+.u-fade-left-leave-active[data-v-0573594d],
+.u-fade-right-enter-active[data-v-0573594d],
+.u-fade-right-leave-active[data-v-0573594d],
+.u-fade-up-enter-active[data-v-0573594d],
+.u-fade-up-leave-active[data-v-0573594d] {
+  transition-property: opacity, transform;
+}
+.u-fade-up-enter[data-v-0573594d],
+.u-fade-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+}
+.u-fade-down-enter[data-v-0573594d],
+.u-fade-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+}
+.u-fade-left-enter[data-v-0573594d],
+.u-fade-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+  opacity: 0;
+}
+.u-fade-right-enter[data-v-0573594d],
+.u-fade-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+  opacity: 0;
+}
+.u-slide-down-enter-active[data-v-0573594d],
+.u-slide-down-leave-active[data-v-0573594d],
+.u-slide-left-enter-active[data-v-0573594d],
+.u-slide-left-leave-active[data-v-0573594d],
+.u-slide-right-enter-active[data-v-0573594d],
+.u-slide-right-leave-active[data-v-0573594d],
+.u-slide-up-enter-active[data-v-0573594d],
+.u-slide-up-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-slide-up-enter[data-v-0573594d],
+.u-slide-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+}
+.u-slide-down-enter[data-v-0573594d],
+.u-slide-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+}
+.u-slide-left-enter[data-v-0573594d],
+.u-slide-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+}
+.u-slide-right-enter[data-v-0573594d],
+.u-slide-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+}
+.u-zoom-enter-active[data-v-0573594d],
+.u-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-zoom-enter[data-v-0573594d],
+.u-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-overlay[data-v-35f7c3e5] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-status-bar[data-v-c0b45a48] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-icon[data-v-1c933a9a] {
+  display: flex;
+  align-items: center;
+}
+.u-icon--left[data-v-1c933a9a] {
+  flex-direction: row-reverse;
+  align-items: center;
+}
+.u-icon--right[data-v-1c933a9a] {
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon--top[data-v-1c933a9a] {
+  flex-direction: column-reverse;
+  justify-content: center;
+}
+.u-icon--bottom[data-v-1c933a9a] {
+  flex-direction: column;
+  justify-content: center;
+}
+.u-icon__icon[data-v-1c933a9a] {
+  font-family: uicon-iconfont;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon__icon--primary[data-v-1c933a9a] {
+  color: #29a871;
+}
+.u-icon__icon--success[data-v-1c933a9a] {
+  color: var(--up-success, var(--u-success, #5ac725));
+}
+.u-icon__icon--error[data-v-1c933a9a] {
+  color: #ff2d2d;
+}
+.u-icon__icon--warning[data-v-1c933a9a] {
+  color: #ff6f21;
+}
+.u-icon__icon--info[data-v-1c933a9a] {
+  color: var(--up-info, var(--u-info, #909399));
+}
+.u-icon__img[data-v-1c933a9a] {
+  height: auto;
+  will-change: transform;
+}
+.u-icon__label[data-v-1c933a9a] {
+  line-height: 1;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-safe-bottom[data-v-3ec581de] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-popup[data-v-74921bef] {
+  flex: 1;
+}
+.u-popup__trigger[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__trigger__cover[data-v-74921bef] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.u-popup__content[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__content--round-top[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-left[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-right[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-bottom[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-center[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content__touch-area[data-v-74921bef] {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.3125rem;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.u-popup__content__indicator[data-v-74921bef] {
+  width: 100px;
+  height: 5px;
+  border-radius: 100px;
+  background-color: var(--up-light-color, #c0c4cc);
+}
+.u-popup__content__close[data-v-74921bef] {
+  position: absolute;
+}
+.u-popup__content__close--hover[data-v-74921bef] {
+  opacity: 0.4;
+}
+.u-popup__content__close--top-left[data-v-74921bef] {
+  top: 15px;
+  left: 15px;
+}
+.u-popup__content__close--top-right[data-v-74921bef] {
+  top: 15px;
+  right: 15px;
+}
+.u-popup__content__close--bottom-left[data-v-74921bef] {
+  bottom: 15px;
+  left: 15px;
+}
+.u-popup__content__close--bottom-right[data-v-74921bef] {
+  right: 15px;
+  bottom: 15px;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.action-sheet[data-v-d53be547] {
+  padding: 0.9375rem;
+}
+.sheet-title[data-v-d53be547] {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #999999;
+  margin-bottom: 0.625rem;
+}
+.grid[data-v-d53be547] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.action[data-v-d53be547] {
+  width: calc(33.33% - 0.4375rem);
+  height: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  color: #ffffff;
+}
+.action.green[data-v-d53be547] {
+  background-color: #29a871;
+}
+.action.red[data-v-d53be547] {
+  background-color: #ff2d2d;
+}
+.action.blue[data-v-d53be547] {
+  background-color: #009de9;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.change-dialog[data-v-e301e1db] {
+  padding: 0.9375rem;
+}
+.title[data-v-e301e1db] {
+  text-align: center;
+  font-size: 1rem;
+  color: #333333;
+  margin-bottom: 0.625rem;
+}
+.step[data-v-e301e1db] {
+  font-size: 0.8125rem;
+  color: #999999;
+  margin: 0.5rem 0;
+}
+.player-grid[data-v-e301e1db] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.player[data-v-e301e1db] {
+  padding: 0.5rem 0.75rem;
+  border: 0.03125rem solid #dddddd;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  color: #333333;
+}
+.player.sel[data-v-e301e1db] {
+  background-color: #29a871;
+  color: #ffffff;
+  border-color: #29a871;
+}
+.empty[data-v-e301e1db] {
+  font-size: 0.75rem;
+  color: #cccccc;
+}
+.btns[data-v-e301e1db] {
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 0.9375rem;
+}
+.btn[data-v-e301e1db] {
+  flex: 1;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+}
+.cancel[data-v-e301e1db] {
+  background-color: #f2f2f2;
+  color: #666666;
+}
+.confirm[data-v-e301e1db] {
+  background-color: #29a871;
+  color: #ffffff;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.section-dialog[data-v-b243f57c] {
+  padding: 0.625rem 0;
+}
+.item[data-v-b243f57c] {
+  height: 3.125rem;
+  line-height: 3.125rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #333333;
+  border-bottom: 0.03125rem solid #f2f2f2;
+}
+.cancel[data-v-b243f57c] {
+  height: 3.125rem;
+  line-height: 3.125rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #999999;
+  margin-top: 0.5rem;
+  border-top: 0.3125rem solid #f8f8f8;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.basket-down[data-v-2960a474] {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+}
+.top-bar[data-v-2960a474] {
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.625rem;
+  background-color: #2c2c2c;
+}
+.back[data-v-2960a474] {
+  font-size: 1.375rem;
+  color: #ffffff;
+  width: 1.875rem;
+}
+.teams-name[data-v-2960a474] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+.tname[data-v-2960a474] {
+  font-size: 0.875rem;
+}
+.tname.red[data-v-2960a474] {
+  color: #ff2d2d;
+}
+.tname.blue[data-v-2960a474] {
+  color: #009de9;
+}
+.vs[data-v-2960a474] {
+  font-size: 0.75rem;
+  color: #999999;
+}
+.score-box[data-v-2960a474] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9375rem;
+  padding: 0.625rem 0;
+}
+.score[data-v-2960a474] {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2f7ed8;
+}
+.colon[data-v-2960a474] {
+  font-size: 1.25rem;
+  color: #999999;
+}
+.ctrl-row[data-v-2960a474] {
+  display: flex;
+  align-items: center;
+  padding: 0 0.625rem 0.5rem;
+  gap: 0.5rem;
+}
+.section-box[data-v-2960a474] {
+  font-size: 0.75rem;
+  padding: 0.1875rem 0.5rem;
+  background-color: #29a871;
+  color: #ffffff;
+  border-radius: 0.1875rem;
+}
+.stat-info[data-v-2960a474] {
+  flex: 1;
+  font-size: 0.6875rem;
+  color: #999999;
+}
+.teams[data-v-2960a474] {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 0.625rem;
+  flex: 1;
+}
+.team-col[data-v-2960a474] {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 0.25rem;
+}
+.player[data-v-2960a474] {
+  display: flex;
+  align-items: center;
+  padding: 0.625rem;
+  border-bottom: 0.03125rem solid #f2f2f2;
+}
+.num[data-v-2960a474] {
+  width: 1.875rem;
+  font-size: 0.875rem;
+  color: #29a871;
+  font-weight: bold;
+}
+.name[data-v-2960a474] {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: #333333;
+}
+.foul-c[data-v-2960a474] {
+  font-size: 0.75rem;
+  color: #ff6f21;
+}
+.foul-c.red[data-v-2960a474] {
+  color: #ff2d2d;
+}
+.sync-bar[data-v-2960a474] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem;
+}
+.sync-num[data-v-2960a474] {
+  font-size: 0.75rem;
+  color: #999999;
+}
+.sync-btn[data-v-2960a474] {
+  font-size: 0.8125rem;
+  color: #29a871;
+  padding: 0.3125rem 0.9375rem;
+  border: 0.03125rem solid #29a871;
+  border-radius: 0.9375rem;
+}

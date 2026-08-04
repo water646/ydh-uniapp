@@ -1,0 +1,80 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.custom-nav[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-content[data-v-1b09776d] {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.nav-left[data-v-1b09776d] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back[data-v-1b09776d] {
+  font-size: 1.625rem;
+  color: #333333;
+  line-height: 1;
+}
+.nav-title[data-v-1b09776d] {
+  flex: 1;
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #000000;
+  font-weight: 500;
+}
+.nav-right[data-v-1b09776d] {
+  min-width: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.625rem;
+}
+.nav-line[data-v-1b09776d] {
+  height: 0.03125rem;
+  background-color: #d9d9d9;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.placeholder[data-v-29f28d5e] {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+.content[data-v-29f28d5e] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 7.5rem;
+}
+.icon[data-v-29f28d5e] {
+  font-size: 3.125rem;
+  color: #ff6f21;
+  margin-bottom: 0.9375rem;
+}
+.msg[data-v-29f28d5e] {
+  font-size: 0.875rem;
+  color: #999999;
+  padding: 0 1.875rem;
+  text-align: center;
+}

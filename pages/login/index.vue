@@ -3,7 +3,7 @@
     <custom-nav title="登录" :show-back="false" />
     <!-- ⚠️【MOCK】静态数据模式横幅（config.useMock=true 时显示） -->
     <view v-if="useMock" class="mock-banner">⚠️ MOCK 静态数据模式 · 验证码任意4位即可（如 1234）</view>
-    <view class="logo">智能技术台</view>
+    <view class="logo"><!-- 智能技术台 --></view>
     <view class="form">
       <view class="input-row">
         <input v-model="phone" class="input" type="number" maxlength="11" placeholder="请输入手机号" />
@@ -16,9 +16,10 @@
       </view>
       <view class="login-btn" @click="doLogin">登录</view>
       <view class="agree">
-        <view class="checkbox" :class="{ checked: agreed }" @click="agreed = !agreed"></view>
-        <text>我已阅读并同意</text>
+        <!-- <view class="checkbox" :class="{ checked: agreed }" @click="agreed = !agreed"></view> -->
+        <text>登录即代表同意运动汇产品</text>
         <text class="link" @click="goAgreement(1)">《用户协议》</text>
+		<text>和</text>
         <text class="link" @click="goAgreement(2)">《隐私政策》</text>
       </view>
     </view>
@@ -44,7 +45,7 @@ const useMock = config.useMock // ⚠️【MOCK】是否静态数据模式
 
 const phone = ref('')
 const code = ref('')
-const agreed = ref(false)
+const agreed = ref(true)
 const counting = ref(false)
 const codeText = ref('获取验证码')
 let timer = null

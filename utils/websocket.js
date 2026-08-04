@@ -13,14 +13,21 @@ import { getToken } from '@/utils/auth'
 let socketTask = null
 let reconnectTimer = null
 let messageCallback = null
+let statusCallback = null
 let closedByUser = false
 let currentGroup = ''
 
-/** 连接 WebSocket */
-export function connectSocket(group, onMessage) {
+/**
+ * 连接 WebSocket
+ * @param {string} group push|live
+ * @param {Function} onMessage 收到比分消息回调
+ * @param {Function} [onStatus] 连接状态回调，参数 'open'|'close'|'error'
+ */
+export function connectSocket(group, onMessage, onStatus) {
   closedByUser = false
   currentGroup = group
   messageCallback = onMessage
+  statusCallback = onStatus
   const token = getToken()
   const url = `${config.wsUrl}token=${encodeURIComponent(token)}&group=${group}`
 
@@ -30,7 +37,8 @@ export function connectSocket(group, onMessage) {
   })
 
   socketTask.onOpen(() => {
-    console.log('WebSocket 已连接', group)
+    console.log('WebSocket 已连接', group, url)
+    statusCallback && statusCallback('open')
   })
 
   socketTask.onMessage((res) => {
@@ -54,16 +62,18 @@ export function connectSocket(group, onMessage) {
 
   socketTask.onClose(() => {
     console.log('WebSocket 关闭', group)
+    statusCallback && statusCallback('close')
     if (!closedByUser) {
       // 断线重连（对应原项目重连逻辑）
       reconnectTimer = setTimeout(() => {
-        connectSocket(currentGroup, messageCallback)
+        connectSocket(currentGroup, messageCallback, statusCallback)
       }, 3000)
     }
   })
 
   socketTask.onError(() => {
-    console.log('WebSocket 错误', group)
+    console.log('WebSocket 错误', group, url)
+    statusCallback && statusCallback('error')
   })
 }
 

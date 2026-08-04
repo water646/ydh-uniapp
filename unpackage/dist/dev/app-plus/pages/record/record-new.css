@@ -1,0 +1,122 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.empty-layout[data-v-d6c9915e] {
+  width: 100%;
+}
+.state[data-v-d6c9915e] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.75rem 0;
+}
+.state-text[data-v-d6c9915e] {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  color: #999999;
+}
+.spinner[data-v-d6c9915e] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.125rem solid #eeeeee;
+  border-top-color: #29a871;
+  border-radius: 50%;
+  animation: spin-d6c9915e 0.8s linear infinite;
+}
+@keyframes spin-d6c9915e {
+to {
+    transform: rotate(360deg);
+}
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.record-new[data-v-ec7ed095] {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+.top-bar[data-v-ec7ed095] {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.625rem;
+  background-color: #2c2c2c;
+}
+.back[data-v-ec7ed095] {
+  font-size: 1.375rem;
+  color: #ffffff;
+  width: 1.875rem;
+}
+.title[data-v-ec7ed095] {
+  color: #ffffff;
+  font-size: 0.9375rem;
+  margin-right: 0.9375rem;
+}
+.tabs[data-v-ec7ed095] {
+  flex: 1;
+  display: flex;
+  gap: 0.9375rem;
+}
+.tab[data-v-ec7ed095] {
+  font-size: 0.8125rem;
+  color: #999999;
+  padding: 0.3125rem 0;
+}
+.tab.active[data-v-ec7ed095] {
+  color: #ff2d2d;
+  border-bottom: 0.125rem solid #ff2d2d;
+}
+.list[data-v-ec7ed095] {
+  flex: 1;
+}
+.rec-item[data-v-ec7ed095] {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 0.03125rem solid #f2f2f2;
+}
+.rec-info[data-v-ec7ed095] {
+  flex: 1;
+  display: flex;
+  gap: 0.625rem;
+}
+.r-section[data-v-ec7ed095] {
+  font-size: 0.6875rem;
+  color: #999999;
+  width: 2.5rem;
+}
+.r-team[data-v-ec7ed095] {
+  font-size: 0.75rem;
+  color: #29a871;
+  width: 4.375rem;
+}
+.r-player[data-v-ec7ed095] {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: #333333;
+}
+.r-type[data-v-ec7ed095] {
+  font-size: 0.8125rem;
+  color: #2f7ed8;
+}
+.r-del[data-v-ec7ed095] {
+  font-size: 0.8125rem;
+  color: #ff2d2d;
+}

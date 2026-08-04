@@ -1,0 +1,32 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.large-view[data-v-f6219a2c] {
+  width: 100%;
+  height: 100vh;
+  background-color: #000000;
+}
+.swiper[data-v-f6219a2c] {
+  width: 100%;
+  height: 100vh;
+}
+.img[data-v-f6219a2c] {
+  width: 100%;
+  height: 100%;
+}
+.page-indicator[data-v-f6219a2c] {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.875rem;
+}

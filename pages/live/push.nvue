@@ -17,7 +17,7 @@
     <!-- 控制覆盖层（nvue 中 view 可覆盖 live-pusher） -->
     <view class="overlay">
       <view class="top">
-        <text class="back" @click="back">‹</text>
+        <view class="back" @click="back"><text class="back-icon">‹</text></view>
         <text class="status">{{ statusText }}</text>
         <text class="reconnect" @click="reconnectScore">比分重连</text>
       </view>
@@ -54,8 +54,8 @@
  * - 生成回放 POST live/stream/compose
  * - nvue 渲染：App 端 live-pusher 需 nvue 才能正常显示预览并允许 view 覆盖
  */
-import { ref, onUnmounted } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { ref, onUnmounted, getCurrentInstance } from 'vue'
+import { onLoad, onReady } from '@dcloudio/uni-app'
 import { connectSocket, closeSocket } from '@/utils/websocket'
 import { getGameDetail } from '@/api/game'
 import { compose } from '@/api/live'
@@ -71,18 +71,81 @@ const showScore = ref(true)
 const pushing = ref(false)
 const statusText = ref('未连接')
 let pusherCtx = null
+const instance = getCurrentInstance()
+
+/** 创建推流上下文（nvue 需传入当前组件实例，否则回调里报 $page undefined） */
+function getPusherCtx() {
+  if (!pusherCtx) {
+    pusherCtx = uni.createLivePusherContext('pusher', instance && instance.proxy)
+  }
+  return pusherCtx
+}
 
 onLoad((opt) => {
+  // 锁定竖屏：画面竖屏、按钮横排，均不随手机翻转
+  // #ifdef APP-PLUS
+  plus.screen.lockOrientation('portrait-primary')
+  // #endif
   publishUrl.value = decodeURIComponent(opt.livepublish || '')
   gameId.value = opt.gameId || ''
   homeName.value = opt.name || '直播'
+  console.log('[push] publishUrl=', publishUrl.value, 'gameId=', gameId.value)
   loadGameDetail()
   connectScore()
 })
 
+/** 申请相机/麦克风权限（Android 运行时权限） */
+function ensurePermissions() {
+  // #ifdef APP-PLUS
+  return new Promise((resolve) => {
+    try {
+      plus.android.requestPermissions(
+        ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO'],
+        () => resolve(true),
+        () => resolve(false)
+      )
+    } catch (e) {
+      resolve(true)
+    }
+  })
+  // #endif
+  // #ifndef APP-PLUS
+  return Promise.resolve(true)
+  // #endif
+}
+
+/** 开启本地摄像头预览（不推流） */
+function startPreview() {
+  const ctx = getPusherCtx()
+  if (!ctx) {
+    console.log('[pusher] createLivePusherContext 失败，组件未挂载')
+    return
+  }
+  ctx.startPreview({
+    success: () => console.log('[pusher] 预览已开启'),
+    fail: (err) => {
+      console.log('[pusher] 预览开启失败', err)
+      uni.showToast({ title: '摄像头开启失败，请检查权限', icon: 'none' })
+    }
+  })
+}
+
+// 组件挂载完成后申请权限并开启预览
+onReady(() => {
+  ensurePermissions().then(() => {
+    setTimeout(startPreview, 200)
+  })
+})
+
 onUnmounted(() => {
   stopPush()
+  if (pusherCtx) {
+    try { pusherCtx.stopPreview() } catch (e) {}
+  }
   closeSocket()
+  // #ifdef APP-PLUS
+  plus.screen.unlockOrientation()
+  // #endif
 })
 
 function loadGameDetail() {
@@ -101,12 +164,21 @@ function loadGameDetail() {
 /** 连接 WebSocket 接收实时比分（对应 group=push） */
 function connectScore() {
   statusText.value = '比分接口连接中…'
-  connectSocket('push', (data) => {
-    if (data.hostTeamScore !== undefined) hostScore.value = data.hostTeamScore
-    if (data.guestTeamScore !== undefined) guestScore.value = data.guestTeamScore
-    if (data.section !== undefined) section.value = data.section
-    statusText.value = '比分接口连接成功'
-  })
+  connectSocket(
+    'push',
+    (data) => {
+      // 收到实时比分数据
+      if (data.hostTeamScore !== undefined) hostScore.value = data.hostTeamScore
+      if (data.guestTeamScore !== undefined) guestScore.value = data.guestTeamScore
+      if (data.section !== undefined) section.value = data.section
+    },
+    (event) => {
+      // 连接状态：以 onOpen 为准，不再依赖收到消息
+      if (event === 'open') statusText.value = '比分接口已连接'
+      else if (event === 'close') statusText.value = '比分接口已断开，重连中…'
+      else if (event === 'error') statusText.value = '比分接口连接失败'
+    }
+  )
 }
 
 function reconnectScore() {
@@ -115,8 +187,16 @@ function reconnectScore() {
 }
 
 function startPush() {
-  pusherCtx = uni.createLivePusherContext('pusher')
-  pusherCtx.start({
+  if (!publishUrl.value) {
+    uni.showToast({ title: '推流地址为空，无法直播', icon: 'none' })
+    return
+  }
+  const ctx = getPusherCtx()
+  if (!ctx) {
+    uni.showToast({ title: '推流组件未就绪', icon: 'none' })
+    return
+  }
+  ctx.start({
     success: () => {
       pushing.value = true
       statusText.value = '直播中'
@@ -144,10 +224,11 @@ function toggleScore() {
 }
 
 function onState(e) {
-  // 推流状态变化
+  console.log('[pusher] state', e.detail)
 }
 
 function onError(e) {
+  console.log('[pusher] error', e.detail)
   uni.showToast({ title: '推流错误', icon: 'none' })
 }
 
@@ -185,62 +266,69 @@ function back() {
   right: 0;
   flex-direction: row;
   align-items: center;
-  padding: 20rpx;
-  height: 80rpx;
+  padding: 10rpx;
+  height: 40rpx;
 }
 .back {
-  font-size: 50rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background-color: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+.back-icon {
+  font-size: 22rpx;
   color: #ffffff;
-  width: 60rpx;
 }
 .status {
   flex: 1;
   text-align: center;
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 12rpx;
 }
 .reconnect {
-  font-size: 24rpx;
+  font-size: 12rpx;
   color: #009de9;
 }
 .score-overlay {
   position: absolute;
-  top: 100rpx;
-  left: 20rpx;
+  top: 50rpx;
+  left: 10rpx;
   flex-direction: row;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 12rpx 20rpx;
-  border-radius: 8rpx;
+  padding: 6rpx 10rpx;
+  border-radius: 4rpx;
 }
 .s-team {
-  font-size: 26rpx;
+  font-size: 13rpx;
   color: #ffffff;
-  margin: 0 10rpx;
+  margin: 0 5rpx;
 }
 .s-score {
-  font-size: 40rpx;
+  font-size: 20rpx;
   color: #ff6f21;
   font-weight: bold;
-  margin: 0 10rpx;
+  margin: 0 5rpx;
 }
 .s-colon {
-  font-size: 32rpx;
+  font-size: 16rpx;
   color: #ffffff;
 }
 .s-section {
   position: absolute;
-  top: 100rpx;
-  right: 20rpx;
-  font-size: 24rpx;
+  top: 50rpx;
+  right: 10rpx;
+  font-size: 12rpx;
   color: #ffffff;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 8rpx 16rpx;
-  border-radius: 8rpx;
+  padding: 4rpx 8rpx;
+  border-radius: 4rpx;
 }
 .bottom {
   position: absolute;
-  bottom: 40rpx;
+  bottom: 20rpx;
   left: 0;
   right: 0;
   flex-direction: row;
@@ -248,11 +336,11 @@ function back() {
   flex-wrap: wrap;
 }
 .btn {
-  font-size: 26rpx;
+  font-size: 13rpx;
   color: #ffffff;
-  padding: 16rpx 28rpx;
-  margin: 10rpx;
-  border-radius: 30rpx;
+  padding: 8rpx 14rpx;
+  margin: 5rpx;
+  border-radius: 15rpx;
   background-color: rgba(0, 0, 0, 0.5);
 }
 .btn.start {
