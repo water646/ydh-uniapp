@@ -32,7 +32,7 @@
     { "path": "pages/photos-upload/photos-upload", "style": { "navigationStyle": "custom" } },
     { "path": "pages/photo/live-photo", "style": { "navigationStyle": "custom" } },
     { "path": "pages/preview/large-view", "style": { "navigationStyle": "custom", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
-    { "path": "pages/agreement/index", "style": { "navigationBarTitleText": "", "app-plus": { "titleNView": true } } },
+    { "path": "pages/agreement/index", "style": { "navigationBarTitleText": "", "navigationStyle": "custom", "app-plus": { "titleNView": false } } },
     { "path": "pages/placeholder/index", "style": { "navigationBarTitleText": "" } }
   ],
   "globalStyle": {
