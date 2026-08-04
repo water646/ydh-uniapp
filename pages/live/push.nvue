@@ -35,7 +35,7 @@
 
       <view class="bottom">
         <text v-if="!pushing" class="btn start" @click="startPush">开始直播</text>
-        <text v-else class="btn stop" @click="stopPush">结束直播</text>
+        <text class="btn stop" @click="stopPush">结束直播</text>
         <text class="btn" @click="switchCamera">翻转</text>
         <text class="btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
         <text class="btn" @click="onCompose">生成回放</text>
@@ -288,69 +288,71 @@ function back() {
   right: 0;
   flex-direction: row;
   align-items: center;
-  padding: 10rpx;
-  height: 40rpx;
+  padding: 20rpx;
+  height: 80rpx;
 }
 .back {
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 16rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
   background-color: rgba(0, 0, 0, 0.4);
   align-items: center;
   justify-content: center;
+  margin-left: 50rpx;
 }
 .back-icon {
-  font-size: 22rpx;
+  font-size: 44rpx;
   color: #ffffff;
 }
 .status {
   flex: 1;
   text-align: center;
   color: #ffffff;
-  font-size: 12rpx;
+  font-size: 24rpx;
 }
 .reconnect {
-  font-size: 12rpx;
+  font-size: 24rpx;
   color: #009de9;
 }
 .score-overlay {
   position: absolute;
-  top: 50rpx;
-  left: 10rpx;
+  top: 100rpx;
+  left: 20rpx;
   flex-direction: row;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 6rpx 10rpx;
-  border-radius: 4rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+  margin-left: 40rpx;
 }
 .s-team {
-  font-size: 13rpx;
+  font-size: 26rpx;
   color: #ffffff;
-  margin: 0 5rpx;
+  margin: 0 10rpx;
 }
 .s-score {
-  font-size: 20rpx;
+  font-size: 40rpx;
   color: #ff6f21;
   font-weight: bold;
-  margin: 0 5rpx;
+  margin: 0 10rpx;
 }
 .s-colon {
-  font-size: 16rpx;
+  font-size: 32rpx;
   color: #ffffff;
 }
 .s-section {
   position: absolute;
-  top: 50rpx;
-  right: 10rpx;
-  font-size: 12rpx;
+  top: 100rpx;
+  right: 20rpx;
+  font-size: 24rpx;
   color: #ffffff;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 4rpx 8rpx;
-  border-radius: 4rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
 }
 .bottom {
   position: absolute;
-  bottom: 20rpx;
+  bottom: 40rpx;
   left: 0;
   right: 0;
   flex-direction: row;
@@ -358,11 +360,11 @@ function back() {
   flex-wrap: wrap;
 }
 .btn {
-  font-size: 13rpx;
+  font-size: 26rpx;
   color: #ffffff;
-  padding: 8rpx 14rpx;
-  margin: 5rpx;
-  border-radius: 15rpx;
+  padding: 16rpx 28rpx;
+  margin: 10rpx;
+  border-radius: 30rpx;
   background-color: rgba(0, 0, 0, 0.5);
 }
 .btn.start {

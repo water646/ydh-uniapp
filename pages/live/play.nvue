@@ -99,11 +99,11 @@ function back() {
 }
 .back {
   position: absolute;
-  top: 12rpx;
-  left: 12rpx;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 16rpx;
+  top: 24rpx;
+  left: 24rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
   background-color: rgba(0, 0, 0, 0.4);
   align-items: center;
   justify-content: center;
@@ -111,7 +111,7 @@ function back() {
   transform-origin: 50% 50%;
 }
 .back-icon {
-  font-size: 22rpx;
+  font-size: 44rpx;
   color: #ffffff;
 }
 </style>
