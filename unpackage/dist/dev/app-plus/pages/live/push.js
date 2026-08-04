@@ -445,7 +445,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   }
   var getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   var compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "10rpx", "paddingRight": "10rpx", "paddingBottom": "10rpx", "paddingLeft": "10rpx", "height": "40rpx" } }, "back": { "": { "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "12rpx" } }, "reconnect": { "": { "fontSize": "12rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "50rpx", "left": "10rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "6rpx", "paddingRight": "10rpx", "paddingBottom": "6rpx", "paddingLeft": "10rpx", "borderRadius": "4rpx" } }, "s-team": { "": { "fontSize": "13rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-score": { "": { "fontSize": "20rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-colon": { "": { "fontSize": "16rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "50rpx", "right": "10rpx", "fontSize": "12rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "4rpx", "paddingRight": "8rpx", "paddingBottom": "4rpx", "paddingLeft": "8rpx", "borderRadius": "4rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "20rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "13rpx", "color": "#ffffff", "paddingTop": "8rpx", "paddingRight": "14rpx", "paddingBottom": "8rpx", "paddingLeft": "14rpx", "marginTop": "5rpx", "marginRight": "5rpx", "marginBottom": "5rpx", "marginLeft": "5rpx", "borderRadius": "15rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
+  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "10rpx", "paddingRight": "10rpx", "paddingBottom": "10rpx", "paddingLeft": "10rpx", "height": "40rpx" } }, "back": { "": { "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "12rpx" } }, "reconnect": { "": { "fontSize": "12rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "50rpx", "left": "10rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "6rpx", "paddingRight": "10rpx", "paddingBottom": "6rpx", "paddingLeft": "10rpx", "borderRadius": "4rpx" } }, "s-team": { "": { "fontSize": "13rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-score": { "": { "fontSize": "20rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-colon": { "": { "fontSize": "16rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "50rpx", "right": "10rpx", "fontSize": "12rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "4rpx", "paddingRight": "8rpx", "paddingBottom": "4rpx", "paddingLeft": "8rpx", "borderRadius": "4rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "20rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "13rpx", "color": "#ffffff", "paddingTop": "8rpx", "paddingRight": "14rpx", "paddingBottom": "8rpx", "paddingLeft": "14rpx", "marginTop": "5rpx", "marginRight": "5rpx", "marginBottom": "5rpx", "marginLeft": "5rpx", "borderRadius": "15rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
   var _sfc_main = {
     __name: "push",
     setup(__props, { expose: __expose }) {
@@ -462,6 +462,22 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       const statusText = (0, import_vue2.ref)("\u672A\u8FDE\u63A5");
       let pusherCtx = null;
       const instance = (0, import_vue2.getCurrentInstance)();
+      const overlayStyle = (() => {
+        let h = 1334;
+        try {
+          const info = uni.getSystemInfoSync();
+          if (info.windowWidth && info.windowHeight) {
+            h = Math.round(750 * info.windowHeight / info.windowWidth);
+          }
+        } catch (e) {
+        }
+        return {
+          width: h + "rpx",
+          height: "750rpx",
+          left: (750 - h) / 2 + "rpx",
+          top: (h - 750) / 2 + "rpx"
+        };
+      })();
       function getPusherCtx() {
         if (!pusherCtx) {
           pusherCtx = uni.createLivePusherContext("pusher", instance && instance.proxy);
@@ -473,7 +489,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:114", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
         loadGameDetail();
         connectScore();
       });
@@ -493,13 +509,13 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       function startPreview() {
         const ctx = getPusherCtx();
         if (!ctx) {
-          formatAppLog("log", "at pages/live/push.nvue:121", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
+          formatAppLog("log", "at pages/live/push.nvue:143", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
           return;
         }
         ctx.startPreview({
-          success: () => formatAppLog("log", "at pages/live/push.nvue:125", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
+          success: () => formatAppLog("log", "at pages/live/push.nvue:147", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
           fail: (err) => {
-            formatAppLog("log", "at pages/live/push.nvue:127", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
+            formatAppLog("log", "at pages/live/push.nvue:149", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
             uni.showToast({ title: "\u6444\u50CF\u5934\u5F00\u542F\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u6743\u9650", icon: "none" });
           }
         });
@@ -595,10 +611,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         showScore.value = !showScore.value;
       }
       function onState(e) {
-        formatAppLog("log", "at pages/live/push.nvue:227", "[pusher] state", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:249", "[pusher] state", e.detail);
       }
       function onError(e) {
-        formatAppLog("log", "at pages/live/push.nvue:231", "[pusher] error", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:253", "[pusher] error", e.detail);
         uni.showToast({ title: "\u63A8\u6D41\u9519\u8BEF", icon: "none" });
       }
       function onCompose() {
@@ -613,7 +629,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         return pusherCtx;
       }, set pusherCtx(v) {
         pusherCtx = v;
-      }, instance, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref: import_vue2.ref, onUnmounted: import_vue2.onUnmounted, getCurrentInstance: import_vue2.getCurrentInstance, get onLoad() {
+      }, instance, overlayStyle, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref: import_vue2.ref, onUnmounted: import_vue2.onUnmounted, getCurrentInstance: import_vue2.getCurrentInstance, get onLoad() {
         return onLoad;
       }, get onReady() {
         return onReady;
@@ -652,100 +668,109 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           onStatechange: $setup.onState,
           onError: $setup.onError
         }, null, 40, ["url"]),
-        (0, import_vue2.createElementVNode)("view", { class: "overlay" }, [
-          (0, import_vue2.createElementVNode)("view", { class: "top" }, [
-            (0, import_vue2.createElementVNode)("view", {
-              class: "back",
-              onClick: $setup.back
-            }, [
-              (0, import_vue2.createElementVNode)("u-text", { class: "back-icon" }, "\u2039")
+        (0, import_vue2.createElementVNode)(
+          "view",
+          {
+            class: "overlay",
+            style: (0, import_vue2.normalizeStyle)($setup.overlayStyle)
+          },
+          [
+            (0, import_vue2.createElementVNode)("view", { class: "top" }, [
+              (0, import_vue2.createElementVNode)("view", {
+                class: "back",
+                onClick: $setup.back
+              }, [
+                (0, import_vue2.createElementVNode)("u-text", { class: "back-icon" }, "\u2039")
+              ]),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "status" },
+                (0, import_vue2.toDisplayString)($setup.statusText),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)("u-text", {
+                class: "reconnect",
+                onClick: $setup.reconnectScore
+              }, "\u6BD4\u5206\u91CD\u8FDE")
             ]),
-            (0, import_vue2.createElementVNode)(
-              "u-text",
-              { class: "status" },
-              (0, import_vue2.toDisplayString)($setup.statusText),
-              1
-              /* TEXT */
-            ),
-            (0, import_vue2.createElementVNode)("u-text", {
-              class: "reconnect",
-              onClick: $setup.reconnectScore
-            }, "\u6BD4\u5206\u91CD\u8FDE")
-          ]),
-          $setup.showScore ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
-            key: 0,
-            class: "score-overlay"
-          }, [
-            (0, import_vue2.createElementVNode)(
-              "u-text",
-              { class: "s-team" },
-              (0, import_vue2.toDisplayString)($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            (0, import_vue2.createElementVNode)(
-              "u-text",
-              { class: "s-score" },
-              (0, import_vue2.toDisplayString)($setup.hostScore),
-              1
-              /* TEXT */
-            ),
-            (0, import_vue2.createElementVNode)("u-text", { class: "s-colon" }, ":"),
-            (0, import_vue2.createElementVNode)(
-              "u-text",
-              { class: "s-score" },
-              (0, import_vue2.toDisplayString)($setup.guestScore),
-              1
-              /* TEXT */
-            ),
-            (0, import_vue2.createElementVNode)(
-              "u-text",
-              { class: "s-team" },
-              (0, import_vue2.toDisplayString)($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ])) : (0, import_vue2.createCommentVNode)("v-if", true),
-          $setup.section ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)(
-            "u-text",
-            {
-              key: 1,
-              class: "s-section"
-            },
-            (0, import_vue2.toDisplayString)($setup.section),
-            1
-            /* TEXT */
-          )) : (0, import_vue2.createCommentVNode)("v-if", true),
-          (0, import_vue2.createElementVNode)("view", { class: "bottom" }, [
-            !$setup.pushing ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
+            $setup.showScore ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
               key: 0,
-              class: "btn start",
-              onClick: $setup.startPush
-            }, "\u5F00\u59CB\u76F4\u64AD")) : ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
-              key: 1,
-              class: "btn stop",
-              onClick: $setup.stopPush
-            }, "\u7ED3\u675F\u76F4\u64AD")),
-            (0, import_vue2.createElementVNode)("u-text", {
-              class: "btn",
-              onClick: $setup.switchCamera
-            }, "\u7FFB\u8F6C"),
-            (0, import_vue2.createElementVNode)(
+              class: "score-overlay"
+            }, [
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "s-team" },
+                (0, import_vue2.toDisplayString)($setup.homeName),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "s-score" },
+                (0, import_vue2.toDisplayString)($setup.hostScore),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)("u-text", { class: "s-colon" }, ":"),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "s-score" },
+                (0, import_vue2.toDisplayString)($setup.guestScore),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "s-team" },
+                (0, import_vue2.toDisplayString)($setup.guestName),
+                1
+                /* TEXT */
+              )
+            ])) : (0, import_vue2.createCommentVNode)("v-if", true),
+            $setup.section ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)(
               "u-text",
               {
-                class: "btn",
-                onClick: $setup.toggleScore
+                key: 1,
+                class: "s-section"
               },
-              (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
+              (0, import_vue2.toDisplayString)($setup.section),
               1
               /* TEXT */
-            ),
-            (0, import_vue2.createElementVNode)("u-text", {
-              class: "btn",
-              onClick: $setup.onCompose
-            }, "\u751F\u6210\u56DE\u653E")
-          ])
-        ])
+            )) : (0, import_vue2.createCommentVNode)("v-if", true),
+            (0, import_vue2.createElementVNode)("view", { class: "bottom" }, [
+              !$setup.pushing ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
+                key: 0,
+                class: "btn start",
+                onClick: $setup.startPush
+              }, "\u5F00\u59CB\u76F4\u64AD")) : ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
+                key: 1,
+                class: "btn stop",
+                onClick: $setup.stopPush
+              }, "\u7ED3\u675F\u76F4\u64AD")),
+              (0, import_vue2.createElementVNode)("u-text", {
+                class: "btn",
+                onClick: $setup.switchCamera
+              }, "\u7FFB\u8F6C"),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                {
+                  class: "btn",
+                  onClick: $setup.toggleScore
+                },
+                (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)("u-text", {
+                class: "btn",
+                onClick: $setup.onCompose
+              }, "\u751F\u6210\u56DE\u653E")
+            ])
+          ],
+          4
+          /* STYLE */
+        )
       ])
     ]);
   }

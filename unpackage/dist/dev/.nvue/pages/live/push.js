@@ -1,5 +1,5 @@
 import { f as formatAppLog, _ as _export_sfc, o as onLoad, a as onReady } from "../../_plugin-vue_export-helper.js";
-import { ref, getCurrentInstance, onUnmounted, openBlock, createElementBlock, createElementVNode, toDisplayString, createCommentVNode } from "vue";
+import { ref, getCurrentInstance, onUnmounted, openBlock, createElementBlock, createElementVNode, normalizeStyle, toDisplayString, createCommentVNode } from "vue";
 const config = {
   /**
    * ⚠️【MOCK 开关】⚠️
@@ -335,7 +335,7 @@ function request(options) {
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "10rpx", "paddingRight": "10rpx", "paddingBottom": "10rpx", "paddingLeft": "10rpx", "height": "40rpx" } }, "back": { "": { "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "12rpx" } }, "reconnect": { "": { "fontSize": "12rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "50rpx", "left": "10rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "6rpx", "paddingRight": "10rpx", "paddingBottom": "6rpx", "paddingLeft": "10rpx", "borderRadius": "4rpx" } }, "s-team": { "": { "fontSize": "13rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-score": { "": { "fontSize": "20rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-colon": { "": { "fontSize": "16rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "50rpx", "right": "10rpx", "fontSize": "12rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "4rpx", "paddingRight": "8rpx", "paddingBottom": "4rpx", "paddingLeft": "8rpx", "borderRadius": "4rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "20rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "13rpx", "color": "#ffffff", "paddingTop": "8rpx", "paddingRight": "14rpx", "paddingBottom": "8rpx", "paddingLeft": "14rpx", "marginTop": "5rpx", "marginRight": "5rpx", "marginBottom": "5rpx", "marginLeft": "5rpx", "borderRadius": "15rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
+const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "10rpx", "paddingRight": "10rpx", "paddingBottom": "10rpx", "paddingLeft": "10rpx", "height": "40rpx" } }, "back": { "": { "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "12rpx" } }, "reconnect": { "": { "fontSize": "12rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "50rpx", "left": "10rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "6rpx", "paddingRight": "10rpx", "paddingBottom": "6rpx", "paddingLeft": "10rpx", "borderRadius": "4rpx" } }, "s-team": { "": { "fontSize": "13rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-score": { "": { "fontSize": "20rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "5rpx", "marginBottom": 0, "marginLeft": "5rpx" } }, "s-colon": { "": { "fontSize": "16rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "50rpx", "right": "10rpx", "fontSize": "12rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "4rpx", "paddingRight": "8rpx", "paddingBottom": "4rpx", "paddingLeft": "8rpx", "borderRadius": "4rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "20rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "13rpx", "color": "#ffffff", "paddingTop": "8rpx", "paddingRight": "14rpx", "paddingBottom": "8rpx", "paddingLeft": "14rpx", "marginTop": "5rpx", "marginRight": "5rpx", "marginBottom": "5rpx", "marginLeft": "5rpx", "borderRadius": "15rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
 const _sfc_main = {
   __name: "push",
   setup(__props, { expose: __expose }) {
@@ -352,6 +352,22 @@ const _sfc_main = {
     const statusText = ref("未连接");
     let pusherCtx = null;
     const instance = getCurrentInstance();
+    const overlayStyle = (() => {
+      let h = 1334;
+      try {
+        const info = uni.getSystemInfoSync();
+        if (info.windowWidth && info.windowHeight) {
+          h = Math.round(750 * info.windowHeight / info.windowWidth);
+        }
+      } catch (e) {
+      }
+      return {
+        width: h + "rpx",
+        height: "750rpx",
+        left: (750 - h) / 2 + "rpx",
+        top: (h - 750) / 2 + "rpx"
+      };
+    })();
     function getPusherCtx() {
       if (!pusherCtx) {
         pusherCtx = uni.createLivePusherContext("pusher", instance && instance.proxy);
@@ -363,7 +379,7 @@ const _sfc_main = {
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:114", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       loadGameDetail();
       connectScore();
     });
@@ -383,13 +399,13 @@ const _sfc_main = {
     function startPreview() {
       const ctx = getPusherCtx();
       if (!ctx) {
-        formatAppLog("log", "at pages/live/push.nvue:121", "[pusher] createLivePusherContext 失败，组件未挂载");
+        formatAppLog("log", "at pages/live/push.nvue:143", "[pusher] createLivePusherContext 失败，组件未挂载");
         return;
       }
       ctx.startPreview({
-        success: () => formatAppLog("log", "at pages/live/push.nvue:125", "[pusher] 预览已开启"),
+        success: () => formatAppLog("log", "at pages/live/push.nvue:147", "[pusher] 预览已开启"),
         fail: (err) => {
-          formatAppLog("log", "at pages/live/push.nvue:127", "[pusher] 预览开启失败", err);
+          formatAppLog("log", "at pages/live/push.nvue:149", "[pusher] 预览开启失败", err);
           uni.showToast({ title: "摄像头开启失败，请检查权限", icon: "none" });
         }
       });
@@ -485,10 +501,10 @@ const _sfc_main = {
       showScore.value = !showScore.value;
     }
     function onState(e) {
-      formatAppLog("log", "at pages/live/push.nvue:227", "[pusher] state", e.detail);
+      formatAppLog("log", "at pages/live/push.nvue:249", "[pusher] state", e.detail);
     }
     function onError(e) {
-      formatAppLog("log", "at pages/live/push.nvue:231", "[pusher] error", e.detail);
+      formatAppLog("log", "at pages/live/push.nvue:253", "[pusher] error", e.detail);
       uni.showToast({ title: "推流错误", icon: "none" });
     }
     function onCompose() {
@@ -503,7 +519,7 @@ const _sfc_main = {
       return pusherCtx;
     }, set pusherCtx(v) {
       pusherCtx = v;
-    }, instance, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref, onUnmounted, getCurrentInstance, get onLoad() {
+    }, instance, overlayStyle, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref, onUnmounted, getCurrentInstance, get onLoad() {
       return onLoad;
     }, get onReady() {
       return onReady;
@@ -542,100 +558,109 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         onStatechange: $setup.onState,
         onError: $setup.onError
       }, null, 40, ["url"]),
-      createElementVNode("view", { class: "overlay" }, [
-        createElementVNode("view", { class: "top" }, [
-          createElementVNode("view", {
-            class: "back",
-            onClick: $setup.back
-          }, [
-            createElementVNode("u-text", { class: "back-icon" }, "‹")
+      createElementVNode(
+        "view",
+        {
+          class: "overlay",
+          style: normalizeStyle($setup.overlayStyle)
+        },
+        [
+          createElementVNode("view", { class: "top" }, [
+            createElementVNode("view", {
+              class: "back",
+              onClick: $setup.back
+            }, [
+              createElementVNode("u-text", { class: "back-icon" }, "‹")
+            ]),
+            createElementVNode(
+              "u-text",
+              { class: "status" },
+              toDisplayString($setup.statusText),
+              1
+              /* TEXT */
+            ),
+            createElementVNode("u-text", {
+              class: "reconnect",
+              onClick: $setup.reconnectScore
+            }, "比分重连")
           ]),
-          createElementVNode(
-            "u-text",
-            { class: "status" },
-            toDisplayString($setup.statusText),
-            1
-            /* TEXT */
-          ),
-          createElementVNode("u-text", {
-            class: "reconnect",
-            onClick: $setup.reconnectScore
-          }, "比分重连")
-        ]),
-        $setup.showScore ? (openBlock(), createElementBlock("view", {
-          key: 0,
-          class: "score-overlay"
-        }, [
-          createElementVNode(
-            "u-text",
-            { class: "s-team" },
-            toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
-          createElementVNode(
-            "u-text",
-            { class: "s-score" },
-            toDisplayString($setup.hostScore),
-            1
-            /* TEXT */
-          ),
-          createElementVNode("u-text", { class: "s-colon" }, ":"),
-          createElementVNode(
-            "u-text",
-            { class: "s-score" },
-            toDisplayString($setup.guestScore),
-            1
-            /* TEXT */
-          ),
-          createElementVNode(
-            "u-text",
-            { class: "s-team" },
-            toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          )
-        ])) : createCommentVNode("v-if", true),
-        $setup.section ? (openBlock(), createElementBlock(
-          "u-text",
-          {
-            key: 1,
-            class: "s-section"
-          },
-          toDisplayString($setup.section),
-          1
-          /* TEXT */
-        )) : createCommentVNode("v-if", true),
-        createElementVNode("view", { class: "bottom" }, [
-          !$setup.pushing ? (openBlock(), createElementBlock("u-text", {
+          $setup.showScore ? (openBlock(), createElementBlock("view", {
             key: 0,
-            class: "btn start",
-            onClick: $setup.startPush
-          }, "开始直播")) : (openBlock(), createElementBlock("u-text", {
-            key: 1,
-            class: "btn stop",
-            onClick: $setup.stopPush
-          }, "结束直播")),
-          createElementVNode("u-text", {
-            class: "btn",
-            onClick: $setup.switchCamera
-          }, "翻转"),
-          createElementVNode(
+            class: "score-overlay"
+          }, [
+            createElementVNode(
+              "u-text",
+              { class: "s-team" },
+              toDisplayString($setup.homeName),
+              1
+              /* TEXT */
+            ),
+            createElementVNode(
+              "u-text",
+              { class: "s-score" },
+              toDisplayString($setup.hostScore),
+              1
+              /* TEXT */
+            ),
+            createElementVNode("u-text", { class: "s-colon" }, ":"),
+            createElementVNode(
+              "u-text",
+              { class: "s-score" },
+              toDisplayString($setup.guestScore),
+              1
+              /* TEXT */
+            ),
+            createElementVNode(
+              "u-text",
+              { class: "s-team" },
+              toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            )
+          ])) : createCommentVNode("v-if", true),
+          $setup.section ? (openBlock(), createElementBlock(
             "u-text",
             {
-              class: "btn",
-              onClick: $setup.toggleScore
+              key: 1,
+              class: "s-section"
             },
-            toDisplayString($setup.showScore ? "隐藏" : "显示") + "比分",
+            toDisplayString($setup.section),
             1
             /* TEXT */
-          ),
-          createElementVNode("u-text", {
-            class: "btn",
-            onClick: $setup.onCompose
-          }, "生成回放")
-        ])
-      ])
+          )) : createCommentVNode("v-if", true),
+          createElementVNode("view", { class: "bottom" }, [
+            !$setup.pushing ? (openBlock(), createElementBlock("u-text", {
+              key: 0,
+              class: "btn start",
+              onClick: $setup.startPush
+            }, "开始直播")) : (openBlock(), createElementBlock("u-text", {
+              key: 1,
+              class: "btn stop",
+              onClick: $setup.stopPush
+            }, "结束直播")),
+            createElementVNode("u-text", {
+              class: "btn",
+              onClick: $setup.switchCamera
+            }, "翻转"),
+            createElementVNode(
+              "u-text",
+              {
+                class: "btn",
+                onClick: $setup.toggleScore
+              },
+              toDisplayString($setup.showScore ? "隐藏" : "显示") + "比分",
+              1
+              /* TEXT */
+            ),
+            createElementVNode("u-text", {
+              class: "btn",
+              onClick: $setup.onCompose
+            }, "生成回放")
+          ])
+        ],
+        4
+        /* STYLE */
+      )
     ])
   ]);
 }

@@ -107,6 +107,8 @@ function back() {
   background-color: rgba(0, 0, 0, 0.4);
   align-items: center;
   justify-content: center;
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
 }
 .back-icon {
   font-size: 22rpx;

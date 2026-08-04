@@ -15,7 +15,8 @@
     ></live-pusher>
 
     <!-- 控制覆盖层（nvue 中 view 可覆盖 live-pusher） -->
-    <view class="overlay">
+    <!-- 容器宽高与屏幕互换 + 顺时针旋转90°，旋转后正好铺满竖屏，内容不超出 -->
+    <view class="overlay" :style="overlayStyle">
       <view class="top">
         <view class="back" @click="back"><text class="back-icon">‹</text></view>
         <text class="status">{{ statusText }}</text>
@@ -72,6 +73,27 @@ const pushing = ref(false)
 const statusText = ref('未连接')
 let pusherCtx = null
 const instance = getCurrentInstance()
+
+/**
+ * 横屏浮层：将容器宽高与屏幕互换（宽=屏高 h、高=屏宽 750）并居中，
+ * 顺时针旋转 90° 后视觉正好铺满竖屏（视觉宽=750、高=h）。
+ * 直接旋转全屏浮层会让视觉宽变成 h（>750）从而超出屏幕，互换尺寸即可避免。
+ */
+const overlayStyle = (() => {
+  let h = 1334 // 屏高(rpx)兜底值
+  try {
+    const info = uni.getSystemInfoSync()
+    if (info.windowWidth && info.windowHeight) {
+      h = Math.round((750 * info.windowHeight) / info.windowWidth)
+    }
+  } catch (e) {}
+  return {
+    width: h + 'rpx',
+    height: '750rpx',
+    left: (750 - h) / 2 + 'rpx',
+    top: (h - 750) / 2 + 'rpx'
+  }
+})()
 
 /** 创建推流上下文（nvue 需传入当前组件实例，否则回调里报 $page undefined） */
 function getPusherCtx() {
@@ -254,10 +276,10 @@ function back() {
 }
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  /* 宽高/位置由 overlayStyle 注入（与屏幕互换并居中），
+     以中心为原点顺时针旋转90°后铺满竖屏 */
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
 }
 .top {
   position: absolute;

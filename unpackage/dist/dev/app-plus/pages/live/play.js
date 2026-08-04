@@ -86,7 +86,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   };
 
   // F:/项目文件/uniapp版本/unpackage/dist/dev/.nvue/pages/live/play.js
-  var _style_0 = { "live-play": { "": { "flex": 1, "backgroundColor": "#000000" } }, "player": { "": { "flex": 1 } }, "no-live": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "alignItems": "center", "justifyContent": "center" } }, "no-live-text": { "": { "fontSize": "15rpx", "color": "#999999" } }, "back": { "": { "position": "absolute", "top": "12rpx", "left": "12rpx", "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } } };
+  var _style_0 = { "live-play": { "": { "flex": 1, "backgroundColor": "#000000" } }, "player": { "": { "flex": 1 } }, "no-live": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "alignItems": "center", "justifyContent": "center" } }, "no-live-text": { "": { "fontSize": "15rpx", "color": "#999999" } }, "back": { "": { "position": "absolute", "top": "12rpx", "left": "12rpx", "width": "32rpx", "height": "32rpx", "borderRadius": "16rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "back-icon": { "": { "fontSize": "22rpx", "color": "#ffffff" } } };
   var _sfc_main = {
     __name: "play",
     setup(__props, { expose: __expose }) {
