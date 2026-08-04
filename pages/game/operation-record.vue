@@ -1,8 +1,11 @@
 <template>
   <view class="op-record">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <text class="title">操作记录</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <text class="title">操作记录</text>
+      </view>
     </view>
     <scroll-view
       scroll-y
@@ -45,6 +48,9 @@ import { onLoad } from '@dcloudio/uni-app'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { statisticsPage, cancelData } from '@/api/statistics'
 import { emit, EventBus } from '@/utils/eventBus'
+
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统时间/电量栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const gameId = ref('')
 const list = ref([])
@@ -129,11 +135,16 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.nav-status {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 88rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
 }
 .back {
   font-size: 44rpx;

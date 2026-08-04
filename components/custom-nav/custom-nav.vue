@@ -45,6 +45,9 @@ function onBack() {
 .custom-nav {
   background-color: #ffffff;
 }
+.nav-status {
+  background-color: #2c2c2c;
+}
 .nav-content {
   display: flex;
   align-items: center;

@@ -10825,6 +10825,7 @@ This will fail in production.`);
     __name: "basketball-operate",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -11079,7 +11080,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, battery, syncNum, showAction, showChange, showSection, quickActions, basketActions, currentMembers, loadMembers, loadSections, loadRecords, loadStats, updateSyncNum, selectPlayer, onQuickAction, onAction, doAction, onDelete, onChange, onSection, insertSectionRecord, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, battery, syncNum, showAction, showChange, showSection, quickActions, basketActions, currentMembers, loadMembers, loadSections, loadRecords, loadStats, updateSyncNum, selectPlayer, onQuickAction, onAction, doAction, onDelete, onChange, onSection, insertSectionRecord, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
         return onLoad;
       }, batteryView, actionSheet, changeMemberDialog, sectionDialog, get queryList() {
         return queryList;
@@ -11113,67 +11114,79 @@ This will fail in production.`);
   function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-operate" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "team-info" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "tname" },
-            vue.toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "tag foul" },
-            "犯规" + vue.toDisplayString($setup.hostFoul),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "tag pause" },
-            "暂停" + vue.toDisplayString($setup.hostPause),
-            1
-            /* TEXT */
-          )
-        ]),
         vue.createElementVNode(
           "view",
           {
-            class: "section-btn",
-            onClick: _cache[0] || (_cache[0] = ($event) => $setup.showSection = true)
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
           },
-          vue.toDisplayString($setup.currentSectionName),
-          1
-          /* TEXT */
+          null,
+          4
+          /* STYLE */
         ),
-        vue.createElementVNode("view", { class: "team-info" }, [
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "team-info" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "tname" },
+              vue.toDisplayString($setup.homeName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "tag foul" },
+              "犯规" + vue.toDisplayString($setup.hostFoul),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "tag pause" },
+              "暂停" + vue.toDisplayString($setup.hostPause),
+              1
+              /* TEXT */
+            )
+          ]),
           vue.createElementVNode(
-            "text",
-            { class: "tag pause" },
-            "暂停" + vue.toDisplayString($setup.guestPause),
+            "view",
+            {
+              class: "section-btn",
+              onClick: _cache[0] || (_cache[0] = ($event) => $setup.showSection = true)
+            },
+            vue.toDisplayString($setup.currentSectionName),
             1
             /* TEXT */
           ),
-          vue.createElementVNode(
-            "text",
-            { class: "tag foul" },
-            "犯规" + vue.toDisplayString($setup.guestFoul),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "tname" },
-            vue.toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          )
-        ]),
-        vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
+          vue.createElementVNode("view", { class: "team-info" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "tag pause" },
+              "暂停" + vue.toDisplayString($setup.guestPause),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "tag foul" },
+              "犯规" + vue.toDisplayString($setup.guestFoul),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "tname" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
+        ])
       ]),
       vue.createElementVNode("view", { class: "body" }, [
         vue.createElementVNode("view", { class: "team-panel" }, [
@@ -11393,6 +11406,7 @@ This will fail in production.`);
     __name: "football-operate",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -11617,7 +11631,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, battery, syncNum, showChange, showSection, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, battery, syncNum, showChange, showSection, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
         return timerSeconds;
       }, set timerSeconds(v) {
         timerSeconds = v;
@@ -11659,68 +11673,80 @@ This will fail in production.`);
   function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "foot-operate" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "team-info" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "tname" },
-            vue.toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "tag foul" },
-            "犯规" + vue.toDisplayString($setup.hostFoul),
-            1
-            /* TEXT */
-          )
-        ]),
-        vue.createElementVNode("view", { class: "timer-box" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "timer" },
-            vue.toDisplayString($setup.timerStr),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode("view", { class: "timer-btns" }, [
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "team-info" }, [
             vue.createElementVNode(
               "text",
-              {
-                class: "t-btn",
-                onClick: $setup.toggleTimer
-              },
-              vue.toDisplayString($setup.timerRunning ? "暂停" : "开始"),
+              { class: "tname" },
+              vue.toDisplayString($setup.homeName),
               1
               /* TEXT */
             ),
-            vue.createElementVNode("text", {
-              class: "t-btn",
-              onClick: $setup.editTimer
-            }, "改时间")
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "team-info" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "tag foul" },
-            "犯规" + vue.toDisplayString($setup.guestFoul),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode(
-            "text",
-            { class: "tname" },
-            vue.toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          )
-        ]),
-        vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
+            vue.createElementVNode(
+              "text",
+              { class: "tag foul" },
+              "犯规" + vue.toDisplayString($setup.hostFoul),
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createElementVNode("view", { class: "timer-box" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "timer" },
+              vue.toDisplayString($setup.timerStr),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "timer-btns" }, [
+              vue.createElementVNode(
+                "text",
+                {
+                  class: "t-btn",
+                  onClick: $setup.toggleTimer
+                },
+                vue.toDisplayString($setup.timerRunning ? "暂停" : "开始"),
+                1
+                /* TEXT */
+              ),
+              vue.createElementVNode("text", {
+                class: "t-btn",
+                onClick: $setup.editTimer
+              }, "改时间")
+            ])
+          ]),
+          vue.createElementVNode("view", { class: "team-info" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "tag foul" },
+              "犯规" + vue.toDisplayString($setup.guestFoul),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "tname" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
+        ])
       ]),
       vue.createElementVNode("view", { class: "body" }, [
         vue.createElementVNode("view", { class: "team-panel" }, [
@@ -11939,6 +11965,7 @@ This will fail in production.`);
     __name: "basketball-operate-new",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -12197,7 +12224,7 @@ This will fail in production.`);
           }
         });
       }
-      const __returned__ = { gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, syncNum, showAction, showSection, showAdd, showChange, addTeam, basketActions, currentMembers, loadGameData, loadSections, loadMembers, loadRecords, loadStats, updateSyncNum, onPlayer, onAction, onDelete, onChange, onAdd, refreshTeam, onUploadAll, onSection, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, syncNum, showAction, showSection, showAdd, showChange, addTeam, basketActions, currentMembers, loadGameData, loadSections, loadMembers, loadRecords, loadStats, updateSyncNum, onPlayer, onAction, onDelete, onChange, onAdd, refreshTeam, onUploadAll, onSection, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
         return onLoad;
       }, get onBackPress() {
         return onBackPress;
@@ -12243,15 +12270,27 @@ This will fail in production.`);
   function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-new" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "篮球统计"),
-        vue.createElementVNode("text", {
-          class: "upload-btn",
-          onClick: $setup.onUploadAll
-        }, "打包上传")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "篮球统计"),
+          vue.createElementVNode("text", {
+            class: "upload-btn",
+            onClick: $setup.onUploadAll
+          }, "打包上传")
+        ])
       ]),
       vue.createElementVNode("view", { class: "score-board" }, [
         vue.createElementVNode("view", { class: "team-score" }, [
@@ -12497,6 +12536,7 @@ This will fail in production.`);
     __name: "basketball-down",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -12647,7 +12687,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostStop, guestStop, syncing, showAction, showChange, showSection, basketActions, currentMembers, loadData, onPlayer, onAction, onChange, onSection, get syncCount() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostStop, guestStop, syncing, showAction, showChange, showSection, basketActions, currentMembers, loadData, onPlayer, onAction, onChange, onSection, get syncCount() {
         return syncCount;
       }, set syncCount(v) {
         syncCount = v;
@@ -12681,26 +12721,38 @@ This will fail in production.`);
   function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-down" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "teams-name" }, [
-          vue.createElementVNode(
-            "text",
-            { class: "tname red" },
-            vue.toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
-          vue.createElementVNode("text", { class: "vs" }, "vs"),
-          vue.createElementVNode(
-            "text",
-            { class: "tname blue" },
-            vue.toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          )
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "teams-name" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "tname red" },
+              vue.toDisplayString($setup.homeName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("text", { class: "vs" }, "vs"),
+            vue.createElementVNode(
+              "text",
+              { class: "tname blue" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            )
+          ])
         ])
       ]),
       vue.createElementVNode("view", { class: "score-box" }, [
@@ -12867,6 +12919,7 @@ This will fail in production.`);
     __name: "record",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const tabs = ["全部", "得分", "犯规"];
       const current = vue.ref(0);
@@ -12912,7 +12965,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, tabs, current, records, scoreTypes: scoreTypes$2, foulTypes: foulTypes$2, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, tabs, current, records, scoreTypes: scoreTypes$2, foulTypes: foulTypes$2, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get selectSQL() {
         return selectSQL;
@@ -12928,24 +12981,36 @@ This will fail in production.`);
   function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-page" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "tabs" }, [
-          (vue.openBlock(), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.tabs, (t2, i) => {
-              return vue.createElementVNode("text", {
-                key: i,
-                class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
-                onClick: ($event) => $setup.switchTab(i)
-              }, vue.toDisplayString(t2), 11, ["onClick"]);
-            }),
-            64
-            /* STABLE_FRAGMENT */
-          ))
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "tabs" }, [
+            (vue.openBlock(), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.tabs, (t2, i) => {
+                return vue.createElementVNode("text", {
+                  key: i,
+                  class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
+                  onClick: ($event) => $setup.switchTab(i)
+                }, vue.toDisplayString(t2), 11, ["onClick"]);
+              }),
+              64
+              /* STABLE_FRAGMENT */
+            ))
+          ])
         ])
       ]),
       vue.createElementVNode("scroll-view", {
@@ -13014,6 +13079,7 @@ This will fail in production.`);
     __name: "record-foot",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const tabs = ["全部", "得分", "犯规"];
       const current = vue.ref(0);
@@ -13059,7 +13125,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, tabs, current, records, scoreTypes: scoreTypes$1, foulTypes: foulTypes$1, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, tabs, current, records, scoreTypes: scoreTypes$1, foulTypes: foulTypes$1, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get selectSQL() {
         return selectSQL;
@@ -13075,24 +13141,36 @@ This will fail in production.`);
   function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-page" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "tabs" }, [
-          (vue.openBlock(), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.tabs, (t2, i) => {
-              return vue.createElementVNode("text", {
-                key: i,
-                class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
-                onClick: ($event) => $setup.switchTab(i)
-              }, vue.toDisplayString(t2), 11, ["onClick"]);
-            }),
-            64
-            /* STABLE_FRAGMENT */
-          ))
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "tabs" }, [
+            (vue.openBlock(), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.tabs, (t2, i) => {
+                return vue.createElementVNode("text", {
+                  key: i,
+                  class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
+                  onClick: ($event) => $setup.switchTab(i)
+                }, vue.toDisplayString(t2), 11, ["onClick"]);
+              }),
+              64
+              /* STABLE_FRAGMENT */
+            ))
+          ])
         ])
       ]),
       vue.createElementVNode("scroll-view", {
@@ -13161,6 +13239,7 @@ This will fail in production.`);
     __name: "record-new",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const tabs = ["全部", "得分", "犯规"];
       const current = vue.ref(0);
@@ -13206,7 +13285,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, tabs, current, records, scoreTypes, foulTypes, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, tabs, current, records, scoreTypes, foulTypes, switchTab, loadRecords, canDelete, onDelete, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get selectSQL() {
         return selectSQL;
@@ -13222,25 +13301,37 @@ This will fail in production.`);
   function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-new" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "操作记录"),
-        vue.createElementVNode("view", { class: "tabs" }, [
-          (vue.openBlock(), vue.createElementBlock(
-            vue.Fragment,
-            null,
-            vue.renderList($setup.tabs, (t2, i) => {
-              return vue.createElementVNode("text", {
-                key: i,
-                class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
-                onClick: ($event) => $setup.switchTab(i)
-              }, vue.toDisplayString(t2), 11, ["onClick"]);
-            }),
-            64
-            /* STABLE_FRAGMENT */
-          ))
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "操作记录"),
+          vue.createElementVNode("view", { class: "tabs" }, [
+            (vue.openBlock(), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.tabs, (t2, i) => {
+                return vue.createElementVNode("text", {
+                  key: i,
+                  class: vue.normalizeClass(["tab", { active: $setup.current === i }]),
+                  onClick: ($event) => $setup.switchTab(i)
+                }, vue.toDisplayString(t2), 11, ["onClick"]);
+              }),
+              64
+              /* STABLE_FRAGMENT */
+            ))
+          ])
         ])
       ]),
       vue.createElementVNode("scroll-view", {
@@ -13307,6 +13398,7 @@ This will fail in production.`);
     __name: "member-data",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -13357,7 +13449,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, homeName, guestName, team, rows, total, switchTeam, load, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, team, rows, total, switchTeam, load, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, get selectSQL() {
         return selectSQL;
@@ -13371,31 +13463,43 @@ This will fail in production.`);
   function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "member-data" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("view", { class: "radio-group" }, [
-          vue.createElementVNode(
-            "text",
-            {
-              class: vue.normalizeClass(["radio", { on: $setup.team === "host" }]),
-              onClick: _cache[0] || (_cache[0] = ($event) => $setup.switchTeam("host"))
-            },
-            vue.toDisplayString($setup.homeName),
-            3
-            /* TEXT, CLASS */
-          ),
-          vue.createElementVNode(
-            "text",
-            {
-              class: vue.normalizeClass(["radio", { on: $setup.team === "guest" }]),
-              onClick: _cache[1] || (_cache[1] = ($event) => $setup.switchTeam("guest"))
-            },
-            vue.toDisplayString($setup.guestName),
-            3
-            /* TEXT, CLASS */
-          )
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("view", { class: "radio-group" }, [
+            vue.createElementVNode(
+              "text",
+              {
+                class: vue.normalizeClass(["radio", { on: $setup.team === "host" }]),
+                onClick: _cache[0] || (_cache[0] = ($event) => $setup.switchTeam("host"))
+              },
+              vue.toDisplayString($setup.homeName),
+              3
+              /* TEXT, CLASS */
+            ),
+            vue.createElementVNode(
+              "text",
+              {
+                class: vue.normalizeClass(["radio", { on: $setup.team === "guest" }]),
+                onClick: _cache[1] || (_cache[1] = ($event) => $setup.switchTeam("guest"))
+              },
+              vue.toDisplayString($setup.guestName),
+              3
+              /* TEXT, CLASS */
+            )
+          ])
         ])
       ]),
       vue.createElementVNode("scroll-view", {
@@ -13597,6 +13701,7 @@ This will fail in production.`);
     __name: "new-member-data",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
@@ -13631,7 +13736,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, homeName, guestName, hostRows, guestRows, hostTotal, guestTotal, load, sumTotal, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostRows, guestRows, hostTotal, guestTotal, load, sumTotal, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, get selectSQL() {
         return selectSQL;
@@ -13645,11 +13750,23 @@ This will fail in production.`);
   function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "new-member-data" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "比赛数据")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "比赛数据")
+        ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -13940,6 +14057,7 @@ This will fail in production.`);
     __name: "operation-record",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const list = vue.ref([]);
       const pageNo = vue.ref(1);
@@ -14006,7 +14124,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, list, pageNo, totalPage, loading, refreshing, hasMore, load, onRefresh, onLoadMore, onDelete, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, list, pageNo, totalPage, loading, refreshing, hasMore, load, onRefresh, onLoadMore, onDelete, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get statisticsPage() {
         return statisticsPage;
@@ -14024,11 +14142,23 @@ This will fail in production.`);
   function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "op-record" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "操作记录")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "操作记录")
+        ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -14114,6 +14244,7 @@ This will fail in production.`);
     __name: "week-outs",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const groups = vue.ref([]);
       const openIdx = vue.ref(0);
       const loading = vue.ref(false);
@@ -14133,7 +14264,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { groups, openIdx, loading, toggle, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, groups, openIdx, loading, toggle, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get getWeekList() {
         return getWeekList;
@@ -14147,11 +14278,23 @@ This will fail in production.`);
   function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "week-outs" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "优肯周赛况")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "优肯周赛况")
+        ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -14643,6 +14786,7 @@ This will fail in production.`);
     __name: "photos-upload",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const id = vue.ref("");
       const title = vue.ref("");
       const photos = vue.ref([]);
@@ -14669,7 +14813,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { id, title, photos, load, preview, goLivePhoto, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, id, title, photos, load, preview, goLivePhoto, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get getUploadPhoto() {
         return getUploadPhoto;
@@ -14681,21 +14825,33 @@ This will fail in production.`);
   function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "photos-upload" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
         vue.createElementVNode(
-          "text",
-          { class: "title" },
-          vue.toDisplayString($setup.title),
-          1
-          /* TEXT */
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
         ),
-        vue.createElementVNode("text", {
-          class: "live-btn",
-          onClick: $setup.goLivePhoto
-        }, "拍照直播")
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode(
+            "text",
+            { class: "title" },
+            vue.toDisplayString($setup.title),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("text", {
+            class: "live-btn",
+            onClick: $setup.goLivePhoto
+          }, "拍照直播")
+        ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -14752,6 +14908,7 @@ This will fail in production.`);
     __name: "live-photo",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const id = vue.ref("");
       const uploaded = vue.ref(0);
       const uploading2 = vue.ref(false);
@@ -14793,7 +14950,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { id, uploaded, uploading: uploading2, localPhotos, takePhoto, choosePhoto, doUpload: doUpload2, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, id, uploaded, uploading: uploading2, localPhotos, takePhoto, choosePhoto, doUpload: doUpload2, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get uploadToOSS() {
         return uploadToOSS;
@@ -14805,11 +14962,23 @@ This will fail in production.`);
   function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "live-photo" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "拍照直播")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "拍照直播")
+        ])
       ]),
       vue.createElementVNode("view", { class: "info-bar" }, [
         vue.createElementVNode(
@@ -15066,6 +15235,7 @@ This will fail in production.`);
       initDB();
     },
     onShow() {
+      plus.navigator.setStatusBarStyle("light");
     },
     onHide() {
     }

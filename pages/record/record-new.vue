@@ -1,16 +1,19 @@
 <template>
   <view class="record-new">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <text class="title">操作记录</text>
-      <view class="tabs">
-        <text
-          v-for="(t, i) in tabs"
-          :key="i"
-          class="tab"
-          :class="{ active: current === i }"
-          @click="switchTab(i)"
-        >{{ t }}</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <text class="title">操作记录</text>
+        <view class="tabs">
+          <text
+            v-for="(t, i) in tabs"
+            :key="i"
+            class="tab"
+            :class="{ active: current === i }"
+            @click="switchTab(i)"
+          >{{ t }}</text>
+        </view>
       </view>
     </view>
     <scroll-view scroll-y class="list">
@@ -39,6 +42,9 @@ import { onLoad } from '@dcloudio/uni-app'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { selectSQL, executeSQL } from '@/utils/db'
 import { typeDesc } from '@/utils/stat-types'
+
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统时间/电量栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const gameId = ref('')
 const tabs = ['全部', '得分', '犯规']
@@ -102,11 +108,16 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.nav-status {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 96rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
 }
 .back {
   font-size: 44rpx;

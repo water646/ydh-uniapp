@@ -16,7 +16,12 @@ export default {
     initDB()
     // #endif
   },
-  onShow() {},
+  onShow() {
+    // #ifdef APP-PLUS
+    // 状态栏文字统一白色（背景由各页面状态栏占位 #2c2c2c 控制，全局深灰不受跳转影响）
+    plus.navigator.setStatusBarStyle('light')
+    // #endif
+  },
   onHide() {}
 }
 </script>

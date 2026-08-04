@@ -1,10 +1,13 @@
 <template>
   <view class="member-data">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <view class="radio-group">
-        <text class="radio" :class="{ on: team === 'host' }" @click="switchTeam('host')">{{ homeName }}</text>
-        <text class="radio" :class="{ on: team === 'guest' }" @click="switchTeam('guest')">{{ guestName }}</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <view class="radio-group">
+          <text class="radio" :class="{ on: team === 'host' }" @click="switchTeam('host')">{{ homeName }}</text>
+          <text class="radio" :class="{ on: team === 'guest' }" @click="switchTeam('guest')">{{ guestName }}</text>
+        </view>
       </view>
     </view>
     <scroll-view scroll-x class="table-scroll">
@@ -66,6 +69,9 @@ import { onLoad } from '@dcloudio/uni-app'
 import { selectSQL } from '@/utils/db'
 import { aggregateMemberStats } from '@/utils/stat-types'
 
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统状态栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
+
 const gameId = ref('')
 const homeName = ref('主队')
 const guestName = ref('客队')
@@ -120,11 +126,16 @@ function back() {
   background-color: #ffffff;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.nav-status {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 80rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
 }
 .back {
   font-size: 44rpx;

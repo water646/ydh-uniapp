@@ -1,23 +1,26 @@
 <template>
   <view class="foot-operate">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <view class="team-info">
-        <text class="tname">{{ homeName }}</text>
-        <text class="tag foul">犯规{{ hostFoul }}</text>
-      </view>
-      <view class="timer-box">
-        <text class="timer">{{ timerStr }}</text>
-        <view class="timer-btns">
-          <text class="t-btn" @click="toggleTimer">{{ timerRunning ? '暂停' : '开始' }}</text>
-          <text class="t-btn" @click="editTimer">改时间</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <view class="team-info">
+          <text class="tname">{{ homeName }}</text>
+          <text class="tag foul">犯规{{ hostFoul }}</text>
         </view>
+        <view class="timer-box">
+          <text class="timer">{{ timerStr }}</text>
+          <view class="timer-btns">
+            <text class="t-btn" @click="toggleTimer">{{ timerRunning ? '暂停' : '开始' }}</text>
+            <text class="t-btn" @click="editTimer">改时间</text>
+          </view>
+        </view>
+        <view class="team-info">
+          <text class="tag foul">犯规{{ guestFoul }}</text>
+          <text class="tname">{{ guestName }}</text>
+        </view>
+        <battery-view :power="battery" />
       </view>
-      <view class="team-info">
-        <text class="tag foul">犯规{{ guestFoul }}</text>
-        <text class="tname">{{ guestName }}</text>
-      </view>
-      <battery-view :power="battery" />
     </view>
 
     <view class="body">
@@ -111,6 +114,9 @@ import { startUploadQueue, stopUploadQueue, pendingCount } from '@/utils/upload-
 import { cancelData } from '@/api/statistics'
 import { FootActions, scoreOf, isFoul } from '@/utils/stat-types'
 import { msToMMSS } from '@/utils/time'
+
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统状态栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const gameId = ref('')
 const homeName = ref('主队')
@@ -347,11 +353,16 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.nav-status {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 80rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
   color: #ffffff;
 }
 .back {

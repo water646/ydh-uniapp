@@ -476,7 +476,7 @@ function doUpdate() {
   transform: translateX(0);
 }
 .drawer-status {
-  background-color: #ffffff;
+  background-color: #2c2c2c;
 }
 .drawer-header {
   // background-color: #29a871;

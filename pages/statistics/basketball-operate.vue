@@ -2,19 +2,22 @@
   <view class="basket-operate">
     <!-- 顶栏（对应原横屏自定义标题栏） -->
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <view class="team-info">
-        <text class="tname">{{ homeName }}</text>
-        <text class="tag foul">犯规{{ hostFoul }}</text>
-        <text class="tag pause">暂停{{ hostPause }}</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <view class="team-info">
+          <text class="tname">{{ homeName }}</text>
+          <text class="tag foul">犯规{{ hostFoul }}</text>
+          <text class="tag pause">暂停{{ hostPause }}</text>
+        </view>
+        <view class="section-btn" @click="showSection = true">{{ currentSectionName }}</view>
+        <view class="team-info">
+          <text class="tag pause">暂停{{ guestPause }}</text>
+          <text class="tag foul">犯规{{ guestFoul }}</text>
+          <text class="tname">{{ guestName }}</text>
+        </view>
+        <battery-view :power="battery" />
       </view>
-      <view class="section-btn" @click="showSection = true">{{ currentSectionName }}</view>
-      <view class="team-info">
-        <text class="tag pause">暂停{{ guestPause }}</text>
-        <text class="tag foul">犯规{{ guestFoul }}</text>
-        <text class="tname">{{ guestName }}</text>
-      </view>
-      <battery-view :power="battery" />
     </view>
 
     <!-- 三栏 -->
@@ -114,6 +117,9 @@ import { queryList, insertOrReplace, executeSQL, selectSQL } from '@/utils/db'
 import { startUploadQueue, stopUploadQueue, pendingCount } from '@/utils/upload-queue'
 import { cancelData } from '@/api/statistics'
 import { BasketActions, BasketType, scoreOf, isFoul } from '@/utils/stat-types'
+
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统状态栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const gameId = ref('')
 const homeName = ref('主队')
@@ -355,11 +361,16 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.nav-status {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 80rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
   color: #ffffff;
 }
 .back {
