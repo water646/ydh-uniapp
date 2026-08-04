@@ -24,13 +24,16 @@
       </view>
 
       <!-- 实时比分浮层（降级方案：本地显示，不烧进推流画面） -->
-      <view v-if="showScore" class="score-overlay">
-        <text class="s-team">{{ homeName }}</text>
-        <text class="s-score">{{ hostScore }}</text>
-        <text class="s-colon">:</text>
-        <text class="s-score">{{ guestScore }}</text>
-        <text class="s-team">{{ guestName }}</text>
-      </view>
+	  <view v-if="showScore" class="score-overlay">
+		<image v-if="homeLogo" class="s-logo" mode="aspectFill" :src="homeLogo"></image><text class="s-team">{{ homeName }}</text>
+		<text class="s-score">{{ hostScore }}</text>
+		<text class="s-colon">:</text>
+		<text class="s-score">{{ guestScore }}</text>
+		<text class="s-team">{{ guestName }}</text><image v-if="guestLogo" class="s-logo" mode="aspectFill" :src="guestLogo"></image>
+	  </view>
+	  <image class="top-logo" mode="left" src="/static/watermark.png"></image>
+
+		  
       <text v-if="section" class="s-section">{{ section }}</text>
 
       <view class="bottom">
@@ -65,6 +68,8 @@ const publishUrl = ref('')
 const gameId = ref('')
 const homeName = ref('主队')
 const guestName = ref('客队')
+const homeLogo = ref('')
+const guestLogo = ref('')
 const hostScore = ref(0)
 const guestScore = ref(0)
 const section = ref('')
@@ -112,8 +117,10 @@ onLoad((opt) => {
   gameId.value = opt.gameId || ''
   homeName.value = opt.name || '直播'
   console.log('[push] publishUrl=', publishUrl.value, 'gameId=', gameId.value)
+  console.log(opt);
   loadGameDetail()
   connectScore()
+  
 })
 
 /** 申请相机/麦克风权限（Android 运行时权限） */
@@ -178,6 +185,8 @@ function loadGameDetail() {
     const g = page.game || page
     if (g.hostTeamName) homeName.value = g.hostTeamName
     if (g.guestTeamName) guestName.value = g.guestTeamName
+    if (g.hostTeamLogo) homeLogo.value = g.hostTeamLogo
+    if (g.guestTeamLogo) guestLogo.value = g.guestTeamLogo
     hostScore.value = g.hostTeamScore || 0
     guestScore.value = g.guestTeamScore || 0
   })
@@ -340,6 +349,12 @@ function back() {
   font-size: 32rpx;
   color: #ffffff;
 }
+.s-logo {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  margin: 0 6rpx;
+}
 .s-section {
   position: absolute;
   top: 100rpx;
@@ -373,4 +388,14 @@ function back() {
 .btn.stop {
   background-color: #ff2d2d;
 }
+.top-logo{
+	width: 420rpx;
+	height:150rpx;
+	align-self: flex-end;
+	position: relative;
+	top:20rpx;
+	right:20rpx;
+	transform: scale(0.5);
+}
+
 </style>

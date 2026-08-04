@@ -471,10 +471,12 @@ to {
   transform: translateY(-24%);
 }
 .drawer-item[data-v-d311227b] {
-  padding: 0.9375rem 1.25rem;
+  padding: 0.9375rem 0.9375rem;
   font-size: 0.875rem;
   color: #333333;
   border-bottom: 0.03125rem solid #f2f2f2;
+  display: flex;
+  align-items: center;
 }
 .drawer-item.exit[data-v-d311227b] {
   color: #ff2d2d;
@@ -711,4 +713,24 @@ to {
   text-align: center;
   color: #999999;
   font-size: 0.875rem;
+}
+.search-icon[data-v-d311227b] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.625rem;
+}
+.bottom-line[data-v-d311227b] {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+}
+.exit-icon[data-v-d311227b] {
+  width: 1.25rem;
+  height: 1.40625rem;
+  margin: 0 0 0 0.9375rem;
+}
+.exit-login[data-v-d311227b] {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3125rem;
 }

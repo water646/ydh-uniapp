@@ -2191,7 +2191,7 @@ This will fail in production.`);
       }
     }
   });
-  const _imports_0$2 = "/static/loading_bg.png";
+  const _imports_0$3 = "/static/loading_bg.png";
   const _export_sfc = (sfc, props2) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props2) {
@@ -2247,7 +2247,7 @@ This will fail in production.`);
     return vue.openBlock(), vue.createElementBlock("view", { class: "loading" }, [
       vue.createElementVNode("image", {
         class: "bg",
-        src: _imports_0$2,
+        src: _imports_0$3,
         mode: "aspectFill"
       }),
       vue.createElementVNode("view", { class: "brand" }, "智能技术台")
@@ -3103,7 +3103,7 @@ This will fail in production.`);
   function checkPhone(phone) {
     return /^1[3-9]\d{9}$/.test(phone);
   }
-  const _imports_0$1 = "/static/advertdown.png";
+  const _imports_0$2 = "/static/advertdown.png";
   const _sfc_main$H = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -3268,7 +3268,7 @@ This will fail in production.`);
       ]),
       vue.createElementVNode("image", {
         class: "bottom-logo",
-        src: _imports_0$1,
+        src: _imports_0$2,
         mode: "widthFix"
       })
     ]);
@@ -7039,12 +7039,15 @@ This will fail in production.`);
     const s4 = () => Math.floor((1 + Math.random()) * 65536).toString(16).substring(1);
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
+  const DEFAULT_VERSION = "2.8.4";
   const useAppStore = defineStore("app", {
     state: () => ({
       device: "",
       // 对应 Global.device
       version: "",
-      // 对应 Global.version
+      // versionCode，版本更新检查用
+      versionName: "",
+      // 版本名（如 2.8.4），界面显示用
       sport: SportType.BASKETBALL,
       // 篮球/足球切换（对应 EventBus Boolean true=篮球）
       companies: []
@@ -7054,9 +7057,11 @@ This will fail in production.`);
       init() {
         this.device = getDeviceId();
         try {
-          this.version = String(plus.runtime.versionCode || "");
+          this.version = String(plus.runtime.versionCode || DEFAULT_VERSION);
+          this.versionName = String(plus.runtime.version || DEFAULT_VERSION);
         } catch (e) {
-          this.version = "";
+          this.version = DEFAULT_VERSION;
+          this.versionName = DEFAULT_VERSION;
         }
       },
       setSport(sport) {
@@ -7268,6 +7273,8 @@ This will fail in production.`);
       ])
     ).then(() => ({ gameId, homeName, guestName }));
   }
+  const _imports_0$1 = "/static/mipmap-xhdpi/lianxi.png";
+  const _imports_1 = "/static/mipmap-xhdpi/tuichu.png";
   const _sfc_main$z = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -7306,7 +7313,7 @@ This will fail in production.`);
         loadUserInfo();
         loadList();
         checkUpdate();
-        appVersion.value = appStore.version;
+        appVersion.value = appStore.versionName || appStore.version;
       });
       function loadUserInfo() {
         getUserInfo().then((res) => {
@@ -7371,9 +7378,9 @@ This will fail in production.`);
           return;
         showStatusSheet.value = false;
         const params2 = { gameId: g.id, status: s.value };
-        formatAppLog("log", "at pages/main/index.vue:300", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
+        formatAppLog("log", "at pages/main/index.vue:316", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
         gameStatus(params2, appStore.sport).then((res) => {
-          formatAppLog("log", "at pages/main/index.vue:302", "[gameStatus] 响应", res);
+          formatAppLog("log", "at pages/main/index.vue:318", "[gameStatus] 响应", res);
           if (res && res.code === 1) {
             uni.showToast({ title: `已修改为「${s.desc}」`, icon: "none" });
             g.status = { value: s.value, desc: s.desc };
@@ -7381,7 +7388,7 @@ This will fail in production.`);
             uni.showToast({ title: res && res.msg || "修改失败", icon: "none" });
           }
         }).catch((err) => {
-          formatAppLog("error", "at pages/main/index.vue:311", "[gameStatus] 失败", err);
+          formatAppLog("error", "at pages/main/index.vue:327", "[gameStatus] 失败", err);
           uni.showToast({ title: err && err.msg || "修改失败", icon: "none" });
         });
       }
@@ -7545,26 +7552,52 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "drawer-item",
             onClick: _cache[2] || (_cache[2] = ($event) => $setup.practice("basketball"))
-          }, "篮球练习模式"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "search-icon",
+              src: _imports_0$1
+            }),
+            vue.createElementVNode("p", null, "篮球练习模式")
+          ]),
           vue.createElementVNode("view", {
             class: "drawer-item",
             onClick: _cache[3] || (_cache[3] = ($event) => $setup.practice("football"))
-          }, "足球练习模式"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "search-icon",
+              src: _imports_0$1
+            }),
+            vue.createElementVNode("p", null, "足球练习模式")
+          ]),
           vue.createElementVNode("view", {
             class: "drawer-item",
             onClick: $setup.goWeekOuts
-          }, "优肯周赛况"),
-          vue.createElementVNode("view", {
-            class: "drawer-item exit",
-            onClick: $setup.logout
-          }, "退出登录"),
-          vue.createElementVNode(
-            "view",
-            { class: "version" },
-            "版本 " + vue.toDisplayString($setup.appVersion),
-            1
-            /* TEXT */
-          )
+          }, [
+            vue.createElementVNode("image", {
+              class: "search-icon",
+              src: _imports_0$1
+            }),
+            vue.createElementVNode("p", null, "优肯周赛况")
+          ]),
+          vue.createElementVNode("view", { class: "bottom-line" }, [
+            vue.createElementVNode("view", {
+              class: "exit-login",
+              onClick: $setup.logout
+            }, [
+              vue.createElementVNode("image", {
+                class: "exit-icon",
+                src: _imports_1
+              }),
+              vue.createElementVNode("view", { style: { "margin-left": "25rpx", "font-size": "27rpx" } }, "退出登录")
+            ]),
+            vue.createElementVNode(
+              "view",
+              { class: "version" },
+              "版本 " + vue.toDisplayString($setup.appVersion),
+              1
+              /* TEXT */
+            )
+          ])
         ],
         2
         /* CLASS */

@@ -335,7 +335,8 @@ function request(options) {
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "100rpx", "left": "20rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "12rpx", "paddingRight": "20rpx", "paddingBottom": "12rpx", "paddingLeft": "20rpx", "borderRadius": "8rpx", "marginLeft": "40rpx" } }, "s-team": { "": { "fontSize": "26rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-score": { "": { "fontSize": "40rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-colon": { "": { "fontSize": "32rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "100rpx", "right": "20rpx", "fontSize": "24rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "8rpx", "paddingRight": "16rpx", "paddingBottom": "8rpx", "paddingLeft": "16rpx", "borderRadius": "8rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "40rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
+const _imports_0 = "/static/watermark.png";
+const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "100rpx", "left": "20rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "12rpx", "paddingRight": "20rpx", "paddingBottom": "12rpx", "paddingLeft": "20rpx", "borderRadius": "8rpx", "marginLeft": "40rpx" } }, "s-team": { "": { "fontSize": "26rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-score": { "": { "fontSize": "40rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-colon": { "": { "fontSize": "32rpx", "color": "#ffffff" } }, "s-logo": { "": { "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "marginTop": 0, "marginRight": "6rpx", "marginBottom": 0, "marginLeft": "6rpx" } }, "s-section": { "": { "position": "absolute", "top": "100rpx", "right": "20rpx", "fontSize": "24rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "8rpx", "paddingRight": "16rpx", "paddingBottom": "8rpx", "paddingLeft": "16rpx", "borderRadius": "8rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "40rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } } };
 const _sfc_main = {
   __name: "push",
   setup(__props, { expose: __expose }) {
@@ -344,6 +345,8 @@ const _sfc_main = {
     const gameId = ref("");
     const homeName = ref("主队");
     const guestName = ref("客队");
+    const homeLogo = ref("");
+    const guestLogo = ref("");
     const hostScore = ref(0);
     const guestScore = ref(0);
     const section = ref("");
@@ -379,7 +382,8 @@ const _sfc_main = {
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:114", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:119", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:120", opt);
       loadGameDetail();
       connectScore();
     });
@@ -399,13 +403,13 @@ const _sfc_main = {
     function startPreview() {
       const ctx = getPusherCtx();
       if (!ctx) {
-        formatAppLog("log", "at pages/live/push.nvue:143", "[pusher] createLivePusherContext 失败，组件未挂载");
+        formatAppLog("log", "at pages/live/push.nvue:150", "[pusher] createLivePusherContext 失败，组件未挂载");
         return;
       }
       ctx.startPreview({
-        success: () => formatAppLog("log", "at pages/live/push.nvue:147", "[pusher] 预览已开启"),
+        success: () => formatAppLog("log", "at pages/live/push.nvue:154", "[pusher] 预览已开启"),
         fail: (err) => {
-          formatAppLog("log", "at pages/live/push.nvue:149", "[pusher] 预览开启失败", err);
+          formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] 预览开启失败", err);
           uni.showToast({ title: "摄像头开启失败，请检查权限", icon: "none" });
         }
       });
@@ -436,6 +440,10 @@ const _sfc_main = {
           homeName.value = g.hostTeamName;
         if (g.guestTeamName)
           guestName.value = g.guestTeamName;
+        if (g.hostTeamLogo)
+          homeLogo.value = g.hostTeamLogo;
+        if (g.guestTeamLogo)
+          guestLogo.value = g.guestTeamLogo;
         hostScore.value = g.hostTeamScore || 0;
         guestScore.value = g.guestTeamScore || 0;
       });
@@ -501,10 +509,10 @@ const _sfc_main = {
       showScore.value = !showScore.value;
     }
     function onState(e) {
-      formatAppLog("log", "at pages/live/push.nvue:249", "[pusher] state", e.detail);
+      formatAppLog("log", "at pages/live/push.nvue:258", "[pusher] state", e.detail);
     }
     function onError(e) {
-      formatAppLog("log", "at pages/live/push.nvue:253", "[pusher] error", e.detail);
+      formatAppLog("log", "at pages/live/push.nvue:262", "[pusher] error", e.detail);
       uni.showToast({ title: "推流错误", icon: "none" });
     }
     function onCompose() {
@@ -515,7 +523,7 @@ const _sfc_main = {
     function back() {
       uni.navigateBack();
     }
-    const __returned__ = { publishUrl, gameId, homeName, guestName, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
+    const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
       return pusherCtx;
     }, set pusherCtx(v) {
       pusherCtx = v;
@@ -588,6 +596,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             key: 0,
             class: "score-overlay"
           }, [
+            $setup.homeLogo ? (openBlock(), createElementBlock("u-image", {
+              key: 0,
+              class: "s-logo",
+              mode: "aspectFill",
+              src: $setup.homeLogo
+            }, null, 8, ["src"])) : createCommentVNode("v-if", true),
             createElementVNode(
               "u-text",
               { class: "s-team" },
@@ -616,8 +630,19 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               toDisplayString($setup.guestName),
               1
               /* TEXT */
-            )
+            ),
+            $setup.guestLogo ? (openBlock(), createElementBlock("u-image", {
+              key: 1,
+              class: "s-logo",
+              mode: "aspectFill",
+              src: $setup.guestLogo
+            }, null, 8, ["src"])) : createCommentVNode("v-if", true)
           ])) : createCommentVNode("v-if", true),
+          createElementVNode("u-image", {
+            class: "top-logo",
+            mode: "left",
+            src: _imports_0
+          }),
           $setup.section ? (openBlock(), createElementBlock(
             "u-text",
             {

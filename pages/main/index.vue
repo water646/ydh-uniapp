@@ -21,11 +21,27 @@
         <image class="avatar-lg" :src="userInfo && userInfo.avatar" mode="aspectFill" />
         <text class="nick">{{ (userInfo && userInfo.nickName) || '未登录' }}</text>
       </view>
-      <view class="drawer-item" @click="practice('basketball')">篮球练习模式</view>
-      <view class="drawer-item" @click="practice('football')">足球练习模式</view>
-      <view class="drawer-item" @click="goWeekOuts">优肯周赛况</view>
-      <view class="drawer-item exit" @click="logout">退出登录</view>
-      <view class="version">版本 {{ appVersion }}</view>
+      <view class="drawer-item" @click="practice('basketball')">
+		  <image class="search-icon" src="/static/mipmap-xhdpi/lianxi.png"/>
+		  <p>篮球练习模式</p>
+	  </view>
+      <view class="drawer-item" @click="practice('football')">
+		  <image class="search-icon" src="/static/mipmap-xhdpi/lianxi.png"/>
+		  <p>足球练习模式</p>
+	  </view>
+      <view class="drawer-item" @click="goWeekOuts">
+		  <image class="search-icon" src="/static/mipmap-xhdpi/lianxi.png"/>
+		  <p>优肯周赛况</p>
+	  </view>
+      <!-- <view class="drawer-item exit" @click="logout">退出登录</view> -->
+	  <view class="bottom-line">
+		  <view class="exit-login" @click="logout">
+			  <image class="exit-icon" src="/static/mipmap-xhdpi/tuichu.png"></image>
+			  <view style="margin-left: 25rpx; font-size: 27rpx;">退出登录</view>
+		  </view>
+		  <view class="version">版本 {{ appVersion }}</view>
+	  </view>
+      
     </view>
 
     <!-- 篮球/足球切换（对应右侧悬浮钮 + EventBus Boolean） -->
@@ -207,7 +223,7 @@ onShow(() => {
   loadUserInfo()
   loadList()
   checkUpdate()
-  appVersion.value = appStore.version
+  appVersion.value = appStore.versionName || appStore.version
 })
 
 function loadUserInfo() {
@@ -478,10 +494,12 @@ function doUpdate() {
   transform: translateY(-24%);	
 }
 .drawer-item {
-  padding: 30rpx 40rpx;
+  padding: 30rpx 30rpx;
   font-size: 28rpx;
   color: #333333;
   border-bottom: 1rpx solid #f2f2f2;
+  display: flex;
+  align-items: center;
 }
 .drawer-item.exit {
   color: #ff2d2d;
@@ -720,5 +738,29 @@ function doUpdate() {
   text-align: center;
   color: #999999;
   font-size: 28rpx;
+}
+	
+.search-icon{
+	width: 40rpx;
+	height: 40rpx;
+	margin-right: 20rpx;
+}
+
+.bottom-line{
+	margin-top: auto;
+	display: flex; 
+	justify-content: space-between;
+}
+
+.exit-icon{
+	width: 40rpx;
+	height: 45rpx;
+	margin:0 0 0 30rpx;
+}
+
+.exit-login{
+	display: flex;
+	align-items: center; 
+	margin-bottom: 10rpx;
 }
 </style>

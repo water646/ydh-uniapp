@@ -445,7 +445,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   }
   var getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   var compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "100rpx", "left": "20rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "12rpx", "paddingRight": "20rpx", "paddingBottom": "12rpx", "paddingLeft": "20rpx", "borderRadius": "8rpx", "marginLeft": "40rpx" } }, "s-team": { "": { "fontSize": "26rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-score": { "": { "fontSize": "40rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-colon": { "": { "fontSize": "32rpx", "color": "#ffffff" } }, "s-section": { "": { "position": "absolute", "top": "100rpx", "right": "20rpx", "fontSize": "24rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "8rpx", "paddingRight": "16rpx", "paddingBottom": "8rpx", "paddingLeft": "16rpx", "borderRadius": "8rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "40rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } } };
+  var _imports_0 = "/static/watermark.png";
+  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "100rpx", "left": "20rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "12rpx", "paddingRight": "20rpx", "paddingBottom": "12rpx", "paddingLeft": "20rpx", "borderRadius": "8rpx", "marginLeft": "40rpx" } }, "s-team": { "": { "fontSize": "26rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-score": { "": { "fontSize": "40rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-colon": { "": { "fontSize": "32rpx", "color": "#ffffff" } }, "s-logo": { "": { "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "marginTop": 0, "marginRight": "6rpx", "marginBottom": 0, "marginLeft": "6rpx" } }, "s-section": { "": { "position": "absolute", "top": "100rpx", "right": "20rpx", "fontSize": "24rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "8rpx", "paddingRight": "16rpx", "paddingBottom": "8rpx", "paddingLeft": "16rpx", "borderRadius": "8rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "40rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } } };
   var _sfc_main = {
     __name: "push",
     setup(__props, { expose: __expose }) {
@@ -454,6 +455,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       const gameId = (0, import_vue2.ref)("");
       const homeName = (0, import_vue2.ref)("\u4E3B\u961F");
       const guestName = (0, import_vue2.ref)("\u5BA2\u961F");
+      const homeLogo = (0, import_vue2.ref)("");
+      const guestLogo = (0, import_vue2.ref)("");
       const hostScore = (0, import_vue2.ref)(0);
       const guestScore = (0, import_vue2.ref)(0);
       const section = (0, import_vue2.ref)("");
@@ -489,7 +492,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:114", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:119", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:120", opt);
         loadGameDetail();
         connectScore();
       });
@@ -509,13 +513,13 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       function startPreview() {
         const ctx = getPusherCtx();
         if (!ctx) {
-          formatAppLog("log", "at pages/live/push.nvue:143", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
+          formatAppLog("log", "at pages/live/push.nvue:150", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
           return;
         }
         ctx.startPreview({
-          success: () => formatAppLog("log", "at pages/live/push.nvue:147", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
+          success: () => formatAppLog("log", "at pages/live/push.nvue:154", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
           fail: (err) => {
-            formatAppLog("log", "at pages/live/push.nvue:149", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
+            formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
             uni.showToast({ title: "\u6444\u50CF\u5934\u5F00\u542F\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u6743\u9650", icon: "none" });
           }
         });
@@ -546,6 +550,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             homeName.value = g.hostTeamName;
           if (g.guestTeamName)
             guestName.value = g.guestTeamName;
+          if (g.hostTeamLogo)
+            homeLogo.value = g.hostTeamLogo;
+          if (g.guestTeamLogo)
+            guestLogo.value = g.guestTeamLogo;
           hostScore.value = g.hostTeamScore || 0;
           guestScore.value = g.guestTeamScore || 0;
         });
@@ -611,10 +619,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         showScore.value = !showScore.value;
       }
       function onState(e) {
-        formatAppLog("log", "at pages/live/push.nvue:249", "[pusher] state", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:258", "[pusher] state", e.detail);
       }
       function onError(e) {
-        formatAppLog("log", "at pages/live/push.nvue:253", "[pusher] error", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:262", "[pusher] error", e.detail);
         uni.showToast({ title: "\u63A8\u6D41\u9519\u8BEF", icon: "none" });
       }
       function onCompose() {
@@ -625,7 +633,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { publishUrl, gameId, homeName, guestName, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
+      const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
         return pusherCtx;
       }, set pusherCtx(v) {
         pusherCtx = v;
@@ -698,6 +706,12 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
               key: 0,
               class: "score-overlay"
             }, [
+              $setup.homeLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+                key: 0,
+                class: "s-logo",
+                mode: "aspectFill",
+                src: $setup.homeLogo
+              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
               (0, import_vue2.createElementVNode)(
                 "u-text",
                 { class: "s-team" },
@@ -726,8 +740,19 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 (0, import_vue2.toDisplayString)($setup.guestName),
                 1
                 /* TEXT */
-              )
+              ),
+              $setup.guestLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+                key: 1,
+                class: "s-logo",
+                mode: "aspectFill",
+                src: $setup.guestLogo
+              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true)
             ])) : (0, import_vue2.createCommentVNode)("v-if", true),
+            (0, import_vue2.createElementVNode)("u-image", {
+              class: "top-logo",
+              mode: "left",
+              src: _imports_0
+            }),
             $setup.section ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)(
               "u-text",
               {
