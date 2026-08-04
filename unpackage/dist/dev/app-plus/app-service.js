@@ -7381,9 +7381,9 @@ This will fail in production.`);
           return;
         showStatusSheet.value = false;
         const params2 = { gameId: g.id, status: s.value };
-        formatAppLog("log", "at pages/main/index.vue:323", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
+        formatAppLog("log", "at pages/main/index.vue:325", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
         gameStatus(params2, appStore.sport).then((res) => {
-          formatAppLog("log", "at pages/main/index.vue:325", "[gameStatus] 响应", res);
+          formatAppLog("log", "at pages/main/index.vue:327", "[gameStatus] 响应", res);
           if (res && res.code === 1) {
             uni.showToast({ title: `已修改为「${s.desc}」`, icon: "none" });
             g.status = { value: s.value, desc: s.desc };
@@ -7393,7 +7393,7 @@ This will fail in production.`);
             uni.showToast({ title: res && res.msg || "修改失败", icon: "none" });
           }
         }).catch((err) => {
-          formatAppLog("error", "at pages/main/index.vue:337", "[gameStatus] 失败", err);
+          formatAppLog("error", "at pages/main/index.vue:339", "[gameStatus] 失败", err);
           uni.showToast({ title: err && err.msg || "修改失败", icon: "none" });
         });
       }
@@ -7618,16 +7618,36 @@ This will fail in production.`);
         /* CLASS */
       ),
       vue.createElementVNode("view", { class: "sport-switch" }, [
-        vue.createElementVNode("image", {
-          class: vue.normalizeClass(["sport-item", { active: $setup.appStore.sport === "basketball" }]),
-          src: $setup.ballIcon("basketball", $setup.appStore.sport === "basketball"),
-          onClick: _cache[4] || (_cache[4] = ($event) => $setup.selectSport("basketball"))
-        }, null, 10, ["src"]),
-        vue.createElementVNode("image", {
-          class: vue.normalizeClass(["sport-item", { active: $setup.appStore.sport === "football" }]),
-          src: $setup.ballIcon("football", $setup.appStore.sport === "football"),
-          onClick: _cache[5] || (_cache[5] = ($event) => $setup.selectSport("football"))
-        }, null, 10, ["src"])
+        vue.createElementVNode(
+          "view",
+          {
+            class: vue.normalizeClass(["sport-item", { active: $setup.appStore.sport === "basketball" }]),
+            onClick: _cache[4] || (_cache[4] = ($event) => $setup.selectSport("basketball"))
+          },
+          [
+            vue.createElementVNode("image", {
+              class: "sport-icon",
+              src: $setup.appStore.sport === "basketball" ? "/static/mipmap-xxhdpi/basket_c.png" : "/static/mipmap-xxhdpi/basket_w.png"
+            }, null, 8, ["src"])
+          ],
+          2
+          /* CLASS */
+        ),
+        vue.createElementVNode(
+          "view",
+          {
+            class: vue.normalizeClass(["sport-item", { active: $setup.appStore.sport === "football" }]),
+            onClick: _cache[5] || (_cache[5] = ($event) => $setup.selectSport("football"))
+          },
+          [
+            vue.createElementVNode("image", {
+              class: "sport-icon",
+              src: $setup.appStore.sport === "football" ? "/static/mipmap-xxhdpi/football_c.png" : "/static/mipmap-xxhdpi/football_w.png"
+            }, null, 8, ["src"])
+          ],
+          2
+          /* CLASS */
+        )
       ]),
       vue.createElementVNode("view", { class: "tabs" }, [
         vue.createElementVNode(

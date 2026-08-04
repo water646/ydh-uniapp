@@ -96,6 +96,7 @@ function back() {
   height: 88rpx;
   display: flex;
   align-items: center;
+  // justify-content: center;
   padding: 0 20rpx;
 }
 .back {
@@ -107,7 +108,10 @@ function back() {
   color: #ffffff;
   font-size: 30rpx;
   flex: 1;
+  margin-left: -50rpx;
+  // justify-self: center;
   text-align: center;
+  
 }
 .list {
   flex: 1;

@@ -47,18 +47,20 @@
 
     <!-- 篮球/足球切换（对应右侧悬浮钮 + EventBus Boolean） -->
     <view class="sport-switch">
-      <image
+      <view
         class="sport-item"
         :class="{ active: appStore.sport === 'basketball' }"
-        :src="ballIcon('basketball', appStore.sport === 'basketball')"
         @click="selectSport('basketball')"
-      />
-      <image
+      >
+        <image class="sport-icon" :src="appStore.sport === 'basketball' ? '/static/mipmap-xxhdpi/basket_c.png' : '/static/mipmap-xxhdpi/basket_w.png'" />
+      </view>
+      <view
         class="sport-item"
         :class="{ active: appStore.sport === 'football' }"
-        :src="ballIcon('football', appStore.sport === 'football')"
         @click="selectSport('football')"
-      />
+      >
+        <image class="sport-icon" :src="appStore.sport === 'football' ? '/static/mipmap-xxhdpi/football_c.png' : '/static/mipmap-xxhdpi/football_w.png'" />
+      </view>
     </view>
 
     <!-- 未结束/已结束 Tab -->
@@ -524,28 +526,33 @@ function doUpdate() {
   font-size: 24rpx;
   color: #999999;
 }
-/* 篮球/足球切换（两图标并排，选中绿色） */
+/* 篮球/足球切换（两圆形上下排列，选中绿色） */
 .sport-switch {
   position: fixed;
   right: 30rpx;
   bottom: 200rpx;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 50rpx;
-  padding: 10rpx 8rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  gap: 24rpx;
   z-index: 10;
 }
 .sport-item {
-  width: 56rpx;
-  height: 56rpx;
-  margin: 0 8rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .sport-item.active {
   background-color: #e8f7f0;
-  border-radius: 50%;
+}
+.sport-icon {
+  width: 56rpx;
+  height: 56rpx;
 }
 .tabs {
   display: flex;
