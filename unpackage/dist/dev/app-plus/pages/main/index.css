@@ -451,6 +451,9 @@ to {
 .drawer.open[data-v-d311227b] {
   transform: translateX(0);
 }
+.drawer-status[data-v-d311227b] {
+  background-color: #ffffff;
+}
 .drawer-header[data-v-d311227b] {
   padding: 1.875rem 1.25rem;
   display: flex;

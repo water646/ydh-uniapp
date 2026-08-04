@@ -7284,6 +7284,7 @@ This will fail in production.`);
       const useMock = config$1.useMock;
       const userInfo2 = vue.ref(null);
       const appVersion = vue.ref("");
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const drawer = vue.ref(false);
       const tab = vue.ref("no_end");
       const loading = vue.ref(false);
@@ -7378,9 +7379,9 @@ This will fail in production.`);
           return;
         showStatusSheet.value = false;
         const params2 = { gameId: g.id, status: s.value };
-        formatAppLog("log", "at pages/main/index.vue:316", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
+        formatAppLog("log", "at pages/main/index.vue:319", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
         gameStatus(params2, appStore.sport).then((res) => {
-          formatAppLog("log", "at pages/main/index.vue:318", "[gameStatus] 响应", res);
+          formatAppLog("log", "at pages/main/index.vue:321", "[gameStatus] 响应", res);
           if (res && res.code === 1) {
             uni.showToast({ title: `已修改为「${s.desc}」`, icon: "none" });
             g.status = { value: s.value, desc: s.desc };
@@ -7388,7 +7389,7 @@ This will fail in production.`);
             uni.showToast({ title: res && res.msg || "修改失败", icon: "none" });
           }
         }).catch((err) => {
-          formatAppLog("error", "at pages/main/index.vue:327", "[gameStatus] 失败", err);
+          formatAppLog("error", "at pages/main/index.vue:330", "[gameStatus] 失败", err);
           uni.showToast({ title: err && err.msg || "修改失败", icon: "none" });
         });
       }
@@ -7465,7 +7466,7 @@ This will fail in production.`);
         );
         dtask.start();
       }
-      const __returned__ = { userStore, appStore, useMock, userInfo: userInfo2, appVersion, drawer, tab, loading, refreshing, rawList, showUpdate, versionInfo, showStatusSheet, currentGame, statusOptions, groups, loadUserInfo, loadList, switchTab, toggleSport, selectSport, ballIcon, onRefresh, statusText, goMatchSet, onStatusSelect, goLive, goPhoto, practice, goWeekOuts, logout, checkUpdate, doUpdate, ref: vue.ref, computed: vue.computed, get onShow() {
+      const __returned__ = { userStore, appStore, useMock, userInfo: userInfo2, appVersion, statusBarHeight, drawer, tab, loading, refreshing, rawList, showUpdate, versionInfo, showStatusSheet, currentGame, statusOptions, groups, loadUserInfo, loadList, switchTab, toggleSport, selectSport, ballIcon, onRefresh, statusText, goMatchSet, onStatusSelect, goLive, goPhoto, practice, goWeekOuts, logout, checkUpdate, doUpdate, ref: vue.ref, computed: vue.computed, get onShow() {
         return onShow;
       }, customNav, emptyLayout, get getMatchList() {
         return getMatchList;
@@ -7535,6 +7536,16 @@ This will fail in production.`);
           class: vue.normalizeClass(["drawer", { open: $setup.drawer }])
         },
         [
+          vue.createElementVNode(
+            "view",
+            {
+              class: "drawer-status",
+              style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+            },
+            null,
+            4
+            /* STYLE */
+          ),
           vue.createElementVNode("view", { class: "drawer-header" }, [
             vue.createElementVNode("image", {
               class: "avatar-lg",
@@ -14288,13 +14299,14 @@ This will fail in production.`);
     __name: "multiple",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
       const list = vue.ref([]);
       const loading = vue.ref(false);
       const refreshing = vue.ref(false);
       const liveType = vue.ref("V2");
       const showAdd = vue.ref(false);
-      const form = vue.reactive({ livename: "", event: "", channel: "" });
+      const form = vue.reactive({ livename: "" });
       onLoad((opt) => {
         gameId.value = opt.gameId || "";
         liveType.value = uni.getStorageSync("live_type_" + gameId.value) || "V2";
@@ -14325,15 +14337,11 @@ This will fail in production.`);
         }
         addGame({
           gameId: gameId.value,
-          livename: form.livename,
-          event: form.event,
-          channel: form.channel
+          livename: form.livename
         }).then((res) => {
           if (res.code === 1) {
             showAdd.value = false;
             form.livename = "";
-            form.event = "";
-            form.channel = "";
             loadList();
           } else {
             uni.showToast({ title: res.msg || "添加失败", icon: "none" });
@@ -14349,7 +14357,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { gameId, list, loading, refreshing, liveType, showAdd, form, loadList, onRefresh, setType, onAdd, goPush, back, ref: vue.ref, reactive: vue.reactive, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, list, loading, refreshing, liveType, showAdd, form, loadList, onRefresh, setType, onAdd, goPush, back, ref: vue.ref, reactive: vue.reactive, get onLoad() {
         return onLoad;
       }, emptyLayout, get getLiveGameList() {
         return getLiveGameList;
@@ -14364,15 +14372,27 @@ This will fail in production.`);
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "live-multiple" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "直播"),
-        vue.createElementVNode("text", {
-          class: "add",
-          onClick: _cache[0] || (_cache[0] = ($event) => $setup.showAdd = true)
-        }, "+ 添加")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "直播"),
+          vue.createElementVNode("text", {
+            class: "add",
+            onClick: _cache[0] || (_cache[0] = ($event) => $setup.showAdd = true)
+          }, "+ 添加")
+        ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -14435,7 +14455,7 @@ This will fail in production.`);
         show: $setup.showAdd,
         mode: "center",
         round: 20,
-        onClose: _cache[7] || (_cache[7] = ($event) => $setup.showAdd = false)
+        onClose: _cache[5] || (_cache[5] = ($event) => $setup.showAdd = false)
       }, {
         default: vue.withCtx(() => [
           vue.createElementVNode("view", { class: "add-dialog" }, [
@@ -14453,36 +14473,10 @@ This will fail in production.`);
             ), [
               [vue.vModelText, $setup.form.livename]
             ]),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.form.event = $event),
-                class: "input",
-                placeholder: "事件"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.event]
-            ]),
-            vue.withDirectives(vue.createElementVNode(
-              "input",
-              {
-                "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => $setup.form.channel = $event),
-                class: "input",
-                placeholder: "频道"
-              },
-              null,
-              512
-              /* NEED_PATCH */
-            ), [
-              [vue.vModelText, $setup.form.channel]
-            ]),
             vue.createElementVNode("view", { class: "btns" }, [
               vue.createElementVNode("view", {
                 class: "btn cancel",
-                onClick: _cache[6] || (_cache[6] = ($event) => $setup.showAdd = false)
+                onClick: _cache[4] || (_cache[4] = ($event) => $setup.showAdd = false)
               }, "取消"),
               vue.createElementVNode("view", {
                 class: "btn confirm",
@@ -14503,6 +14497,7 @@ This will fail in production.`);
     __name: "photo",
     setup(__props, { expose: __expose }) {
       __expose();
+      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const list = vue.ref([]);
       const pageNo = vue.ref(1);
       const hasMore = vue.ref(true);
@@ -14542,7 +14537,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { list, pageNo, hasMore, loading, load, onLoadMore, goUpload, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, list, pageNo, hasMore, loading, load, onLoadMore, goUpload, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get getPhotoActivity() {
         return getPhotoActivity;
@@ -14554,11 +14549,23 @@ This will fail in production.`);
   function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "photo" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode("view", {
-          class: "back",
-          onClick: $setup.back
-        }, "‹"),
-        vue.createElementVNode("text", { class: "title" }, "活动列表")
+        vue.createElementVNode(
+          "view",
+          {
+            class: "nav-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "top-bar-inner" }, [
+          vue.createElementVNode("view", {
+            class: "back",
+            onClick: $setup.back
+          }, "‹"),
+          vue.createElementVNode("text", { class: "title" }, "活动列表")
+        ])
       ]),
       vue.createElementVNode(
         "scroll-view",

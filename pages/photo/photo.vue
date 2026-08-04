@@ -1,8 +1,11 @@
 <template>
   <view class="photo">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <text class="title">活动列表</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <text class="title">活动列表</text>
+      </view>
     </view>
     <scroll-view scroll-y class="list" @scrolltolower="onLoadMore">
       <view v-for="item in list" :key="item.id" class="act-item" @click="goUpload(item)">
@@ -30,6 +33,9 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { getPhotoActivity } from '@/api/photo'
+
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统时间/电量栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const list = ref([])
 const pageNo = ref(1)
@@ -84,11 +90,13 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 88rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
 }
 .back {
   font-size: 44rpx;

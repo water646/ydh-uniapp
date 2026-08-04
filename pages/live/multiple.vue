@@ -1,9 +1,12 @@
 <template>
   <view class="live-multiple">
     <view class="top-bar">
-      <view class="back" @click="back">‹</view>
-      <text class="title">直播</text>
-      <text class="add" @click="showAdd = true">+ 添加</text>
+      <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="top-bar-inner">
+        <view class="back" @click="back">‹</view>
+        <text class="title">直播</text>
+        <text class="add" @click="showAdd = true">+ 添加</text>
+      </view>
     </view>
 
     <scroll-view
@@ -31,8 +34,6 @@
       <view class="add-dialog">
         <view class="dialog-title">添加直播视角</view>
         <input v-model="form.livename" class="input" placeholder="直播名称" />
-        <input v-model="form.event" class="input" placeholder="事件" />
-        <input v-model="form.channel" class="input" placeholder="频道" />
         <view class="btns">
           <view class="btn cancel" @click="showAdd = false">取消</view>
           <view class="btn confirm" @click="onAdd">确定</view>
@@ -54,13 +55,16 @@ import { onLoad } from '@dcloudio/uni-app'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { getLiveGameList, addGame } from '@/api/live'
 
+// 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统时间/电量栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
+
 const gameId = ref('')
 const list = ref([])
 const loading = ref(false)
 const refreshing = ref(false)
 const liveType = ref('V2')
 const showAdd = ref(false)
-const form = reactive({ livename: '', event: '', channel: '' })
+const form = reactive({ livename: '' })
 
 onLoad((opt) => {
   gameId.value = opt.gameId || ''
@@ -95,15 +99,11 @@ function onAdd() {
   }
   addGame({
     gameId: gameId.value,
-    livename: form.livename,
-    event: form.event,
-    channel: form.channel
+    livename: form.livename
   }).then((res) => {
     if (res.code === 1) {
       showAdd.value = false
       form.livename = ''
-      form.event = ''
-      form.channel = ''
       loadList()
     } else {
       uni.showToast({ title: res.msg || '添加失败', icon: 'none' })
@@ -132,11 +132,13 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
+  background-color: #2c2c2c;
+}
+.top-bar-inner {
   height: 88rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  background-color: #2c2c2c;
 }
 .back {
   font-size: 44rpx;

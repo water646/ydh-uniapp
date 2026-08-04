@@ -17,6 +17,7 @@
     <!-- 抽屉（对应 MainActivity DrawerLayout） -->
     <view v-if="drawer" class="mask" @click="drawer = false"></view>
     <view class="drawer" :class="{ open: drawer }">
+      <view class="drawer-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="drawer-header">
         <image class="avatar-lg" :src="userInfo && userInfo.avatar" mode="aspectFill" />
         <text class="nick">{{ (userInfo && userInfo.nickName) || '未登录' }}</text>
@@ -192,6 +193,8 @@ const useMock = config.useMock // ⚠️【MOCK】是否静态数据模式
 
 const userInfo = ref(null)
 const appVersion = ref('')
+// 状态栏高度（抽屉 fixed top:0，需留出状态栏空间避免与系统时间/电量栏重叠）
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 const drawer = ref(false)
 const tab = ref('no_end')
 const loading = ref(false)
@@ -471,6 +474,9 @@ function doUpdate() {
 }
 .drawer.open {
   transform: translateX(0);
+}
+.drawer-status {
+  background-color: #ffffff;
 }
 .drawer-header {
   // background-color: #29a871;
