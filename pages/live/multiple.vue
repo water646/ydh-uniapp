@@ -5,7 +5,7 @@
       <view class="top-bar-inner">
         <view class="back" @click="back">‹</view>
         <text class="title">直播</text>
-        <text class="add" @click="showAdd = true">+ 添加</text>
+        <text class="add" @click="showAdd = true">添加视角</text>
       </view>
     </view>
 
@@ -23,11 +23,13 @@
       <empty-layout v-if="!list.length && !loading" status="empty" />
     </scroll-view>
 
-    <!-- V2/V3 直播类型选择（对应底部两个 Button，SP 记住每场选择） -->
-    <view class="type-bar">
-      <text class="type-label">直播类型：</text>
-      <text class="type-btn" :class="{ on: liveType === 'V2' }" @click="setType('V2')">V2</text>
-      <text class="type-btn" :class="{ on: liveType === 'V3' }" @click="setType('V3')">V3</text>
+    <!-- V2/V3 直播类型选择（底边栏，两个方形按钮横向排布） -->
+    <view class="type-footer">
+      <view class="type-title">选择直播类型</view>
+      <view class="type-bar">
+        <view class="type-btn" :class="{ on: liveType === 'V2' }" @click="setType('V2')">V2</view>
+        <view class="type-btn" :class="{ on: liveType === 'V3' }" @click="setType('V3')">V3</view>
+      </view>
     </view>
 
     <u-popup :show="showAdd" mode="center" :round="20" @close="showAdd = false">
@@ -136,7 +138,7 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 88rpx;
@@ -146,21 +148,22 @@ function back() {
 }
 .back {
   font-size: 44rpx;
-  color: #ffffff;
+  color: #000000;
   width: 60rpx;
 }
 .title {
   flex: 1;
   text-align: center;
-  color: #ffffff;
+  color: #000000;
   font-size: 30rpx;
 }
 .add {
   font-size: 26rpx;
-  color: #009de9;
+  color: #1e7a4d;
 }
 .list {
   flex: 1;
+  padding-bottom: 200rpx;
 }
 .live-item {
   display: flex;
@@ -179,29 +182,47 @@ function back() {
   font-size: 32rpx;
   color: #cccccc;
 }
+.type-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+}
+.type-title {
+  text-align: center;
+  font-size: 34rpx;
+  color: #333333;
+  padding: 16rpx 0;
+  background-color: #ffffff;
+}
 .type-bar {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 20rpx;
-  padding: 24rpx;
-  background-color: #ffffff;
+  padding: 10rpx;
+  background-color: #DDDDDD;
   border-top: 1rpx solid #eeeeee;
 }
-.type-label {
-  font-size: 26rpx;
-  color: #666666;
-}
 .type-btn {
-  font-size: 26rpx;
-  padding: 12rpx 40rpx;
-  border: 1rpx solid #29a871;
-  color: #29a871;
-  border-radius: 30rpx;
+  // flex: 1;
+  height: 88rpx;
+  width: 180rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border: 1rpx solid #DDDDDD;
+  color: #AAAAAA;
+  margin:0 30rpx;
+  font-size: 35rpx;
+  border-radius: 8rpx;
+  box-shadow: 0 4rpx 6rpx rgba(0,0,0,0.1);
 }
 .type-btn.on {
-  background-color: #29a871;
-  color: #ffffff;
+  background-color: white;
+  color: black;
 }
 .add-dialog {
   width: 560rpx;

@@ -14586,7 +14586,7 @@ This will fail in production.`);
           vue.createElementVNode("text", {
             class: "add",
             onClick: _cache[0] || (_cache[0] = ($event) => $setup.showAdd = true)
-          }, "+ 添加")
+          }, "添加视角")
         ])
       ]),
       vue.createElementVNode("scroll-view", {
@@ -14623,28 +14623,30 @@ This will fail in production.`);
           status: "empty"
         })) : vue.createCommentVNode("v-if", true)
       ], 40, ["refresher-triggered"]),
-      vue.createElementVNode("view", { class: "type-bar" }, [
-        vue.createElementVNode("text", { class: "type-label" }, "直播类型："),
-        vue.createElementVNode(
-          "text",
-          {
-            class: vue.normalizeClass(["type-btn", { on: $setup.liveType === "V2" }]),
-            onClick: _cache[1] || (_cache[1] = ($event) => $setup.setType("V2"))
-          },
-          "V2",
-          2
-          /* CLASS */
-        ),
-        vue.createElementVNode(
-          "text",
-          {
-            class: vue.normalizeClass(["type-btn", { on: $setup.liveType === "V3" }]),
-            onClick: _cache[2] || (_cache[2] = ($event) => $setup.setType("V3"))
-          },
-          "V3",
-          2
-          /* CLASS */
-        )
+      vue.createElementVNode("view", { class: "type-footer" }, [
+        vue.createElementVNode("view", { class: "type-title" }, "选择直播类型"),
+        vue.createElementVNode("view", { class: "type-bar" }, [
+          vue.createElementVNode(
+            "view",
+            {
+              class: vue.normalizeClass(["type-btn", { on: $setup.liveType === "V2" }]),
+              onClick: _cache[1] || (_cache[1] = ($event) => $setup.setType("V2"))
+            },
+            "V2",
+            2
+            /* CLASS */
+          ),
+          vue.createElementVNode(
+            "view",
+            {
+              class: vue.normalizeClass(["type-btn", { on: $setup.liveType === "V3" }]),
+              onClick: _cache[2] || (_cache[2] = ($event) => $setup.setType("V3"))
+            },
+            "V3",
+            2
+            /* CLASS */
+          )
+        ])
       ]),
       vue.createVNode(_component_u_popup, {
         show: $setup.showAdd,
