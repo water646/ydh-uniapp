@@ -181,14 +181,13 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
-import { getMatchList, gameStatus } from '@/api/game'
+import { getMatchList, gameStatus, getGameDetail } from '@/api/game'
 import { getUserInfo } from '@/api/login'
 import { versionCheck } from '@/api/version'
 import { useUserStore } from '@/store/user'
 import { useAppStore } from '@/store/app'
 import { emit, EventBus } from '@/utils/eventBus'
 import { config } from '@/config'
-import { initPractice } from '@/utils/practice'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -351,20 +350,25 @@ function goPhoto() {
 
 function practice(sport) {
   drawer.value = false
-  uni.showLoading({ title: '准备练习数据…', mask: true })
-  // 本地造一场练习赛（member 8v8 + 4 小节），再跳离线统计页练手
-  initPractice(sport)
-    .then(({ gameId, homeName, guestName }) => {
-      uni.hideLoading()
-      const page = sport === 'football' ? 'football-operate' : 'basketball-operate'
-      uni.navigateTo({
-        url: `/pages/statistics/${page}?gameId=${gameId}&homeName=${encodeURIComponent(homeName)}&guestName=${encodeURIComponent(guestName)}`
-      })
-    })
-    .catch(() => {
-      uni.hideLoading()
-      uni.showToast({ title: '练习数据初始化失败', icon: 'none' })
-    })
+  uni.showLoading({ title: '加载练习赛…', mask: true })
+  // 对齐老项目：用 "basketball"/"football" 作为 gameId 请求后端预设练习赛，
+  // 练习赛统一走 game/{gameId}/detail（无 soccer/ 前缀），gameId 为运动名
+  const req = getGameDetail(sport, 'basketball')
+  req.then((res) => {
+    uni.hideLoading()
+    if (!res || res.code !== 1) {
+      uni.showToast({ title: (res && res.msg) || '练习赛加载失败', icon: 'none' })
+      return
+    }
+    const g = (res.data && res.data.game) || res.data || {}
+    const url = sport === 'football'
+      ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+      : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+    uni.navigateTo({ url })
+  }).catch((err) => {
+    uni.hideLoading()
+    uni.showToast({ title: (err && err.msg) || '练习赛加载失败', icon: 'none' })
+  })
 }
 
 function goWeekOuts() {
