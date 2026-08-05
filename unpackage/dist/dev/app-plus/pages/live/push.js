@@ -445,8 +445,9 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   }
   var getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   var compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-  var _imports_0 = "/static/watermark.png";
-  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "100rpx", "left": "20rpx", "flexDirection": "row", "alignItems": "center", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "12rpx", "paddingRight": "20rpx", "paddingBottom": "12rpx", "paddingLeft": "20rpx", "borderRadius": "8rpx", "marginLeft": "40rpx" } }, "s-team": { "": { "fontSize": "26rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-score": { "": { "fontSize": "40rpx", "color": "#ff6f21", "fontWeight": "bold", "marginTop": 0, "marginRight": "10rpx", "marginBottom": 0, "marginLeft": "10rpx" } }, "s-colon": { "": { "fontSize": "32rpx", "color": "#ffffff" } }, "s-logo": { "": { "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "marginTop": 0, "marginRight": "6rpx", "marginBottom": 0, "marginLeft": "6rpx" } }, "s-section": { "": { "position": "absolute", "top": "100rpx", "right": "20rpx", "fontSize": "24rpx", "color": "#ffffff", "backgroundColor": "rgba(0,0,0,0.5)", "paddingTop": "8rpx", "paddingRight": "16rpx", "paddingBottom": "8rpx", "paddingLeft": "16rpx", "borderRadius": "8rpx" } }, "bottom": { "": { "position": "absolute", "bottom": "40rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "center", "flexWrap": "wrap" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } } };
+  var _imports_0 = "/static/mipmap-xhdpi/new_bifen.png";
+  var _imports_1 = "/static/watermark.png";
+  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "550rpx", "left": "380rpx", "width": "800rpx", "height": "80rpx" } }, "score-bg": { "": { "position": "absolute", "top": 0, "left": 0, "width": "800rpx", "height": "80rpx" } }, "s-logo": { "": { "position": "absolute", "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "top": "14rpx" } }, "s-logo-left": { "": { "left": "13rpx" } }, "s-logo-right": { "": { "right": "13rpx" } }, "s-team": { "": { "position": "absolute", "top": "30rpx", "width": "240rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center", "lines": 1, "textOverflow": "ellipsis" } }, "s-host": { "": { "left": "32rpx" } }, "s-guest": { "": { "left": "528rpx" } }, "s-score": { "": { "position": "absolute", "top": "22rpx", "width": "128rpx", "fontSize": "40rpx", "color": "#ffffff", "fontWeight": "bold", "textAlign": "center" } }, "s-score-host": { "": { "left": "416rpx" } }, "s-score-guest": { "": { "left": "256rpx" } }, "s-section": { "": { "position": "absolute", "top": "32rpx", "left": "336rpx", "width": "128rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center" } }, "bottom": { "": { "position": "absolute", "bottom": "0rpx", "paddingTop": 0, "paddingRight": "60rpx", "paddingBottom": 0, "paddingLeft": "60rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "flex-start", "flexWrap": "wrap", "width": "700rpx" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } }, "gray-btn": { "": { "width": "170rpx", "height": "90rpx", "backgroundColor": "rgba(0,0,0,0.3)", "borderRadius": "4rpx", "display": "flex", "alignItems": "center", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx", "textAlign": "center", "marginTop": "40rpx", "marginRight": "40rpx", "marginBottom": "40rpx", "marginLeft": "40rpx", "color": "#FFFFFF", "fontSize": "28rpx" } }, "top-btn": { "": { "position": "relative", "right": "300rpx" } } };
   var _sfc_main = {
     __name: "push",
     setup(__props, { expose: __expose }) {
@@ -492,8 +493,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:119", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
-        formatAppLog("log", "at pages/live/push.nvue:120", opt);
+        formatAppLog("log", "at pages/live/push.nvue:121", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:122", opt);
         loadGameDetail();
         connectScore();
       });
@@ -513,13 +514,13 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       function startPreview() {
         const ctx = getPusherCtx();
         if (!ctx) {
-          formatAppLog("log", "at pages/live/push.nvue:150", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
+          formatAppLog("log", "at pages/live/push.nvue:152", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
           return;
         }
         ctx.startPreview({
-          success: () => formatAppLog("log", "at pages/live/push.nvue:154", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
+          success: () => formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
           fail: (err) => {
-            formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
+            formatAppLog("log", "at pages/live/push.nvue:158", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
             uni.showToast({ title: "\u6444\u50CF\u5934\u5F00\u542F\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u6743\u9650", icon: "none" });
           }
         });
@@ -619,10 +620,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         showScore.value = !showScore.value;
       }
       function onState(e) {
-        formatAppLog("log", "at pages/live/push.nvue:258", "[pusher] state", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:260", "[pusher] state", e.detail);
       }
       function onError(e) {
-        formatAppLog("log", "at pages/live/push.nvue:262", "[pusher] error", e.detail);
+        formatAppLog("log", "at pages/live/push.nvue:264", "[pusher] error", e.detail);
         uni.showToast({ title: "\u63A8\u6D41\u9519\u8BEF", icon: "none" });
       }
       function onCompose() {
@@ -684,16 +685,23 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           },
           [
             (0, import_vue2.createElementVNode)("view", { class: "top" }, [
-              (0, import_vue2.createElementVNode)("view", {
-                class: "back",
-                onClick: $setup.back
-              }, [
-                (0, import_vue2.createElementVNode)("u-text", { class: "back-icon" }, "\u2039")
+              (0, import_vue2.createElementVNode)("view", { onClick: $setup.back }, [
+                (0, import_vue2.createElementVNode)("u-text", { class: "gray-btn" }, "\u8FD4\u56DE")
               ]),
               (0, import_vue2.createElementVNode)(
                 "u-text",
                 { class: "status" },
                 (0, import_vue2.toDisplayString)($setup.statusText),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                {
+                  class: "gray-btn top-btn",
+                  onClick: $setup.toggleScore
+                },
+                (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
                 1
                 /* TEXT */
               ),
@@ -706,89 +714,75 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
               key: 0,
               class: "score-overlay"
             }, [
+              (0, import_vue2.createElementVNode)("u-image", {
+                class: "score-bg",
+                src: _imports_0
+              }),
               $setup.homeLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
                 key: 0,
-                class: "s-logo",
+                class: "s-logo s-logo-left",
                 mode: "aspectFill",
                 src: $setup.homeLogo
               }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
+              $setup.guestLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+                key: 1,
+                class: "s-logo s-logo-right",
+                mode: "aspectFill",
+                src: $setup.guestLogo
+              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
               (0, import_vue2.createElementVNode)(
                 "u-text",
-                { class: "s-team" },
+                { class: "s-team s-host" },
                 (0, import_vue2.toDisplayString)($setup.homeName),
                 1
                 /* TEXT */
               ),
               (0, import_vue2.createElementVNode)(
                 "u-text",
-                { class: "s-score" },
+                { class: "s-score s-score-host" },
                 (0, import_vue2.toDisplayString)($setup.hostScore),
                 1
                 /* TEXT */
               ),
-              (0, import_vue2.createElementVNode)("u-text", { class: "s-colon" }, ":"),
               (0, import_vue2.createElementVNode)(
                 "u-text",
-                { class: "s-score" },
+                { class: "s-section" },
+                (0, import_vue2.toDisplayString)($setup.section),
+                1
+                /* TEXT */
+              ),
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "s-score s-score-guest" },
                 (0, import_vue2.toDisplayString)($setup.guestScore),
                 1
                 /* TEXT */
               ),
               (0, import_vue2.createElementVNode)(
                 "u-text",
-                { class: "s-team" },
+                { class: "s-team s-guest" },
                 (0, import_vue2.toDisplayString)($setup.guestName),
                 1
                 /* TEXT */
-              ),
-              $setup.guestLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
-                key: 1,
-                class: "s-logo",
-                mode: "aspectFill",
-                src: $setup.guestLogo
-              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true)
+              )
             ])) : (0, import_vue2.createCommentVNode)("v-if", true),
             (0, import_vue2.createElementVNode)("u-image", {
               class: "top-logo",
               mode: "left",
-              src: _imports_0
+              src: _imports_1
             }),
-            $setup.section ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)(
-              "u-text",
-              {
-                key: 1,
-                class: "s-section"
-              },
-              (0, import_vue2.toDisplayString)($setup.section),
-              1
-              /* TEXT */
-            )) : (0, import_vue2.createCommentVNode)("v-if", true),
             (0, import_vue2.createElementVNode)("view", { class: "bottom" }, [
               !$setup.pushing ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
                 key: 0,
-                class: "btn start",
+                class: "gray-btn start",
                 onClick: $setup.startPush
               }, "\u5F00\u59CB\u76F4\u64AD")) : (0, import_vue2.createCommentVNode)("v-if", true),
               (0, import_vue2.createElementVNode)("u-text", {
-                class: "btn stop",
+                class: "gray-btn stop",
                 onClick: $setup.stopPush
               }, "\u7ED3\u675F\u76F4\u64AD"),
               (0, import_vue2.createElementVNode)("u-text", {
-                class: "btn",
-                onClick: $setup.switchCamera
-              }, "\u7FFB\u8F6C"),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                {
-                  class: "btn",
-                  onClick: $setup.toggleScore
-                },
-                (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)("u-text", {
-                class: "btn",
+                class: "gray-btn",
                 onClick: $setup.onCompose
               }, "\u751F\u6210\u56DE\u653E")
             ])

@@ -1518,9 +1518,6 @@ This will fail in production.`);
   function setUserId(id) {
     uni.setStorageSync(KEY_USER_ID, id);
   }
-  function isLogin() {
-    return !!getToken();
-  }
   function clearAuth() {
     uni.removeStorageSync(KEY_TOKEN);
     uni.removeStorageSync(KEY_USER_ID);
@@ -2150,46 +2147,37 @@ This will fail in production.`);
   function sportPrefix(sport) {
     return sport === SportType.FOOTBALL ? "soccer/" : "";
   }
-  const useUserStore = defineStore("user", {
-    state: () => ({
-      token: getToken(),
-      userId: getUserId(),
-      userInfo: null,
-      secretMd5: ""
-      // 对应 Global.s = MD5(secret)
-    }),
-    getters: {
-      isLogin: () => isLogin()
-    },
-    actions: {
-      /** 对应 Global.init */
-      init() {
-        this.token = getToken();
-        this.userId = getUserId();
-        if (!this.secretMd5) {
-          this.secretMd5 = md5Encode(config$1.secret);
-        }
-      },
-      /** 登录成功设置鉴权（对应 Global.setAuthentication） */
-      setAuth(token, userId) {
-        this.token = token;
-        setToken(token);
-        if (userId) {
-          this.userId = userId;
-          setUserId(userId);
-        }
-      },
-      setUserInfo(info) {
-        this.userInfo = info;
-      },
-      /** 退出登录（对应 Global.logOut） */
-      logout() {
-        clearAuth();
-        this.token = "";
-        this.userId = "";
-        this.userInfo = null;
+  const useUserStore = defineStore("user", () => {
+    const token = vue.ref(getToken());
+    const userId = vue.ref(getUserId());
+    const userInfo2 = vue.ref(null);
+    const secretMd5 = vue.ref("");
+    const isLogin = vue.computed(() => !!token.value);
+    function init() {
+      token.value = getToken();
+      userId.value = getUserId();
+      if (!secretMd5.value) {
+        secretMd5.value = md5Encode(config$1.secret);
       }
     }
+    function setAuth(t2, uid) {
+      token.value = t2;
+      setToken(t2);
+      if (uid) {
+        userId.value = uid;
+        setUserId(uid);
+      }
+    }
+    function setUserInfo(info) {
+      userInfo2.value = info;
+    }
+    function logout() {
+      clearAuth();
+      token.value = "";
+      userId.value = "";
+      userInfo2.value = null;
+    }
+    return { token, userId, userInfo: userInfo2, secretMd5, isLogin, init, setAuth, setUserInfo, logout };
   });
   const _imports_0$3 = "/static/loading_bg.png";
   const _export_sfc = (sfc, props2) => {
@@ -7040,40 +7028,32 @@ This will fail in production.`);
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
   const DEFAULT_VERSION = "2.8.4";
-  const useAppStore = defineStore("app", {
-    state: () => ({
-      device: "",
-      // 对应 Global.device
-      version: "",
-      // versionCode，版本更新检查用
-      versionName: "",
-      // 版本名（如 2.8.4），界面显示用
-      sport: SportType.BASKETBALL,
-      // 篮球/足球切换（对应 EventBus Boolean true=篮球）
-      companies: []
-      // 对应 Global.companies
-    }),
-    actions: {
-      init() {
-        this.device = getDeviceId();
-        try {
-          this.version = String(plus.runtime.versionCode || DEFAULT_VERSION);
-          this.versionName = String(plus.runtime.version || DEFAULT_VERSION);
-        } catch (e) {
-          this.version = DEFAULT_VERSION;
-          this.versionName = DEFAULT_VERSION;
-        }
-      },
-      setSport(sport) {
-        this.sport = sport;
-      },
-      toggleSport() {
-        this.sport = this.sport === SportType.BASKETBALL ? SportType.FOOTBALL : SportType.BASKETBALL;
-      },
-      setCompanies(list) {
-        this.companies = list || [];
+  const useAppStore = defineStore("app", () => {
+    const device = vue.ref("");
+    const version2 = vue.ref("");
+    const versionName = vue.ref("");
+    const sport = vue.ref(SportType.BASKETBALL);
+    const companies = vue.ref([]);
+    function init() {
+      device.value = getDeviceId();
+      try {
+        version2.value = String(plus.runtime.versionCode || DEFAULT_VERSION);
+        versionName.value = String(plus.runtime.version || DEFAULT_VERSION);
+      } catch (e) {
+        version2.value = DEFAULT_VERSION;
+        versionName.value = DEFAULT_VERSION;
       }
     }
+    function setSport(s) {
+      sport.value = s;
+    }
+    function toggleSport() {
+      sport.value = sport.value === SportType.BASKETBALL ? SportType.FOOTBALL : SportType.BASKETBALL;
+    }
+    function setCompanies(list) {
+      companies.value = list || [];
+    }
+    return { device, version: version2, versionName, sport, companies, init, setSport, toggleSport, setCompanies };
   });
   const EventBus = {
     /** 篮球/足球切换，data: 'basketball' | 'football' */
@@ -7090,191 +7070,8 @@ This will fail in production.`);
   function off(event, callback) {
     uni.$off(event, callback);
   }
-  const DB_NAME = config$1.dbName;
-  const DB_PATH = "_doc/statistics.db";
-  const CREATE_SQL = [
-    `CREATE TABLE IF NOT EXISTS member (
-    team_member_id TEXT PRIMARY KEY,
-    game_id TEXT,
-    type INTEGER,
-    name TEXT,
-    number INTEGER,
-    startingLineup INTEGER,
-    playing INTEGER
-  )`,
-    `CREATE TABLE IF NOT EXISTS game_section (
-    section_id TEXT PRIMARY KEY,
-    game_id TEXT,
-    type INTEGER,
-    name TEXT,
-    sort INTEGER,
-    groups TEXT,
-    isStart INTEGER,
-    isEnd INTEGER
-  )`,
-    `CREATE TABLE IF NOT EXISTS game_time (
-    game_id TEXT PRIMARY KEY,
-    begintime INTEGER,
-    stoptime INTEGER,
-    isStop INTEGER
-  )`,
-    `CREATE TABLE IF NOT EXISTS technical_record (
-    record_number INTEGER PRIMARY KEY,
-    elapsed_time INTEGER,
-    statistics_section_id TEXT,
-    type INTEGER,
-    statistics_member_id TEXT,
-    description TEXT,
-    game_id TEXT,
-    team_type INTEGER,
-    team_name TEXT,
-    "add" INTEGER,
-    "delete" INTEGER,
-    is_need_upload INTEGER,
-    disable INTEGER
-  )`
-  ];
-  let opened = false;
-  function initDB() {
-    if (opened)
-      return Promise.resolve();
-    return new Promise((resolve, reject) => {
-      plus.sqlite.openDatabase({
-        name: DB_NAME,
-        path: DB_PATH,
-        success: (e) => {
-          opened = true;
-          let chain = Promise.resolve();
-          CREATE_SQL.forEach((sql) => {
-            chain = chain.then(() => executeSQL(sql));
-          });
-          chain.then(resolve).catch(reject);
-        },
-        fail: (e) => {
-          formatAppLog("error", "at utils/db.js:81", "打开数据库失败", e);
-          reject(e);
-        }
-      });
-    });
-  }
-  function executeSQL(sql) {
-    return new Promise((resolve, reject) => {
-      plus.sqlite.executeSql({
-        name: DB_NAME,
-        sql,
-        success: (e) => resolve(e),
-        fail: (e) => {
-          formatAppLog("error", "at utils/db.js:101", "executeSQL 失败", sql, e);
-          reject(e);
-        }
-      });
-    });
-  }
-  function selectSQL(sql) {
-    return new Promise((resolve, reject) => {
-      plus.sqlite.selectSql({
-        name: DB_NAME,
-        sql,
-        success: (e) => resolve(e || []),
-        fail: (e) => {
-          formatAppLog("error", "at utils/db.js:121", "selectSQL 失败", sql, e);
-          reject(e);
-        }
-      });
-    });
-  }
-  function insertOrReplace(table, obj) {
-    const keys = Object.keys(obj);
-    const placeholders = keys.map(() => "?").join(",");
-    const values = keys.map((k) => obj[k]);
-    `INSERT OR REPLACE INTO ${table} (${keys.join(",")}) VALUES (${placeholders})`;
-    const safeSql = `INSERT OR REPLACE INTO ${table} (${keys.join(",")}) VALUES (${values.map(sqlValue).join(",")})`;
-    return executeSQL(safeSql);
-  }
-  function queryList(table, where = "", order = "") {
-    let sql = `SELECT * FROM ${table}`;
-    if (where)
-      sql += ` WHERE ${where}`;
-    if (order)
-      sql += ` ORDER BY ${order}`;
-    return selectSQL(sql);
-  }
-  function deleteWhere(table, where) {
-    return executeSQL(`DELETE FROM ${table} WHERE ${where}`);
-  }
-  function countWhere(table, where = "") {
-    return selectSQL(`SELECT COUNT(*) as c FROM ${table}${where ? ` WHERE ${where}` : ""}`).then((res) => res[0] ? res[0].c : 0);
-  }
-  function sqlValue(v) {
-    if (v === null || v === void 0)
-      return "NULL";
-    if (typeof v === "number")
-      return String(v);
-    if (typeof v === "boolean")
-      return v ? "1" : "0";
-    return `'${String(v).replace(/'/g, "''")}'`;
-  }
-  const practiceGameId = (sport) => `practice-${sport}`;
-  const HOME_NAMES = ["赵一", "钱二", "孙三", "李四", "周五", "吴六", "郑七", "王八"];
-  const GUEST_NAMES = ["冯一", "陈二", "褚三", "卫四", "蒋五", "沈六", "韩七", "杨八"];
-  function initPractice(sport = "basketball") {
-    const isFoot = sport === "football";
-    const gameId = practiceGameId(sport);
-    const homeName = isFoot ? "飞虎队" : "红队";
-    const guestName = isFoot ? "雄鹰队" : "蓝队";
-    return initDB().then(
-      () => (
-        // 先清旧数据（member / game_section / technical_record）
-        Promise.all([
-          deleteWhere("member", `game_id='${gameId}'`),
-          deleteWhere("game_section", `game_id='${gameId}'`),
-          deleteWhere("technical_record", `game_id='${gameId}'`)
-        ])
-      )
-    ).then(
-      () => Promise.all([
-        // 主队 8 人（type=1），前 5 人首发 + 在场
-        ...HOME_NAMES.map(
-          (name, i) => insertOrReplace("member", {
-            team_member_id: `${gameId}-host-${i + 1}`,
-            game_id: gameId,
-            type: 1,
-            name,
-            number: i + 1,
-            startingLineup: i < 5 ? 1 : 0,
-            playing: i < 5 ? 1 : 0
-          })
-        ),
-        // 客队 8 人（type=0）
-        ...GUEST_NAMES.map(
-          (name, i) => insertOrReplace("member", {
-            team_member_id: `${gameId}-guest-${i + 1}`,
-            game_id: gameId,
-            type: 0,
-            name,
-            number: i + 1,
-            startingLineup: i < 5 ? 1 : 0,
-            playing: i < 5 ? 1 : 0
-          })
-        ),
-        // 4 个小节，第 1 节标记开始
-        ...[1, 2, 3, 4].map(
-          (n) => insertOrReplace("game_section", {
-            section_id: `${gameId}-sec-${n}`,
-            game_id: gameId,
-            type: 1,
-            name: `第${n}节`,
-            sort: n,
-            groups: "",
-            isStart: n === 1 ? 1 : 0,
-            isEnd: 0
-          })
-        )
-      ])
-    ).then(() => ({ gameId, homeName, guestName }));
-  }
   const _imports_0$1 = "/static/mipmap-xhdpi/lianxi.png";
-  const _imports_1 = "/static/mipmap-xhdpi/tuichu.png";
+  const _imports_1$1 = "/static/mipmap-xhdpi/tuichu.png";
   const _sfc_main$z = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -7381,9 +7178,9 @@ This will fail in production.`);
           return;
         showStatusSheet.value = false;
         const params2 = { gameId: g.id, status: s.value };
-        formatAppLog("log", "at pages/main/index.vue:325", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
+        formatAppLog("log", "at pages/main/index.vue:324", "[gameStatus] 请求参数", params2, "sport=", appStore.sport);
         gameStatus(params2, appStore.sport).then((res) => {
-          formatAppLog("log", "at pages/main/index.vue:327", "[gameStatus] 响应", res);
+          formatAppLog("log", "at pages/main/index.vue:326", "[gameStatus] 响应", res);
           if (res && res.code === 1) {
             uni.showToast({ title: `已修改为「${s.desc}」`, icon: "none" });
             g.status = { value: s.value, desc: s.desc };
@@ -7393,28 +7190,32 @@ This will fail in production.`);
             uni.showToast({ title: res && res.msg || "修改失败", icon: "none" });
           }
         }).catch((err) => {
-          formatAppLog("error", "at pages/main/index.vue:339", "[gameStatus] 失败", err);
+          formatAppLog("error", "at pages/main/index.vue:338", "[gameStatus] 失败", err);
           uni.showToast({ title: err && err.msg || "修改失败", icon: "none" });
         });
       }
       function goLive(g) {
-        uni.navigateTo({ url: "/pages/live/multiple?gameId=" + g.id });
+        uni.navigateTo({ url: `/pages/live/multiple?gameId=${g.id}&sport=${appStore.sport}` });
       }
       function goPhoto() {
         uni.navigateTo({ url: "/pages/photo/photo" });
       }
       function practice(sport) {
         drawer.value = false;
-        uni.showLoading({ title: "准备练习数据…", mask: true });
-        initPractice(sport).then(({ gameId, homeName, guestName }) => {
+        uni.showLoading({ title: "加载练习赛…", mask: true });
+        const req = getGameDetail(sport, "basketball");
+        req.then((res) => {
           uni.hideLoading();
-          const page2 = sport === "football" ? "football-operate" : "basketball-operate";
-          uni.navigateTo({
-            url: `/pages/statistics/${page2}?gameId=${gameId}&homeName=${encodeURIComponent(homeName)}&guestName=${encodeURIComponent(guestName)}`
-          });
-        }).catch(() => {
+          if (!res || res.code !== 1) {
+            uni.showToast({ title: res && res.msg || "练习赛加载失败", icon: "none" });
+            return;
+          }
+          const g = res.data && res.data.game || res.data || {};
+          const url2 = sport === "football" ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}` : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`;
+          uni.navigateTo({ url: url2 });
+        }).catch((err) => {
           uni.hideLoading();
-          uni.showToast({ title: "练习数据初始化失败", icon: "none" });
+          uni.showToast({ title: err && err.msg || "练习赛加载失败", icon: "none" });
         });
       }
       function goWeekOuts() {
@@ -7476,6 +7277,8 @@ This will fail in production.`);
         return getMatchList;
       }, get gameStatus() {
         return gameStatus;
+      }, get getGameDetail() {
+        return getGameDetail;
       }, get getUserInfo() {
         return getUserInfo;
       }, get versionCheck() {
@@ -7490,8 +7293,6 @@ This will fail in production.`);
         return EventBus;
       }, get config() {
         return config$1;
-      }, get initPractice() {
-        return initPractice;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
@@ -7601,7 +7402,7 @@ This will fail in production.`);
             }, [
               vue.createElementVNode("image", {
                 class: "exit-icon",
-                src: _imports_1
+                src: _imports_1$1
               }),
               vue.createElementVNode("view", { style: { "margin-left": "25rpx", "font-size": "27rpx" } }, "退出登录")
             ]),
@@ -9406,6 +9207,130 @@ This will fail in production.`);
     const m = String(Math.floor(totalSec / 60)).padStart(2, "0");
     const s = String(totalSec % 60).padStart(2, "0");
     return `${m}:${s}`;
+  }
+  const DB_NAME = config$1.dbName;
+  const DB_PATH = "_doc/statistics.db";
+  const CREATE_SQL = [
+    `CREATE TABLE IF NOT EXISTS member (
+    team_member_id TEXT PRIMARY KEY,
+    game_id TEXT,
+    type INTEGER,
+    name TEXT,
+    number INTEGER,
+    startingLineup INTEGER,
+    playing INTEGER
+  )`,
+    `CREATE TABLE IF NOT EXISTS game_section (
+    section_id TEXT PRIMARY KEY,
+    game_id TEXT,
+    type INTEGER,
+    name TEXT,
+    sort INTEGER,
+    groups TEXT,
+    isStart INTEGER,
+    isEnd INTEGER
+  )`,
+    `CREATE TABLE IF NOT EXISTS game_time (
+    game_id TEXT PRIMARY KEY,
+    begintime INTEGER,
+    stoptime INTEGER,
+    isStop INTEGER
+  )`,
+    `CREATE TABLE IF NOT EXISTS technical_record (
+    record_number INTEGER PRIMARY KEY,
+    elapsed_time INTEGER,
+    statistics_section_id TEXT,
+    type INTEGER,
+    statistics_member_id TEXT,
+    description TEXT,
+    game_id TEXT,
+    team_type INTEGER,
+    team_name TEXT,
+    "add" INTEGER,
+    "delete" INTEGER,
+    is_need_upload INTEGER,
+    disable INTEGER
+  )`
+  ];
+  let opened = false;
+  function initDB() {
+    if (opened)
+      return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      plus.sqlite.openDatabase({
+        name: DB_NAME,
+        path: DB_PATH,
+        success: (e) => {
+          opened = true;
+          let chain = Promise.resolve();
+          CREATE_SQL.forEach((sql) => {
+            chain = chain.then(() => executeSQL(sql));
+          });
+          chain.then(resolve).catch(reject);
+        },
+        fail: (e) => {
+          formatAppLog("error", "at utils/db.js:81", "打开数据库失败", e);
+          reject(e);
+        }
+      });
+    });
+  }
+  function executeSQL(sql) {
+    return new Promise((resolve, reject) => {
+      plus.sqlite.executeSql({
+        name: DB_NAME,
+        sql,
+        success: (e) => resolve(e),
+        fail: (e) => {
+          formatAppLog("error", "at utils/db.js:101", "executeSQL 失败", sql, e);
+          reject(e);
+        }
+      });
+    });
+  }
+  function selectSQL(sql) {
+    return new Promise((resolve, reject) => {
+      plus.sqlite.selectSql({
+        name: DB_NAME,
+        sql,
+        success: (e) => resolve(e || []),
+        fail: (e) => {
+          formatAppLog("error", "at utils/db.js:121", "selectSQL 失败", sql, e);
+          reject(e);
+        }
+      });
+    });
+  }
+  function insertOrReplace(table, obj) {
+    const keys = Object.keys(obj);
+    const placeholders = keys.map(() => "?").join(",");
+    const values = keys.map((k) => obj[k]);
+    `INSERT OR REPLACE INTO ${table} (${keys.join(",")}) VALUES (${placeholders})`;
+    const safeSql = `INSERT OR REPLACE INTO ${table} (${keys.join(",")}) VALUES (${values.map(sqlValue).join(",")})`;
+    return executeSQL(safeSql);
+  }
+  function queryList(table, where = "", order = "") {
+    let sql = `SELECT * FROM ${table}`;
+    if (where)
+      sql += ` WHERE ${where}`;
+    if (order)
+      sql += ` ORDER BY ${order}`;
+    return selectSQL(sql);
+  }
+  function deleteWhere(table, where) {
+    return executeSQL(`DELETE FROM ${table} WHERE ${where}`);
+  }
+  function countWhere(table, where = "") {
+    return selectSQL(`SELECT COUNT(*) as c FROM ${table}${where ? ` WHERE ${where}` : ""}`).then((res) => res[0] ? res[0].c : 0);
+  }
+  function sqlValue(v) {
+    if (v === null || v === void 0)
+      return "NULL";
+    if (typeof v === "number")
+      return String(v);
+    if (typeof v === "boolean")
+      return v ? "1" : "0";
+    return `'${String(v).replace(/'/g, "''")}'`;
   }
   const _sfc_main$t = {
     __name: "game-status-dialog",
@@ -14264,32 +14189,61 @@ This will fail in production.`);
     ]);
   }
   const PagesGameOperationRecord = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-a085037c"], ["__file", "F:/项目文件/uniapp版本/pages/game/operation-record.vue"]]);
-  const _imports_0 = "/static/week_banner.png";
+  const _imports_0 = "/static/mipmap-xxhdpi/cuba.png";
+  const _imports_1 = "/static/mipmap-xxhdpi/good.png";
   const _sfc_main$8 = {
     __name: "week-outs",
     setup(__props, { expose: __expose }) {
       __expose();
       const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const groups = vue.ref([]);
-      const openIdx = vue.ref(0);
       const loading = vue.ref(false);
+      const kingRows = [
+        [{ type: 1, title: "得 分 王" }, { type: 2, title: "篮 板 王" }],
+        [{ type: 3, title: "助 攻 王" }, { type: 5, title: "抢 断 王" }]
+      ];
       onLoad(() => {
         loading.value = true;
         getWeekList(config$1.youkenLeagueId).then((res) => {
           if (res.code === 1) {
-            groups.value = res.data || [];
+            groups.value = (res.data || []).map((g) => ({ ...g, kings: buildKings(g) }));
           }
         }).finally(() => {
           loading.value = false;
         });
       });
-      function toggle(i) {
-        openIdx.value = openIdx.value === i ? -1 : i;
+      function groupTitleImg(groupName) {
+        const m = /U(6|8|10|12)/.exec(groupName || "");
+        const key = m ? "u" + m[1] : "u6";
+        return `/static/mipmap-xxhdpi/${key}.png`;
+      }
+      function buildKings(group) {
+        const map = { 1: [], 2: [], 3: [], 5: [] };
+        (group.optimals || []).forEach((o) => {
+          const t2 = o.type && o.type.value;
+          if (map[t2])
+            map[t2].push(o);
+        });
+        const result = {};
+        Object.keys(map).forEach((t2) => {
+          const arr = map[t2];
+          if (!arr.length || arr.length > 2) {
+            result[t2] = { show: false, first: {}, second: null, hasSecond: false };
+          } else {
+            result[t2] = {
+              show: true,
+              first: { name: arr[0].name, count: arr[0].count, avatar: arr[0].avatar || "" },
+              second: arr[1] ? { name: arr[1].name, count: arr[1].count, avatar: arr[1].avatar || "" } : null,
+              hasSecond: !!arr[1]
+            };
+          }
+        });
+        return result;
       }
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { statusBarHeight, groups, openIdx, loading, toggle, back, ref: vue.ref, get onLoad() {
+      const __returned__ = { statusBarHeight, groups, loading, kingRows, groupTitleImg, buildKings, back, ref: vue.ref, get onLoad() {
         return onLoad;
       }, emptyLayout, get getWeekList() {
         return getWeekList;
@@ -14325,130 +14279,190 @@ This will fail in production.`);
         "scroll-y": "",
         class: "body"
       }, [
-        vue.createElementVNode("image", {
-          class: "banner",
-          src: _imports_0,
-          mode: "widthFix"
-        }),
+        vue.createElementVNode("view", { class: "banner-box" }, [
+          vue.createElementVNode("image", {
+            class: "banner-img",
+            src: _imports_0,
+            mode: "aspectFit"
+          })
+        ]),
         (vue.openBlock(true), vue.createElementBlock(
           vue.Fragment,
           null,
           vue.renderList($setup.groups, (group, gi) => {
-            return vue.openBlock(), vue.createElementBlock("view", {
-              key: gi,
-              class: "group"
-            }, [
-              vue.createElementVNode("view", {
-                class: "group-banner",
-                onClick: ($event) => $setup.toggle(gi)
-              }, [
-                vue.createElementVNode(
-                  "text",
-                  null,
-                  vue.toDisplayString(group.groupName),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode(
-                  "text",
-                  { class: "arrow" },
-                  vue.toDisplayString($setup.openIdx === gi ? "▲" : "▼"),
-                  1
-                  /* TEXT */
-                )
-              ], 8, ["onClick"]),
-              $setup.openIdx === gi ? (vue.openBlock(), vue.createElementBlock("view", {
-                key: 0,
-                class: "group-body"
-              }, [
-                (vue.openBlock(true), vue.createElementBlock(
-                  vue.Fragment,
-                  null,
-                  vue.renderList(group.games, (g) => {
-                    return vue.openBlock(), vue.createElementBlock("view", {
-                      key: g.id,
-                      class: "game-item"
-                    }, [
-                      vue.createElementVNode("view", { class: "game-teams" }, [
+            return vue.openBlock(), vue.createElementBlock(
+              vue.Fragment,
+              { key: gi },
+              [
+                group.games && group.games.length ? (vue.openBlock(), vue.createElementBlock("view", {
+                  key: 0,
+                  class: "group-box"
+                }, [
+                  vue.createElementVNode("image", {
+                    class: "group-title-img",
+                    src: $setup.groupTitleImg(group.groupName),
+                    mode: "aspectFit"
+                  }, null, 8, ["src"]),
+                  (vue.openBlock(true), vue.createElementBlock(
+                    vue.Fragment,
+                    null,
+                    vue.renderList(group.games, (g) => {
+                      return vue.openBlock(), vue.createElementBlock("view", {
+                        key: g.id,
+                        class: "game-row"
+                      }, [
+                        vue.createElementVNode("image", {
+                          class: "team-logo",
+                          src: g.hostTeamLogo,
+                          mode: "aspectFill"
+                        }, null, 8, ["src"]),
                         vue.createElementVNode(
                           "text",
-                          { class: "g-name" },
+                          { class: "team-name host" },
                           vue.toDisplayString(g.hostTeamName),
                           1
                           /* TEXT */
                         ),
-                        vue.createElementVNode(
-                          "text",
-                          { class: "g-score" },
-                          vue.toDisplayString(g.hostTeamScore) + " : " + vue.toDisplayString(g.guestTeamScore),
-                          1
-                          /* TEXT */
-                        ),
-                        vue.createElementVNode(
-                          "text",
-                          { class: "g-name" },
-                          vue.toDisplayString(g.guestTeamName),
-                          1
-                          /* TEXT */
-                        )
-                      ]),
-                      vue.createElementVNode(
-                        "text",
-                        { class: "g-time" },
-                        vue.toDisplayString(g.time),
-                        1
-                        /* TEXT */
-                      )
-                    ]);
-                  }),
-                  128
-                  /* KEYED_FRAGMENT */
-                )),
-                group.optimals && group.optimals.length ? (vue.openBlock(), vue.createElementBlock("view", {
-                  key: 0,
-                  class: "kings"
-                }, [
-                  (vue.openBlock(true), vue.createElementBlock(
-                    vue.Fragment,
-                    null,
-                    vue.renderList(group.optimals, (opt, oi) => {
-                      return vue.openBlock(), vue.createElementBlock("view", {
-                        key: oi,
-                        class: "king"
-                      }, [
-                        opt.avatar ? (vue.openBlock(), vue.createElementBlock("image", {
-                          key: 0,
-                          class: "king-avatar",
-                          src: opt.avatar,
-                          mode: "aspectFill"
-                        }, null, 8, ["src"])) : (vue.openBlock(), vue.createElementBlock("view", {
-                          key: 1,
-                          class: "king-avatar placeholder"
-                        })),
-                        vue.createElementVNode("view", { class: "king-info" }, [
+                        vue.createElementVNode("view", { class: "score-box" }, [
                           vue.createElementVNode(
                             "text",
-                            { class: "king-name" },
-                            vue.toDisplayString(opt.name),
+                            { class: "score-num" },
+                            vue.toDisplayString(g.hostTeamScore),
                             1
                             /* TEXT */
                           ),
+                          vue.createElementVNode("view", { class: "score-sep" }),
                           vue.createElementVNode(
                             "text",
-                            { class: "king-count" },
-                            vue.toDisplayString(opt.count) + " " + vue.toDisplayString(opt.type && opt.type.desc),
+                            { class: "score-num" },
+                            vue.toDisplayString(g.guestTeamScore),
                             1
                             /* TEXT */
                           )
-                        ])
+                        ]),
+                        vue.createElementVNode(
+                          "text",
+                          { class: "team-name guest" },
+                          vue.toDisplayString(g.guestTeamName),
+                          1
+                          /* TEXT */
+                        ),
+                        vue.createElementVNode("image", {
+                          class: "team-logo",
+                          src: g.guestTeamLogo,
+                          mode: "aspectFill"
+                        }, null, 8, ["src"])
                       ]);
                     }),
                     128
                     /* KEYED_FRAGMENT */
-                  ))
+                  )),
+                  vue.createElementVNode("view", { class: "game-rule" }),
+                  vue.createElementVNode("view", { class: "orange-bar" }),
+                  vue.createElementVNode("image", {
+                    class: "kings-title-img",
+                    src: _imports_1,
+                    mode: "aspectFit"
+                  }),
+                  vue.createElementVNode("view", { class: "kings-table" }, [
+                    (vue.openBlock(), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList($setup.kingRows, (row, ri) => {
+                        return vue.createElementVNode("view", {
+                          key: ri,
+                          class: "kings-row"
+                        }, [
+                          (vue.openBlock(true), vue.createElementBlock(
+                            vue.Fragment,
+                            null,
+                            vue.renderList(row, (def, ci) => {
+                              return vue.openBlock(), vue.createElementBlock(
+                                vue.Fragment,
+                                {
+                                  key: def.type
+                                },
+                                [
+                                  group.kings[def.type].show ? (vue.openBlock(), vue.createElementBlock("view", {
+                                    key: 0,
+                                    class: "king-cell"
+                                  }, [
+                                    vue.createElementVNode("view", { class: "king-logos" }, [
+                                      group.kings[def.type].first.avatar ? (vue.openBlock(), vue.createElementBlock("image", {
+                                        key: 0,
+                                        class: "king-logo",
+                                        src: group.kings[def.type].first.avatar,
+                                        mode: "aspectFill"
+                                      }, null, 8, ["src"])) : vue.createCommentVNode("v-if", true),
+                                      group.kings[def.type].hasSecond && group.kings[def.type].second.avatar ? (vue.openBlock(), vue.createElementBlock("image", {
+                                        key: 1,
+                                        class: "king-logo second",
+                                        src: group.kings[def.type].second.avatar,
+                                        mode: "aspectFill"
+                                      }, null, 8, ["src"])) : vue.createCommentVNode("v-if", true)
+                                    ]),
+                                    vue.createElementVNode("view", { class: "king-mid" }, [
+                                      vue.createElementVNode(
+                                        "text",
+                                        { class: "king-title" },
+                                        vue.toDisplayString(def.title),
+                                        1
+                                        /* TEXT */
+                                      ),
+                                      vue.createElementVNode(
+                                        "text",
+                                        {
+                                          class: vue.normalizeClass(["king-name", { small: group.kings[def.type].hasSecond }])
+                                        },
+                                        vue.toDisplayString(group.kings[def.type].first.name),
+                                        3
+                                        /* TEXT, CLASS */
+                                      ),
+                                      group.kings[def.type].hasSecond ? (vue.openBlock(), vue.createElementBlock(
+                                        "text",
+                                        {
+                                          key: 0,
+                                          class: "king-name small"
+                                        },
+                                        vue.toDisplayString(group.kings[def.type].second.name),
+                                        1
+                                        /* TEXT */
+                                      )) : vue.createCommentVNode("v-if", true)
+                                    ]),
+                                    vue.createElementVNode(
+                                      "text",
+                                      { class: "king-score" },
+                                      vue.toDisplayString(group.kings[def.type].first.count),
+                                      1
+                                      /* TEXT */
+                                    )
+                                  ])) : (vue.openBlock(), vue.createElementBlock("view", {
+                                    key: 1,
+                                    class: "king-cell-empty"
+                                  })),
+                                  ci === 0 ? (vue.openBlock(), vue.createElementBlock("view", {
+                                    key: 2,
+                                    class: "king-sep-v"
+                                  })) : vue.createCommentVNode("v-if", true)
+                                ],
+                                64
+                                /* STABLE_FRAGMENT */
+                              );
+                            }),
+                            128
+                            /* KEYED_FRAGMENT */
+                          ))
+                        ]);
+                      }),
+                      64
+                      /* STABLE_FRAGMENT */
+                    ))
+                  ])
                 ])) : vue.createCommentVNode("v-if", true)
-              ])) : vue.createCommentVNode("v-if", true)
-            ]);
+              ],
+              64
+              /* STABLE_FRAGMENT */
+            );
           }),
           128
           /* KEYED_FRAGMENT */
@@ -14469,6 +14483,7 @@ This will fail in production.`);
       __expose();
       const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
       const gameId = vue.ref("");
+      const sport = vue.ref("basketball");
       const list = vue.ref([]);
       const loading = vue.ref(false);
       const refreshing = vue.ref(false);
@@ -14477,6 +14492,7 @@ This will fail in production.`);
       const form = vue.reactive({ livename: "" });
       onLoad((opt) => {
         gameId.value = opt.gameId || "";
+        sport.value = opt.sport || "basketball";
         liveType.value = uni.getStorageSync("live_type_" + gameId.value) || "V2";
         loadList();
       });
@@ -14505,7 +14521,10 @@ This will fail in production.`);
         }
         addGame({
           gameId: gameId.value,
-          livename: form.livename
+          name: form.livename,
+          event: sport.value === "football" ? "2" : "1",
+          // 比赛类型：1=篮球，2=足球
+          channel: 1
         }).then((res) => {
           if (res.code === 1) {
             showAdd.value = false;
@@ -14525,7 +14544,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { statusBarHeight, gameId, list, loading, refreshing, liveType, showAdd, form, loadList, onRefresh, setType, onAdd, goPush, back, ref: vue.ref, reactive: vue.reactive, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, sport, list, loading, refreshing, liveType, showAdd, form, loadList, onRefresh, setType, onAdd, goPush, back, ref: vue.ref, reactive: vue.reactive, get onLoad() {
         return onLoad;
       }, emptyLayout, get getLiveGameList() {
         return getLiveGameList;

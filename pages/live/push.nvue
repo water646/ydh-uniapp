@@ -18,30 +18,32 @@
     <!-- 容器宽高与屏幕互换 + 顺时针旋转90°，旋转后正好铺满竖屏，内容不超出 -->
     <view class="overlay" :style="overlayStyle">
       <view class="top">
-        <view class="back" @click="back"><text class="back-icon">‹</text></view>
+        <view @click="back"><text class="gray-btn">返回</text></view>
         <text class="status">{{ statusText }}</text>
+		<text class="gray-btn top-btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
         <text class="reconnect" @click="reconnectScore">比分重连</text>
       </view>
 
       <!-- 实时比分浮层（降级方案：本地显示，不烧进推流画面） -->
 	  <view v-if="showScore" class="score-overlay">
-		<image v-if="homeLogo" class="s-logo" mode="aspectFill" :src="homeLogo"></image><text class="s-team">{{ homeName }}</text>
-		<text class="s-score">{{ hostScore }}</text>
-		<text class="s-colon">:</text>
-		<text class="s-score">{{ guestScore }}</text>
-		<text class="s-team">{{ guestName }}</text><image v-if="guestLogo" class="s-logo" mode="aspectFill" :src="guestLogo"></image>
+		<image class="score-bg" src="/static/mipmap-xhdpi/new_bifen.png"></image>
+		<image v-if="homeLogo" class="s-logo s-logo-left" mode="aspectFill" :src="homeLogo"></image>
+		<image v-if="guestLogo" class="s-logo s-logo-right" mode="aspectFill" :src="guestLogo"></image>
+		<text class="s-team s-host">{{ homeName }}</text>
+		<text class="s-score s-score-host">{{ hostScore }}</text>
+		<text class="s-section">{{ section }}</text>
+		<text class="s-score s-score-guest">{{ guestScore }}</text>
+		<text class="s-team s-guest">{{ guestName }}</text>
 	  </view>
 	  <image class="top-logo" mode="left" src="/static/watermark.png"></image>
 
 		  
-      <text v-if="section" class="s-section">{{ section }}</text>
 
       <view class="bottom">
-        <text v-if="!pushing" class="btn start" @click="startPush">开始直播</text>
-        <text class="btn stop" @click="stopPush">结束直播</text>
-        <text class="btn" @click="switchCamera">翻转</text>
-        <text class="btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
-        <text class="btn" @click="onCompose">生成回放</text>
+        <text v-if="!pushing" class="gray-btn start" @click="startPush">开始直播</text>
+        <text class="gray-btn stop" @click="stopPush">结束直播</text>
+        <!-- <text class="gray-btn" @click="switchCamera">翻转</text> -->
+        <text class="gray-btn" @click="onCompose">生成回放</text>
       </view>
     </view>
   </view>
@@ -325,54 +327,81 @@ function back() {
 }
 .score-overlay {
   position: absolute;
-  top: 100rpx;
-  left: 20rpx;
-  flex-direction: row;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 12rpx 20rpx;
-  border-radius: 8rpx;
-  margin-left: 40rpx;
+  top: 550rpx;
+  left: 380rpx;
+  width: 800rpx;
+  height: 80rpx;
 }
-.s-team {
-  font-size: 26rpx;
-  color: #ffffff;
-  margin: 0 10rpx;
-}
-.s-score {
-  font-size: 40rpx;
-  color: #ff6f21;
-  font-weight: bold;
-  margin: 0 10rpx;
-}
-.s-colon {
-  font-size: 32rpx;
-  color: #ffffff;
+.score-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 800rpx;
+  height: 80rpx;
 }
 .s-logo {
+  position: absolute;
   width: 48rpx;
   height: 48rpx;
   border-radius: 24rpx;
-  margin: 0 6rpx;
+  top: 14rpx;
+}
+.s-logo-left {
+  left: 13rpx;
+}
+.s-logo-right {
+  right: 13rpx;
+}
+.s-team {
+  position: absolute;
+  top: 30rpx;
+  width: 240rpx;
+  font-size: 22rpx;
+  color: #ffffff;
+  text-align: center;
+  lines: 1;
+  text-overflow: ellipsis;
+}
+.s-host {
+  left: 32rpx;
+}
+.s-guest {
+  left: 528rpx;
+}
+.s-score {
+  position: absolute;
+  top: 22rpx;
+  width: 128rpx;
+  font-size: 40rpx;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+}
+.s-score-host {
+  left: 416rpx;
+}
+.s-score-guest {
+  left: 256rpx;
 }
 .s-section {
   position: absolute;
-  top: 100rpx;
-  right: 20rpx;
-  font-size: 24rpx;
+  top: 32rpx;
+  left: 336rpx;
+  width: 128rpx;
+  font-size: 22rpx;
   color: #ffffff;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 8rpx 16rpx;
-  border-radius: 8rpx;
+  text-align: center;
 }
 .bottom {
   position: absolute;
-  bottom: 40rpx;
+  bottom: 0rpx;
+  padding:0 60rpx;
   left: 0;
   right: 0;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
+  width: 700rpx;
 }
 .btn {
   font-size: 26rpx;
@@ -396,6 +425,25 @@ function back() {
 	top:20rpx;
 	right:20rpx;
 	transform: scale(0.5);
+}
+
+.gray-btn{
+	width: 170rpx;
+	height:90rpx;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 4rpx;
+	display: flex;
+	align-items: center;
+	padding: 30rpx 30rpx;
+	text-align: center;
+	margin:40rpx;
+	color: white;
+	font-size: 28rpx;
+}
+
+.top-btn{
+	position: relative;
+	right:300rpx;
 }
 
 </style>
