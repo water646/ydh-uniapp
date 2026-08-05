@@ -131,7 +131,11 @@
           </view> -->
         </view>
       </view>
-      <empty-layout v-if="!loading && !groups.length" status="empty" />
+	  <view v-if="!loading && !groups.length" class="no-data">
+		  <image class="no-data-img" src="/static/mipmap-xxhdpi/no_shuju.png" mode="aspectFit" />
+		  <view style="color: #BBBBBB;">暂无数据</view>
+	  </view>
+      
       <view v-if="loading" class="loading-more">加载中…</view>
     </scroll-view>
 
@@ -180,7 +184,6 @@
 import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
-import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { getMatchList, gameStatus, getGameDetail } from '@/api/game'
 import { getUserInfo } from '@/api/login'
 import { versionCheck } from '@/api/version'
@@ -685,6 +688,12 @@ function doUpdate() {
   font-size: 24rpx;
   color: #999999;
 }
+.no-data-img {
+  display: block;
+  width: 100rpx;
+  height: 100rpx;
+  margin: 100rpx auto 50rpx auto;
+}
 .nav-action {
   font-size: 26rpx;
   color: #333333;
@@ -787,4 +796,11 @@ function doUpdate() {
 	align-items: center; 
 	margin-bottom: 10rpx;
 }
+.no-data{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 300rpx;
+}
+
 </style>

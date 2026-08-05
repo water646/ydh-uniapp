@@ -19,7 +19,10 @@
       </view>
       <view v-if="loading" class="more">加载中…</view>
       <view v-else-if="!hasMore && list.length" class="more">已加载全部</view>
-      <empty-layout v-if="!list.length && !loading" status="empty" />
+      <view v-if="!list.length && !loading" class="no-data">
+        <image class="no-data-img" src="/static/mipmap-xxhdpi/no_shuju.png" mode="aspectFit" />
+        <view style="color: #BBBBBB;">暂无数据</view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -31,7 +34,6 @@
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import { getPhotoActivity } from '@/api/photo'
 
 // 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统时间/电量栏重叠）
@@ -157,5 +159,17 @@ function back() {
   padding: 24rpx;
   font-size: 24rpx;
   color: #999999;
+}
+.no-data-img {
+  display: block;
+  width: 100rpx;
+  height: 100rpx;
+  margin: 100rpx auto 50rpx auto;
+}
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 300rpx;
 }
 </style>

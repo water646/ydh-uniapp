@@ -8,44 +8,6 @@
 /* ========== uView 主题覆盖 ========== */
 /* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
 /* ========== 通用尺寸 ========== */
-.empty-layout[data-v-d6c9915e] {
-  width: 100%;
-}
-.state[data-v-d6c9915e] {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3.75rem 0;
-}
-.state-text[data-v-d6c9915e] {
-  margin-top: 0.625rem;
-  font-size: 0.8125rem;
-  color: #999999;
-}
-.spinner[data-v-d6c9915e] {
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 0.125rem solid #eeeeee;
-  border-top-color: #29a871;
-  border-radius: 50%;
-  animation: spin-d6c9915e 0.8s linear infinite;
-}
-@keyframes spin-d6c9915e {
-to {
-    transform: rotate(360deg);
-}
-}
-/**
- * uView Plus 主题变量 + 项目品牌色/字号体系
- * 对应 Android colors.xml / dimens.xml / styles.xml
- */
-/* ========== 品牌色（colors.xml） ========== */
-/* ========== 文字层级 ========== */
-/* ========== 背景与分割线 ========== */
-/* ========== uView 主题覆盖 ========== */
-/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
-/* ========== 通用尺寸 ========== */
 .photo[data-v-5140b150] {
   min-height: 100vh;
   background-color: #f8f8f8;
@@ -117,4 +79,16 @@ to {
   padding: 0.75rem;
   font-size: 0.75rem;
   color: #999999;
+}
+.no-data-img[data-v-5140b150] {
+  display: block;
+  width: 3.125rem;
+  height: 3.125rem;
+  margin: 3.125rem auto 1.5625rem auto;
+}
+.no-data[data-v-5140b150] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 9.375rem;
 }
