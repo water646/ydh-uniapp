@@ -92,7 +92,7 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 88rpx;
@@ -103,17 +103,17 @@ function back() {
 }
 .back {
   font-size: 44rpx;
-  color: #ffffff;
+  color: #000000;
   width: 60rpx;
 }
 .title {
-  color: #ffffff;
+  color: #000000;
   font-size: 30rpx;
   flex: 1;
   margin-left: -50rpx;
   // justify-self: center;
   text-align: center;
-  
+
 }
 .list {
   flex: 1;
