@@ -15302,7 +15302,7 @@ This will fail in production.`);
         vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center", "justify-content": "center", "height": "70rpx", "width": "100%", "background-color": "#FFFFFF" } }, [
           vue.createElementVNode("image", {
             onClick: _cache[0] || (_cache[0] = ($event) => $setup.goBack()),
-            style: { "position": "absolute", "left": "20rpx", "top": "11rpx", "width": "100rpx", "height": "100rpx" },
+            style: { "position": "absolute", "left": "-15rpx", "width": "100rpx", "height": "100rpx" },
             src: _imports_0$2,
             mode: "aspectFit"
           }),
