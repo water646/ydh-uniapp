@@ -329,9 +329,8 @@
   justify-content: center;
 }
 .back[data-v-1b09776d] {
-  font-size: 1.625rem;
-  color: #333333;
-  line-height: 1;
+  width: 3.125rem;
+  height: 3.125rem;
 }
 .nav-title[data-v-1b09776d] {
   flex: 1;

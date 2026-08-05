@@ -2179,7 +2179,7 @@ This will fail in production.`);
     }
     return { token, userId, userInfo: userInfo2, secretMd5, isLogin, init, setAuth, setUserInfo, logout };
   });
-  const _imports_0$4 = "/static/loading_bg.png";
+  const _imports_0$3 = "/static/loading_bg.png";
   const _export_sfc = (sfc, props2) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props2) {
@@ -2235,13 +2235,14 @@ This will fail in production.`);
     return vue.openBlock(), vue.createElementBlock("view", { class: "loading" }, [
       vue.createElementVNode("image", {
         class: "bg",
-        src: _imports_0$4,
+        src: _imports_0$3,
         mode: "aspectFill"
       }),
       vue.createElementVNode("view", { class: "brand" }, "智能技术台")
     ]);
   }
   const PagesLoadingIndex = /* @__PURE__ */ _export_sfc(_sfc_main$J, [["render", _sfc_render$I], ["__scopeId", "data-v-ce0ef2b6"], ["__file", "F:/项目文件/uniapp版本/pages/loading/index.vue"]]);
+  const _imports_0$2 = "/static/mipmap-xxhdpi/black_back.png";
   const _sfc_main$I = {
     __name: "custom-nav",
     props: {
@@ -2291,10 +2292,12 @@ This will fail in production.`);
             class: "nav-left",
             onClick: $setup.onBack
           }, [
-            $props.showBack ? (vue.openBlock(), vue.createElementBlock("text", {
+            $props.showBack ? (vue.openBlock(), vue.createElementBlock("image", {
               key: 0,
-              class: "back"
-            }, "‹")) : vue.renderSlot(_ctx.$slots, "left", { key: 1 }, void 0, true)
+              class: "back",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })) : vue.renderSlot(_ctx.$slots, "left", { key: 1 }, void 0, true)
           ]),
           vue.createElementVNode(
             "view",
@@ -3091,7 +3094,7 @@ This will fail in production.`);
   function checkPhone(phone) {
     return /^1[3-9]\d{9}$/.test(phone);
   }
-  const _imports_0$3 = "/static/advertdown.png";
+  const _imports_0$1 = "/static/advertdown.png";
   const _sfc_main$H = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -3256,7 +3259,7 @@ This will fail in production.`);
       ]),
       vue.createElementVNode("image", {
         class: "bottom-logo",
-        src: _imports_0$3,
+        src: _imports_0$1,
         mode: "widthFix"
       })
     ]);
@@ -7025,9 +7028,9 @@ This will fail in production.`);
   function off(event, callback) {
     uni.$off(event, callback);
   }
-  const _imports_0$2 = "/static/mipmap-xhdpi/lianxi.png";
-  const _imports_1$1 = "/static/mipmap-xhdpi/tuichu.png";
-  const _imports_0$1 = "/static/mipmap-xxhdpi/no_shuju.png";
+  const _imports_0 = "/static/mipmap-xhdpi/lianxi.png";
+  const _imports_1$2 = "/static/mipmap-xhdpi/tuichu.png";
+  const _imports_1$1 = "/static/mipmap-xxhdpi/no_shuju.png";
   const _sfc_main$A = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -7327,7 +7330,7 @@ This will fail in production.`);
           }, [
             vue.createElementVNode("image", {
               class: "search-icon",
-              src: _imports_0$2
+              src: _imports_0
             }),
             vue.createElementVNode("p", null, "篮球练习模式")
           ]),
@@ -7337,7 +7340,7 @@ This will fail in production.`);
           }, [
             vue.createElementVNode("image", {
               class: "search-icon",
-              src: _imports_0$2
+              src: _imports_0
             }),
             vue.createElementVNode("p", null, "足球练习模式")
           ]),
@@ -7347,7 +7350,7 @@ This will fail in production.`);
           }, [
             vue.createElementVNode("image", {
               class: "search-icon",
-              src: _imports_0$2
+              src: _imports_0
             }),
             vue.createElementVNode("p", null, "优肯周赛况")
           ]),
@@ -7358,7 +7361,7 @@ This will fail in production.`);
             }, [
               vue.createElementVNode("image", {
                 class: "exit-icon",
-                src: _imports_1$1
+                src: _imports_1$2
               }),
               vue.createElementVNode("view", { style: { "margin-left": "25rpx", "font-size": "27rpx" } }, "退出登录")
             ]),
@@ -7556,7 +7559,7 @@ This will fail in production.`);
         }, [
           vue.createElementVNode("image", {
             class: "no-data-img",
-            src: _imports_0$1,
+            src: _imports_1$1,
             mode: "aspectFit"
           }),
           vue.createElementVNode("view", { style: { "color": "#BBBBBB" } }, "暂无数据")
@@ -11086,7 +11089,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "team-info" }, [
             vue.createElementVNode(
               "text",
@@ -11645,7 +11654,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "team-info" }, [
             vue.createElementVNode(
               "text",
@@ -12242,7 +12257,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "篮球统计"),
           vue.createElementVNode("text", {
             class: "upload-btn",
@@ -12693,7 +12714,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "teams-name" }, [
             vue.createElementVNode(
               "text",
@@ -12953,7 +12980,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "tabs" }, [
             (vue.openBlock(), vue.createElementBlock(
               vue.Fragment,
@@ -13113,7 +13146,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "tabs" }, [
             (vue.openBlock(), vue.createElementBlock(
               vue.Fragment,
@@ -13273,7 +13312,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "操作记录"),
           vue.createElementVNode("view", { class: "tabs" }, [
             (vue.openBlock(), vue.createElementBlock(
@@ -13435,7 +13480,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("view", { class: "radio-group" }, [
             vue.createElementVNode(
               "text",
@@ -13722,7 +13773,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "比赛数据")
         ])
       ]),
@@ -14114,7 +14171,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "操作记录")
         ])
       ]),
@@ -14197,8 +14260,8 @@ This will fail in production.`);
     ]);
   }
   const PagesGameOperationRecord = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-a085037c"], ["__file", "F:/项目文件/uniapp版本/pages/game/operation-record.vue"]]);
-  const _imports_0 = "/static/mipmap-xxhdpi/cuba.png";
-  const _imports_1 = "/static/mipmap-xxhdpi/good.png";
+  const _imports_1 = "/static/mipmap-xxhdpi/cuba.png";
+  const _imports_2 = "/static/mipmap-xxhdpi/good.png";
   const _sfc_main$8 = {
     __name: "week-outs",
     setup(__props, { expose: __expose }) {
@@ -14279,7 +14342,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "优肯周赛况")
         ])
       ]),
@@ -14290,7 +14359,7 @@ This will fail in production.`);
         vue.createElementVNode("view", { class: "banner-box" }, [
           vue.createElementVNode("image", {
             class: "banner-img",
-            src: _imports_0,
+            src: _imports_1,
             mode: "aspectFit"
           })
         ]),
@@ -14369,7 +14438,7 @@ This will fail in production.`);
                   vue.createElementVNode("view", { class: "orange-bar" }),
                   vue.createElementVNode("image", {
                     class: "kings-title-img",
-                    src: _imports_1,
+                    src: _imports_2,
                     mode: "aspectFit"
                   }),
                   vue.createElementVNode("view", { class: "kings-table" }, [
@@ -14581,7 +14650,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "直播"),
           vue.createElementVNode("text", {
             class: "add",
@@ -14760,7 +14835,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "活动列表")
         ])
       ]),
@@ -14831,7 +14912,7 @@ This will fail in production.`);
           }, [
             vue.createElementVNode("image", {
               class: "no-data-img",
-              src: _imports_0$1,
+              src: _imports_1$1,
               mode: "aspectFit"
             }),
             vue.createElementVNode("view", { style: { "color": "#BBBBBB" } }, "暂无数据")
@@ -14900,7 +14981,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode(
             "text",
             { class: "title" },
@@ -15037,7 +15124,13 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "back",
             onClick: $setup.back
-          }, "‹"),
+          }, [
+            vue.createElementVNode("image", {
+              class: "back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
           vue.createElementVNode("text", { class: "title" }, "拍照直播")
         ])
       ]),
@@ -15207,10 +15300,12 @@ This will fail in production.`);
       null,
       [
         vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center", "justify-content": "center", "height": "70rpx", "width": "100%", "background-color": "#FFFFFF" } }, [
-          vue.createElementVNode("view", {
+          vue.createElementVNode("image", {
             onClick: _cache[0] || (_cache[0] = ($event) => $setup.goBack()),
-            style: { "position": "absolute", "left": "20rpx", "font-weight": "800", "font-size": "140%", "color": "#BEBEBE" }
-          }, "<"),
+            style: { "position": "absolute", "left": "20rpx", "top": "11rpx", "width": "100rpx", "height": "100rpx" },
+            src: _imports_0$2,
+            mode: "aspectFit"
+          }),
           vue.createElementVNode(
             "view",
             { style: { "color": "#717171" } },

@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <text class="title">比赛数据</text>
       </view>
     </view>
@@ -214,5 +214,9 @@ function back() {
   flex: 1.5;
   text-align: left;
   padding-left: 20rpx;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

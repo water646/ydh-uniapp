@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <view class="teams-name">
           <text class="tname red">{{ homeName }}</text>
           <text class="vs">vs</text>
@@ -362,5 +362,9 @@ function back() {
   padding: 10rpx 30rpx;
   border: 1rpx solid #29a871;
   border-radius: 30rpx;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

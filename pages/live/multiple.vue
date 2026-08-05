@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <text class="title">直播</text>
         <text class="add" @click="showAdd = true">添加视角</text>
       </view>
@@ -262,5 +262,9 @@ function back() {
 .confirm {
   background-color: #29a871;
   color: #ffffff;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

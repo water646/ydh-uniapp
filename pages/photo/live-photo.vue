@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <text class="title">拍照直播</text>
       </view>
     </view>
@@ -187,5 +187,9 @@ function back() {
   color: #999999;
   line-height: 1.5;
   background-color: #fff8e8;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

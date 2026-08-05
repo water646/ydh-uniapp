@@ -4,7 +4,7 @@
 
     <!-- <button class="back-btn" @click="goBack()">返回</button> -->
 	<view style="display:flex; align-items: center;justify-content: center; height:70rpx;width: 100%;background-color: #FFFFFF; ">
-		<view @click="goBack()" style="position: absolute; left: 20rpx; 20rpx;font-weight: 800; font-size: 140%; color:#BEBEBE;"><</view>
+		<image @click="goBack()" style="position: absolute; left: 20rpx; top: 11rpx; width: 100rpx; height: 100rpx;" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
 		<view style="color: #717171;">{{title}}</view>
 	</view>
 

@@ -16,7 +16,7 @@
       <text class="no-live-text">当前无直播</text>
     </view>
 
-    <view class="back" @click="back"><text class="back-icon">‹</text></view>
+    <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
   </view>
 </template>
 
@@ -111,7 +111,7 @@ function back() {
   transform-origin: 50% 50%;
 }
 .back-icon {
-  font-size: 44rpx;
-  color: #ffffff;
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

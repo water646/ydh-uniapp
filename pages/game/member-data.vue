@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <view class="radio-group">
           <text class="radio" :class="{ on: team === 'host' }" @click="switchTeam('host')">{{ homeName }}</text>
           <text class="radio" :class="{ on: team === 'guest' }" @click="switchTeam('guest')">{{ guestName }}</text>
@@ -189,5 +189,9 @@ function back() {
   width: 140rpx;
   text-align: left;
   padding-left: 20rpx;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>

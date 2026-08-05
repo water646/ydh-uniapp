@@ -3,7 +3,7 @@
     <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
     <view class="nav-content" :style="{ height: navHeight + 'px' }">
       <view class="nav-left" @click="onBack">
-        <text v-if="showBack" class="back">‹</text>
+        <image v-if="showBack" class="back" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
         <slot v-else name="left" />
       </view>
       <view class="nav-title">{{ title }}</view>
@@ -61,9 +61,8 @@ function onBack() {
   justify-content: center;
 }
 .back {
-  font-size: 52rpx;
-  color: #333333;
-  line-height: 1;
+  width: 100rpx;
+  height: 100rpx;
 }
 .nav-title {
   flex: 1;

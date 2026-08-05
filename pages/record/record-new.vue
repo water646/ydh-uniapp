@@ -3,7 +3,7 @@
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
-        <view class="back" @click="back">‹</view>
+        <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <text class="title">操作记录</text>
         <view class="tabs">
           <text
@@ -179,5 +179,9 @@ function back() {
 .r-del {
   font-size: 26rpx;
   color: #ff2d2d;
+}
+.back-icon {
+  width: 100rpx;
+  height: 100rpx;
 }
 </style>
