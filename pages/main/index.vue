@@ -342,7 +342,7 @@ function onStatusSelect(s) {
 }
 
 function goLive(g) {
-  uni.navigateTo({ url: '/pages/live/multiple?gameId=' + g.id })
+  uni.navigateTo({ url: `/pages/live/multiple?gameId=${g.id}&sport=${appStore.sport}` })
 }
 
 function goPhoto() {

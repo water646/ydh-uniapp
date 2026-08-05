@@ -59,6 +59,7 @@ import { getLiveGameList, addGame } from '@/api/live'
 const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 const gameId = ref('')
+const sport = ref('basketball')
 const list = ref([])
 const loading = ref(false)
 const refreshing = ref(false)
@@ -68,6 +69,7 @@ const form = reactive({ livename: '' })
 
 onLoad((opt) => {
   gameId.value = opt.gameId || ''
+  sport.value = opt.sport || 'basketball'
   liveType.value = uni.getStorageSync('live_type_' + gameId.value) || 'V2'
   loadList()
 })
@@ -100,7 +102,7 @@ function onAdd() {
   addGame({
     gameId: gameId.value,
     name: form.livename,
-    event: '1', // 比赛类型：1=篮球（默认），2=足球（对应原生 event==1?"1":"2"）
+    event: sport.value === 'football' ? '2' : '1', // 比赛类型：1=篮球，2=足球
     channel: 1
   }).then((res) => {
     if (res.code === 1) {
