@@ -164,7 +164,7 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
-  background-color: #141a66;
+  background-color: white;
 }
 .nav-status {
   background-color: #2c2c2c;
@@ -174,14 +174,16 @@ function back() {
   display: flex;
   align-items: center;
   padding: 0 20rpx;
+
 }
 .back {
   font-size: 44rpx;
-  color: #ffffff;
+  color: black;
   width: 60rpx;
+  position: absolute;
 }
 .title {
-  color: #ffffff;
+  color: black;
   font-size: 32rpx;
   flex: 1;
   text-align: center;
