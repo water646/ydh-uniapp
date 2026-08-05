@@ -99,7 +99,9 @@ function onAdd() {
   }
   addGame({
     gameId: gameId.value,
-    livename: form.livename
+    name: form.livename,
+    event: '1', // 比赛类型：1=篮球（默认），2=足球（对应原生 event==1?"1":"2"）
+    channel: 1
   }).then((res) => {
     if (res.code === 1) {
       showAdd.value = false
