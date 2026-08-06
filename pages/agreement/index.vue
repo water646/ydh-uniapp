@@ -45,10 +45,10 @@ const goBack = () => {
   uni.navigateBack({
     delta: 1, // 返回的页面数，默认为 1
     success: () => {
-      console.log('返回成功');
+      // console.log('返回成功');
     },
     fail: () => {
-      console.log('返回失败');
+      // console.log('返回失败');
     }
   });
 }

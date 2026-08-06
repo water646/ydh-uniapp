@@ -15278,10 +15278,8 @@ This will fail in production.`);
           delta: 1,
           // 返回的页面数，默认为 1
           success: () => {
-            formatAppLog("log", "at pages/agreement/index.vue:48", "返回成功");
           },
           fail: () => {
-            formatAppLog("log", "at pages/agreement/index.vue:51", "返回失败");
           }
         });
       };

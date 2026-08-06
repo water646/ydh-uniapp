@@ -147,6 +147,7 @@ function back() {
   padding: 0 20rpx;
 }
 .back {
+  // position:absolute;
   font-size: 44rpx;
   color: #000000;
   width: 60rpx;
@@ -218,7 +219,7 @@ function back() {
   margin:0 30rpx;
   font-size: 35rpx;
   border-radius: 8rpx;
-  box-shadow: 0 4rpx 6rpx rgba(0,0,0,0.1);
+  box-shadow: 0 0 8rpx rgba(0,0,0,0.3);
 }
 .type-btn.on {
   background-color: white;
