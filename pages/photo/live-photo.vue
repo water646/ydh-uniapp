@@ -14,7 +14,7 @@
     </view>
 
     <view class="actions">
-      <view class="btn camera" @click="takePhoto">📷 拍照</view>
+      <view class="btn camera" @click="takePhoto">拍照</view>
       <view class="btn album" @click="choosePhoto">从相册选择</view>
     </view>
 

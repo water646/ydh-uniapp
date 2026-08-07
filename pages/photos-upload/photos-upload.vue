@@ -5,10 +5,12 @@
       <view class="top-bar-inner">
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <text class="title">{{ title }}</text>
-        <text class="live-btn" @click="goLivePhoto">拍照直播</text>
       </view>
     </view>
     <scroll-view scroll-y class="list">
+      <view class="live-entry">
+        <view class="live-btn" @click="goLivePhoto">拍照直播</view>
+      </view>
       <view class="grid">
         <image
           v-for="(p, i) in photos"
@@ -109,9 +111,20 @@ function back() {
   color: #000000;
   font-size: 30rpx;
 }
+.live-entry {
+  display: flex;
+  justify-content: center;
+  padding: 30rpx 20rpx 10rpx;
+}
 .live-btn {
-  font-size: 26rpx;
-  color: #009de9;
+  width: 60%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #ff6f21;
+  color: #ffffff;
+  font-size: 28rpx;
 }
 .list {
   flex: 1;

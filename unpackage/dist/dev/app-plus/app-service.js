@@ -15090,17 +15090,19 @@ This will fail in production.`);
             vue.toDisplayString($setup.title),
             1
             /* TEXT */
-          ),
-          vue.createElementVNode("text", {
-            class: "live-btn",
-            onClick: $setup.goLivePhoto
-          }, "拍照直播")
+          )
         ])
       ]),
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
         class: "list"
       }, [
+        vue.createElementVNode("view", { class: "live-entry" }, [
+          vue.createElementVNode("view", {
+            class: "live-btn",
+            onClick: $setup.goLivePhoto
+          }, "拍照直播")
+        ]),
         vue.createElementVNode("view", { class: "grid" }, [
           (vue.openBlock(true), vue.createElementBlock(
             vue.Fragment,
@@ -15265,7 +15267,7 @@ This will fail in production.`);
         vue.createElementVNode("view", {
           class: "btn camera",
           onClick: $setup.takePhoto
-        }, "📷 拍照"),
+        }, "拍照"),
         vue.createElementVNode("view", {
           class: "btn album",
           onClick: $setup.choosePhoto

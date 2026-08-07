@@ -84,9 +84,20 @@ to {
   color: #000000;
   font-size: 0.9375rem;
 }
+.live-entry[data-v-a55f83b1] {
+  display: flex;
+  justify-content: center;
+  padding: 0.9375rem 0.625rem 0.3125rem;
+}
 .live-btn[data-v-a55f83b1] {
-  font-size: 0.8125rem;
-  color: #009de9;
+  width: 60%;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  border-radius: 1.25rem;
+  background-color: #ff6f21;
+  color: #ffffff;
+  font-size: 0.875rem;
 }
 .list[data-v-a55f83b1] {
   flex: 1;
