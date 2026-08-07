@@ -5,17 +5,9 @@
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
-        <view class="team-info">
-          <text class="tname">{{ homeName }}</text>
-          <text class="tag foul" :class="{ danger: hostFoul > 4 }">犯规{{ hostFoul }}</text>
-          <text class="tag pause">暂停{{ hostPause }}</text>
-        </view>
+        <view class="team-info" />
         <view class="section-btn" @click="showSection = true">{{ currentSectionName }}</view>
-        <view class="team-info">
-          <text class="tag pause">暂停{{ guestPause }}</text>
-          <text class="tag foul" :class="{ danger: guestFoul > 4 }">犯规{{ guestFoul }}</text>
-          <text class="tname">{{ guestName }}</text>
-        </view>
+        <view class="team-info right" />
         <battery-view :power="battery" />
       </view>
     </view>
@@ -24,7 +16,13 @@
     <view class="body">
       <!-- 主队 -->
       <view class="team-panel">
-        <view class="panel-title">{{ homeName }}</view>
+        <view class="panel-title">
+          <text class="pt-name">{{ homeName }}</text>
+          <view class="pt-tags">
+            <text class="tag foul" :class="{ danger: hostFoul > 4 }">犯规{{ hostFoul }}</text>
+            <text class="tag pause">暂停{{ hostPause }}</text>
+          </view>
+        </view>
         <scroll-view scroll-y class="player-list">
           <view
             v-for="m in hostMembers"
@@ -76,7 +74,13 @@
 
       <!-- 客队 -->
       <view class="team-panel">
-        <view class="panel-title">{{ guestName }}</view>
+        <view class="panel-title">
+          <text class="pt-name">{{ guestName }}</text>
+          <view class="pt-tags">
+            <text class="tag foul" :class="{ danger: guestFoul > 4 }">犯规{{ guestFoul }}</text>
+            <text class="tag pause">暂停{{ guestPause }}</text>
+          </view>
+        </view>
         <scroll-view scroll-y class="player-list">
           <view
             v-for="m in guestMembers"
@@ -95,7 +99,7 @@
 
     <action-sheet :show="showAction" :actions="basketActions" title="选择动作" @select="onAction" @close="showAction = false" />
     <change-member-dialog :show="showChange" :members="currentMembers" @confirm="onChange" @close="showChange = false" />
-    <section-dialog :show="showSection" @select="onSection" @close="showSection = false" />
+    <section-dialog :show="showSection" sport="basketball" @select="onSection" @close="showSection = false" />
 
     <!-- 开场球权遮罩（对应 qiuquan_layout） -->
     <view v-if="showKickoff" class="kickoff-mask">
@@ -488,6 +492,20 @@ function back() {
   color: #29a871;
   padding: 12rpx 0;
   border-bottom: 1rpx solid #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+.pt-name {
+  font-size: 24rpx;
+}
+.pt-tags {
+  display: flex;
+  gap: 6rpx;
+}
+.team-info.right {
+  justify-content: flex-end;
 }
 .player-list {
   flex: 1;

@@ -91,7 +91,9 @@ function loadSections() {
       ;(res.data || []).forEach((s) => {
         insertOrReplace('game_section', {
           section_id: s.id,
-          game_id: s.gameId || gameId.value,
+          // 用当前比赛 gameId 落库，避免 mock 小节自带 gameId（篮球 mock-game-001）
+          // 与足球比赛 gameId（mock-foot-game-001）不一致导致 operate 读不到小节
+          game_id: gameId.value,
           type: s.type ? s.type.value : 0,
           name: s.name,
           sort: s.sort || 0,

@@ -2462,6 +2462,10 @@ This will fail in production.`);
     { id: "mock-sec-3", gameSectionId: "mock-sec-3", name: "第3节", gameId: IDS.gameId, type: E(1, "小节"), sort: 3, groups: "", running: EB(0, "未开始", false) },
     { id: "mock-sec-4", gameSectionId: "mock-sec-4", name: "第4节", gameId: IDS.gameId, type: E(1, "小节"), sort: 4, groups: "", running: EB(0, "未开始", false) }
   ];
+  const footSections = [
+    { id: "mock-foot-sec-1", gameSectionId: "mock-foot-sec-1", name: "上半场", gameId: IDS.footGame, type: E(2, "半场"), sort: 1, groups: "", running: EB(1, "进行中", true) },
+    { id: "mock-foot-sec-2", gameSectionId: "mock-foot-sec-2", name: "下半场", gameId: IDS.footGame, type: E(2, "半场"), sort: 2, groups: "", running: EB(0, "未开始", false) }
+  ];
   const basketDetail = ok({
     game: {
       id: IDS.gameId,
@@ -2581,14 +2585,18 @@ This will fail in production.`);
     videoStatus: E(0, "未直播"),
     section: "1"
   });
-  const sectionList = ok(sections.map((s) => ({
-    id: s.id,
-    name: s.name,
-    gameId: s.gameId,
-    type: s.type,
-    sort: s.sort,
-    groups: s.groups
-  })));
+  function sectionList(query) {
+    const isFoot = query && query.gameId && String(query.gameId).indexOf("foot") >= 0;
+    const list = isFoot ? footSections : sections;
+    return ok(list.map((s) => ({
+      id: s.id,
+      name: s.name,
+      gameId: s.gameId,
+      type: s.type,
+      sort: s.sort,
+      groups: s.groups
+    })));
+  }
   function memberList(query) {
     const isGuest = query && query.gameTeamId && String(query.gameTeamId).indexOf("guest") >= 0;
     return ok(isGuest ? guestMembers : hostMembers);
@@ -2670,7 +2678,7 @@ This will fail in production.`);
     { method: "GET", url: "game/{gameId}/foot-detail", handler: () => footDetail },
     { method: "GET", url: "statistics/game-detail-basketball", handler: () => basketDetail },
     /* ----- 小节 / 球员 ----- */
-    { method: "GET", url: "statistics/section/list", handler: () => sectionList },
+    { method: "GET", url: "statistics/section/list", handler: (o) => sectionList(o.query) },
     { method: "GET", url: "statistics/member/list", handler: (o) => memberList(o.query) },
     /* ----- 统计记录 ----- */
     { method: "GET", url: "statistics/page", handler: () => recordList },
@@ -2719,7 +2727,7 @@ This will fail in production.`);
         continue;
       return rule.handler(options);
     }
-    formatAppLog("warn", "at mock/mock-data.js:526", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url2}`, "color:#f56c6c");
+    formatAppLog("warn", "at mock/mock-data.js:536", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url2}`, "color:#f56c6c");
     return null;
   }
   function request(options) {
@@ -10158,7 +10166,9 @@ This will fail in production.`);
             (res.data || []).forEach((s) => {
               insertOrReplace("game_section", {
                 section_id: s.id,
-                game_id: s.gameId || gameId.value,
+                // 用当前比赛 gameId 落库，避免 mock 小节自带 gameId（篮球 mock-game-001）
+                // 与足球比赛 gameId（mock-foot-game-001）不一致导致 operate 读不到小节
+                game_id: gameId.value,
                 type: s.type ? s.type.value : 0,
                 name: s.name,
                 sort: s.sort || 0,
@@ -10488,11 +10498,16 @@ This will fail in production.`);
   const _sfc_main$j = {
     __name: "section-dialog",
     props: {
-      show: { type: Boolean, default: false }
+      show: { type: Boolean, default: false },
+      sport: { type: String, default: "basketball" }
     },
     emits: ["select", "close"],
     setup(__props, { expose: __expose, emit: __emit }) {
       __expose();
+      const props2 = __props;
+      const isFoot = props2.sport === "football";
+      const startEndWord = isFoot ? "半场" : "小节";
+      const prevNextWord = isFoot ? "半场" : "节";
       const emit2 = __emit;
       function onSelect(t2) {
         emit2("select", t2);
@@ -10501,7 +10516,7 @@ This will fail in production.`);
       function close() {
         emit2("close");
       }
-      const __returned__ = { emit: emit2, onSelect, close };
+      const __returned__ = { props: props2, isFoot, startEndWord, prevNextWord, emit: emit2, onSelect, close };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -10516,22 +10531,46 @@ This will fail in production.`);
     }, {
       default: vue.withCtx(() => [
         vue.createElementVNode("view", { class: "section-dialog" }, [
-          vue.createElementVNode("view", {
-            class: "item",
-            onClick: _cache[0] || (_cache[0] = ($event) => $setup.onSelect("start"))
-          }, "小节开始"),
-          vue.createElementVNode("view", {
-            class: "item",
-            onClick: _cache[1] || (_cache[1] = ($event) => $setup.onSelect("end"))
-          }, "小节结束"),
-          vue.createElementVNode("view", {
-            class: "item",
-            onClick: _cache[2] || (_cache[2] = ($event) => $setup.onSelect("prev"))
-          }, "上一节"),
-          vue.createElementVNode("view", {
-            class: "item",
-            onClick: _cache[3] || (_cache[3] = ($event) => $setup.onSelect("next"))
-          }, "下一节"),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "item",
+              onClick: _cache[0] || (_cache[0] = ($event) => $setup.onSelect("start"))
+            },
+            vue.toDisplayString($setup.startEndWord) + "开始",
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "item",
+              onClick: _cache[1] || (_cache[1] = ($event) => $setup.onSelect("end"))
+            },
+            vue.toDisplayString($setup.startEndWord) + "结束",
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "item",
+              onClick: _cache[2] || (_cache[2] = ($event) => $setup.onSelect("prev"))
+            },
+            "上一" + vue.toDisplayString($setup.prevNextWord),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "item",
+              onClick: _cache[3] || (_cache[3] = ($event) => $setup.onSelect("next"))
+            },
+            "下一" + vue.toDisplayString($setup.prevNextWord),
+            1
+            /* TEXT */
+          ),
           vue.createElementVNode("view", {
             class: "cancel",
             onClick: $setup.close
@@ -11160,31 +11199,7 @@ This will fail in production.`);
               mode: "aspectFit"
             })
           ]),
-          vue.createElementVNode("view", { class: "team-info" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "tname" },
-              vue.toDisplayString($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              {
-                class: vue.normalizeClass(["tag foul", { danger: $setup.hostFoul > 4 }])
-              },
-              "犯规" + vue.toDisplayString($setup.hostFoul),
-              3
-              /* TEXT, CLASS */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "tag pause" },
-              "暂停" + vue.toDisplayString($setup.hostPause),
-              1
-              /* TEXT */
-            )
-          ]),
+          vue.createElementVNode("view", { class: "team-info" }),
           vue.createElementVNode(
             "view",
             {
@@ -11195,43 +11210,39 @@ This will fail in production.`);
             1
             /* TEXT */
           ),
-          vue.createElementVNode("view", { class: "team-info" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "tag pause" },
-              "暂停" + vue.toDisplayString($setup.guestPause),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              {
-                class: vue.normalizeClass(["tag foul", { danger: $setup.guestFoul > 4 }])
-              },
-              "犯规" + vue.toDisplayString($setup.guestFoul),
-              3
-              /* TEXT, CLASS */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "tname" },
-              vue.toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ]),
+          vue.createElementVNode("view", { class: "team-info right" }),
           vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
         ])
       ]),
       vue.createElementVNode("view", { class: "body" }, [
         vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode(
-            "view",
-            { class: "panel-title" },
-            vue.toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
+          vue.createElementVNode("view", { class: "panel-title" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "pt-name" },
+              vue.toDisplayString($setup.homeName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "pt-tags" }, [
+              vue.createElementVNode(
+                "text",
+                {
+                  class: vue.normalizeClass(["tag foul", { danger: $setup.hostFoul > 4 }])
+                },
+                "犯规" + vue.toDisplayString($setup.hostFoul),
+                3
+                /* TEXT, CLASS */
+              ),
+              vue.createElementVNode(
+                "text",
+                { class: "tag pause" },
+                "暂停" + vue.toDisplayString($setup.hostPause),
+                1
+                /* TEXT */
+              )
+            ])
+          ]),
           vue.createElementVNode("scroll-view", {
             "scroll-y": "",
             class: "player-list"
@@ -11364,13 +11375,33 @@ This will fail in production.`);
           ])
         ]),
         vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode(
-            "view",
-            { class: "panel-title" },
-            vue.toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          ),
+          vue.createElementVNode("view", { class: "panel-title" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "pt-name" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "pt-tags" }, [
+              vue.createElementVNode(
+                "text",
+                {
+                  class: vue.normalizeClass(["tag foul", { danger: $setup.guestFoul > 4 }])
+                },
+                "犯规" + vue.toDisplayString($setup.guestFoul),
+                3
+                /* TEXT, CLASS */
+              ),
+              vue.createElementVNode(
+                "text",
+                { class: "tag pause" },
+                "暂停" + vue.toDisplayString($setup.guestPause),
+                1
+                /* TEXT */
+              )
+            ])
+          ]),
           vue.createElementVNode("scroll-view", {
             "scroll-y": "",
             class: "player-list"
@@ -11431,6 +11462,7 @@ This will fail in production.`);
       }, null, 8, ["show", "members"]),
       vue.createVNode($setup["sectionDialog"], {
         show: $setup.showSection,
+        sport: "basketball",
         onSelect: $setup.onSection,
         onClose: _cache[5] || (_cache[5] = ($event) => $setup.showSection = false)
       }, null, 8, ["show"]),
@@ -11757,22 +11789,7 @@ This will fail in production.`);
               mode: "aspectFit"
             })
           ]),
-          vue.createElementVNode("view", { class: "team-info" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "tname" },
-              vue.toDisplayString($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "tag foul" },
-              "犯规" + vue.toDisplayString($setup.hostFoul),
-              1
-              /* TEXT */
-            )
-          ]),
+          vue.createElementVNode("view", { class: "team-info" }),
           vue.createElementVNode("view", { class: "timer-box" }, [
             vue.createElementVNode(
               "text",
@@ -11798,34 +11815,30 @@ This will fail in production.`);
               }, "改时间")
             ])
           ]),
-          vue.createElementVNode("view", { class: "team-info" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "tag foul" },
-              "犯规" + vue.toDisplayString($setup.guestFoul),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "tname" },
-              vue.toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ]),
+          vue.createElementVNode("view", { class: "team-info right" }),
           vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
         ])
       ]),
       vue.createElementVNode("view", { class: "body" }, [
         vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode(
-            "view",
-            { class: "panel-title" },
-            vue.toDisplayString($setup.homeName),
-            1
-            /* TEXT */
-          ),
+          vue.createElementVNode("view", { class: "panel-title" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "pt-name" },
+              vue.toDisplayString($setup.homeName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "pt-tags" }, [
+              vue.createElementVNode(
+                "text",
+                { class: "tag foul" },
+                "犯规" + vue.toDisplayString($setup.hostFoul),
+                1
+                /* TEXT */
+              )
+            ])
+          ]),
           vue.createElementVNode("scroll-view", {
             "scroll-y": "",
             class: "player-list"
@@ -11964,13 +11977,24 @@ This will fail in production.`);
           ])
         ]),
         vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode(
-            "view",
-            { class: "panel-title" },
-            vue.toDisplayString($setup.guestName),
-            1
-            /* TEXT */
-          ),
+          vue.createElementVNode("view", { class: "panel-title" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "pt-name" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("view", { class: "pt-tags" }, [
+              vue.createElementVNode(
+                "text",
+                { class: "tag foul" },
+                "犯规" + vue.toDisplayString($setup.guestFoul),
+                1
+                /* TEXT */
+              )
+            ])
+          ]),
           vue.createElementVNode("scroll-view", {
             "scroll-y": "",
             class: "player-list"
@@ -12024,6 +12048,7 @@ This will fail in production.`);
       }, null, 8, ["show", "members"]),
       vue.createVNode($setup["sectionDialog"], {
         show: $setup.showSection,
+        sport: "football",
         onSelect: $setup.onSection,
         onClose: _cache[3] || (_cache[3] = ($event) => $setup.showSection = false)
       }, null, 8, ["show"])

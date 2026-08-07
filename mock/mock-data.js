@@ -195,6 +195,12 @@ const sections = [
   { id: 'mock-sec-4', gameSectionId: 'mock-sec-4', name: '第4节', gameId: IDS.gameId, type: E(1, '小节'), sort: 4, groups: '', running: EB(0, '未开始', false) }
 ]
 
+/* 【MOCK】足球小节（上半场/下半场，足球不分“节”） */
+const footSections = [
+  { id: 'mock-foot-sec-1', gameSectionId: 'mock-foot-sec-1', name: '上半场', gameId: IDS.footGame, type: E(2, '半场'), sort: 1, groups: '', running: EB(1, '进行中', true) },
+  { id: 'mock-foot-sec-2', gameSectionId: 'mock-foot-sec-2', name: '下半场', gameId: IDS.footGame, type: E(2, '半场'), sort: 2, groups: '', running: EB(0, '未开始', false) }
+]
+
 /* ------------------------------------------------------------------ *
  * 【MOCK】篮球统计全量（StatisDownData）—— statistics/game-detail-basketball
  *   basketball-down.vue 消费：d.game / d.hostMembers / d.guestMembers /
@@ -334,14 +340,18 @@ const connectInfo = ok({
  * 【MOCK】小节列表（SectionData[]）—— statistics/section/list
  *   basketball-setup.vue 消费 s.id / s.gameId / s.type.value / s.name / s.sort / s.groups
  * ------------------------------------------------------------------ */
-const sectionList = ok(sections.map((s) => ({
-  id: s.id,
-  name: s.name,
-  gameId: s.gameId,
-  type: s.type,
-  sort: s.sort,
-  groups: s.groups
-})))
+function sectionList(query) {
+  const isFoot = query && query.gameId && String(query.gameId).indexOf('foot') >= 0
+  const list = isFoot ? footSections : sections
+  return ok(list.map((s) => ({
+    id: s.id,
+    name: s.name,
+    gameId: s.gameId,
+    type: s.type,
+    sort: s.sort,
+    groups: s.groups
+  })))
+}
 
 /* ------------------------------------------------------------------ *
  * 【MOCK】球员列表（MemberData[]）—— statistics/member/list query{gameTeamId}
@@ -462,7 +472,7 @@ const RULES = [
   { method: 'GET', url: 'statistics/game-detail-basketball', handler: () => basketDetail },
 
   /* ----- 小节 / 球员 ----- */
-  { method: 'GET', url: 'statistics/section/list', handler: () => sectionList },
+  { method: 'GET', url: 'statistics/section/list', handler: (o) => sectionList(o.query) },
   { method: 'GET', url: 'statistics/member/list', handler: (o) => memberList(o.query) },
 
   /* ----- 统计记录 ----- */

@@ -1,10 +1,10 @@
 <template>
   <u-popup :show="show" mode="bottom" :round="20" @close="close">
     <view class="section-dialog">
-      <view class="item" @click="onSelect('start')">小节开始</view>
-      <view class="item" @click="onSelect('end')">小节结束</view>
-      <view class="item" @click="onSelect('prev')">上一节</view>
-      <view class="item" @click="onSelect('next')">下一节</view>
+      <view class="item" @click="onSelect('start')">{{ startEndWord }}开始</view>
+      <view class="item" @click="onSelect('end')">{{ startEndWord }}结束</view>
+      <view class="item" @click="onSelect('prev')">上一{{ prevNextWord }}</view>
+      <view class="item" @click="onSelect('next')">下一{{ prevNextWord }}</view>
       <view class="cancel" @click="close">取消</view>
     </view>
   </u-popup>
@@ -13,11 +13,16 @@
 <script setup>
 /**
  * 小节切换弹窗（对应 dialog_section_type）
- * 选项：小节开始 / 小节结束 / 上一节 / 下一节
+ * 选项：开始 / 结束 / 上一节(半场) / 下一节(半场)
+ * sport='football' 时文案改为“半场”（足球不分节，只分上/下半场）
  */
-defineProps({
-  show: { type: Boolean, default: false }
+const props = defineProps({
+  show: { type: Boolean, default: false },
+  sport: { type: String, default: 'basketball' }
 })
+const isFoot = props.sport === 'football'
+const startEndWord = isFoot ? '半场' : '小节'
+const prevNextWord = isFoot ? '半场' : '节'
 const emit = defineEmits(['select', 'close'])
 
 function onSelect(t) {

@@ -375,6 +375,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     { id: "mock-sec-3", gameSectionId: "mock-sec-3", name: "\u7B2C3\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 3, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) },
     { id: "mock-sec-4", gameSectionId: "mock-sec-4", name: "\u7B2C4\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 4, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
   ];
+  var footSections = [
+    { id: "mock-foot-sec-1", gameSectionId: "mock-foot-sec-1", name: "\u4E0A\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 1, groups: "", running: EB(1, "\u8FDB\u884C\u4E2D", true) },
+    { id: "mock-foot-sec-2", gameSectionId: "mock-foot-sec-2", name: "\u4E0B\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 2, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
+  ];
   var basketDetail = ok({
     game: {
       id: IDS.gameId,
@@ -494,14 +498,18 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     videoStatus: E(0, "\u672A\u76F4\u64AD"),
     section: "1"
   });
-  var sectionList = ok(sections.map((s) => ({
-    id: s.id,
-    name: s.name,
-    gameId: s.gameId,
-    type: s.type,
-    sort: s.sort,
-    groups: s.groups
-  })));
+  function sectionList(query) {
+    const isFoot = query && query.gameId && String(query.gameId).indexOf("foot") >= 0;
+    const list = isFoot ? footSections : sections;
+    return ok(list.map((s) => ({
+      id: s.id,
+      name: s.name,
+      gameId: s.gameId,
+      type: s.type,
+      sort: s.sort,
+      groups: s.groups
+    })));
+  }
   function memberList(query) {
     const isGuest = query && query.gameTeamId && String(query.gameTeamId).indexOf("guest") >= 0;
     return ok(isGuest ? guestMembers : hostMembers);
@@ -583,7 +591,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     { method: "GET", url: "game/{gameId}/foot-detail", handler: () => footDetail },
     { method: "GET", url: "statistics/game-detail-basketball", handler: () => basketDetail },
     /* ----- 小节 / 球员 ----- */
-    { method: "GET", url: "statistics/section/list", handler: () => sectionList },
+    { method: "GET", url: "statistics/section/list", handler: (o) => sectionList(o.query) },
     { method: "GET", url: "statistics/member/list", handler: (o) => memberList(o.query) },
     /* ----- 统计记录 ----- */
     { method: "GET", url: "statistics/page", handler: () => recordList },
@@ -630,7 +638,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         continue;
       return rule.handler(options);
     }
-    formatAppLog("warn", "at mock/mock-data.js:526", `%c\u3010MOCK\u3011\u672A\u5339\u914D\u5230\u9759\u6001\u6570\u636E\uFF0C\u8D70\u771F\u5B9E\u8BF7\u6C42\uFF1A${m} ${url}`, "color:#f56c6c");
+    formatAppLog("warn", "at mock/mock-data.js:536", `%c\u3010MOCK\u3011\u672A\u5339\u914D\u5230\u9759\u6001\u6570\u636E\uFF0C\u8D70\u771F\u5B9E\u8BF7\u6C42\uFF1A${m} ${url}`, "color:#f56c6c");
     return null;
   }
   function request(options) {

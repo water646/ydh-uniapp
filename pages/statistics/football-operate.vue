@@ -4,10 +4,7 @@
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
-        <view class="team-info">
-          <text class="tname">{{ homeName }}</text>
-          <text class="tag foul">犯规{{ hostFoul }}</text>
-        </view>
+        <view class="team-info" />
         <view class="timer-box">
           <text class="timer">{{ timerStr }}</text>
           <view class="timer-btns">
@@ -15,17 +12,19 @@
             <text class="t-btn" @click="editTimer">改时间</text>
           </view>
         </view>
-        <view class="team-info">
-          <text class="tag foul">犯规{{ guestFoul }}</text>
-          <text class="tname">{{ guestName }}</text>
-        </view>
+        <view class="team-info right" />
         <battery-view :power="battery" />
       </view>
     </view>
 
     <view class="body">
       <view class="team-panel">
-        <view class="panel-title">{{ homeName }}</view>
+        <view class="panel-title">
+          <text class="pt-name">{{ homeName }}</text>
+          <view class="pt-tags">
+            <text class="tag foul">犯规{{ hostFoul }}</text>
+          </view>
+        </view>
         <scroll-view scroll-y class="player-list">
           <view
             v-for="m in hostMembers"
@@ -75,7 +74,12 @@
       </view>
 
       <view class="team-panel">
-        <view class="panel-title">{{ guestName }}</view>
+        <view class="panel-title">
+          <text class="pt-name">{{ guestName }}</text>
+          <view class="pt-tags">
+            <text class="tag foul">犯规{{ guestFoul }}</text>
+          </view>
+        </view>
         <scroll-view scroll-y class="player-list">
           <view
             v-for="m in guestMembers"
@@ -93,7 +97,7 @@
     </view>
 
     <change-member-dialog :show="showChange" :members="currentMembers" @confirm="onChange" @close="showChange = false" />
-    <section-dialog :show="showSection" @select="onSection" @close="showSection = false" />
+    <section-dialog :show="showSection" sport="football" @select="onSection" @close="showSection = false" />
   </view>
 </template>
 
@@ -425,6 +429,20 @@ function back() {
   color: #29a871;
   padding: 12rpx 0;
   border-bottom: 1rpx solid #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+.pt-name {
+  font-size: 24rpx;
+}
+.pt-tags {
+  display: flex;
+  gap: 6rpx;
+}
+.team-info.right {
+  justify-content: flex-end;
 }
 .player-list {
   flex: 1;
