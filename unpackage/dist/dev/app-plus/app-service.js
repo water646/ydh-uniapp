@@ -15176,18 +15176,36 @@ This will fail in production.`);
       }
       function doUpload2(paths) {
         uploading2.value = true;
-        let pending = paths.length;
+        let success = 0;
+        let fail = 0;
+        let left = paths.length;
         paths.forEach((fp) => {
-          localPhotos.value.unshift(fp);
+          const item = { url: fp, status: "uploading" };
+          localPhotos.value.unshift(item);
           uploadToOSS(fp, id.value).then((res) => {
-            if (res.code === 1)
+            if (res.code === 1) {
+              item.status = "done";
+              success++;
               uploaded.value++;
+            } else {
+              item.status = "fail";
+              fail++;
+            }
           }).catch(() => {
-            uni.showToast({ title: "上传失败", icon: "none" });
+            item.status = "fail";
+            fail++;
           }).finally(() => {
-            pending--;
-            if (pending === 0)
+            left--;
+            if (left === 0) {
               uploading2.value = false;
+              if (fail === 0) {
+                uni.showToast({ title: `上传成功 ${success} 张`, icon: "success" });
+              } else if (success === 0) {
+                uni.showToast({ title: `上传失败 ${fail} 张`, icon: "none" });
+              } else {
+                uni.showToast({ title: `成功 ${success} 张，失败 ${fail} 张`, icon: "none" });
+              }
+            }
           });
         });
       }
@@ -15262,12 +15280,26 @@ This will fail in production.`);
             vue.Fragment,
             null,
             vue.renderList($setup.localPhotos, (p, i) => {
-              return vue.openBlock(), vue.createElementBlock("image", {
+              return vue.openBlock(), vue.createElementBlock("view", {
                 key: i,
-                class: "preview-img",
-                src: p,
-                mode: "aspectFill"
-              }, null, 8, ["src"]);
+                class: "preview-item"
+              }, [
+                vue.createElementVNode("image", {
+                  class: "preview-img",
+                  src: p.url,
+                  mode: "aspectFill"
+                }, null, 8, ["src"]),
+                p.status === "uploading" ? (vue.openBlock(), vue.createElementBlock("text", {
+                  key: 0,
+                  class: "badge uploading"
+                }, "上传中")) : p.status === "done" ? (vue.openBlock(), vue.createElementBlock("text", {
+                  key: 1,
+                  class: "badge done"
+                }, "已上传")) : p.status === "fail" ? (vue.openBlock(), vue.createElementBlock("text", {
+                  key: 2,
+                  class: "badge fail"
+                }, "失败")) : vue.createCommentVNode("v-if", true)
+              ]);
             }),
             128
             /* KEYED_FRAGMENT */
@@ -15278,7 +15310,7 @@ This will fail in production.`);
           status: "empty"
         })) : vue.createCommentVNode("v-if", true)
       ]),
-      vue.createElementVNode("view", { class: "tip" }, " 原项目使用 USB 连接单反相机（PTP 协议）取片上传，uniapp 无 USB host 能力无法实现， 此处改为手机摄像头拍照 / 相册选图后上传。 ")
+      vue.createElementVNode("view", { class: "tip" }, " 原项目使用 USB 连接单反相机（PTP 协议）取片后自动上传，uniapp 无 USB host 能力无法实现， 此处改为手机摄像头拍照 / 相册选图后自动上传（选图即传，无需点按钮）。 ")
     ]);
   }
   const PagesPhotoLivePhoto = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__scopeId", "data-v-021154e6"], ["__file", "F:/项目文件/uniapp版本/pages/photo/live-photo.vue"]]);

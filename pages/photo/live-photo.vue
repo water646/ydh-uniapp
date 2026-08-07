@@ -20,20 +20,19 @@
 
     <scroll-view scroll-y class="preview-list">
       <view class="grid">
-        <image
-          v-for="(p, i) in localPhotos"
-          :key="i"
-          class="preview-img"
-          :src="p"
-          mode="aspectFill"
-        />
+        <view v-for="(p, i) in localPhotos" :key="i" class="preview-item">
+          <image class="preview-img" :src="p.url" mode="aspectFill" />
+          <text v-if="p.status === 'uploading'" class="badge uploading">上传中</text>
+          <text v-else-if="p.status === 'done'" class="badge done">已上传</text>
+          <text v-else-if="p.status === 'fail'" class="badge fail">失败</text>
+        </view>
       </view>
       <empty-layout v-if="!localPhotos.length" status="empty" />
     </scroll-view>
 
     <view class="tip">
-      原项目使用 USB 连接单反相机（PTP 协议）取片上传，uniapp 无 USB host 能力无法实现，
-      此处改为手机摄像头拍照 / 相册选图后上传。
+      原项目使用 USB 连接单反相机（PTP 协议）取片后自动上传，uniapp 无 USB host 能力无法实现，
+      此处改为手机摄像头拍照 / 相册选图后自动上传（选图即传，无需点按钮）。
     </view>
   </view>
 </template>
@@ -41,9 +40,9 @@
 <script setup>
 /**
  * 拍照直播（对应 LivePhotoActivity）
- * 原项目：USB 单反（PTP）取片 + OSS 断点续传，强依赖 USB host，uniapp 完全不可迁移
- * 本页改为：uni.chooseImage 拍照/选图 + 上传（uploadToOSS）
- * 单反 USB 控制若需保留，只能封装 uni 原生插件复用原 Java（混合架构）
+ * 原项目：USB 单反（PTP）取片 + OSS 自动上传，强依赖 USB host，uniapp 完全不可迁移
+ * 本页改为：uni.chooseImage 拍照/选图 -> 选图即自动 uploadToOSS 上传
+ * 上传情况通过顶部「已上传 X 张 / 上传中」+ 每张角标(上传中/已上传/失败) + 结束 toast 提示
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
@@ -56,6 +55,7 @@ const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 const id = ref('')
 const uploaded = ref(0)
 const uploading = ref(false)
+// { url, status: 'uploading' | 'done' | 'fail' }
 const localPhotos = ref([])
 
 onLoad((opt) => {
@@ -80,19 +80,31 @@ function choosePhoto() {
 
 function doUpload(paths) {
   uploading.value = true
-  let pending = paths.length
+  let success = 0
+  let fail = 0
+  let left = paths.length
   paths.forEach((fp) => {
-    localPhotos.value.unshift(fp)
+    const item = { url: fp, status: 'uploading' }
+    localPhotos.value.unshift(item)
     uploadToOSS(fp, id.value)
       .then((res) => {
-        if (res.code === 1) uploaded.value++
+        if (res.code === 1) { item.status = 'done'; success++; uploaded.value++ }
+        else { item.status = 'fail'; fail++ }
       })
-      .catch(() => {
-        uni.showToast({ title: '上传失败', icon: 'none' })
-      })
+      .catch(() => { item.status = 'fail'; fail++ })
       .finally(() => {
-        pending--
-        if (pending === 0) uploading.value = false
+        left--
+        if (left === 0) {
+          uploading.value = false
+          // 上传结束提示情况
+          if (fail === 0) {
+            uni.showToast({ title: `上传成功 ${success} 张`, icon: 'success' })
+          } else if (success === 0) {
+            uni.showToast({ title: `上传失败 ${fail} 张`, icon: 'none' })
+          } else {
+            uni.showToast({ title: `成功 ${success} 张，失败 ${fail} 张`, icon: 'none' })
+          }
+        }
       })
   })
 }
@@ -184,10 +196,32 @@ function back() {
   padding: 16rpx;
   gap: 12rpx;
 }
-.preview-img {
+.preview-item {
+  position: relative;
   width: calc(33.33% - 8rpx);
+}
+.preview-img {
+  width: 100%;
   height: 220rpx;
   border-radius: 8rpx;
+}
+.badge {
+  position: absolute;
+  bottom: 6rpx;
+  left: 6rpx;
+  font-size: 18rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  color: #ffffff;
+}
+.badge.uploading {
+  background-color: #ff6f21;
+}
+.badge.done {
+  background-color: #29a871;
+}
+.badge.fail {
+  background-color: #ff2d2d;
 }
 .tip {
   padding: 20rpx;
