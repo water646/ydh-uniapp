@@ -83,7 +83,7 @@
  * - GET game/list-week?leagueId=youkenLeagueId -> code==1 取 data
  * - data[i]：0=U6 / 1=U8 / 2=U10 / 3=U12，每组 games + optimals(数据王)
  * - 全部展开（老项目 ScrollView 直接列出，无折叠）
- * - 比赛行：主队logo+队名 + 比分块(#141a66) + 客队队名+logo
+ * - 比赛行：主队logo+队名 + 比分块(#ff6f21) + 客队队名+logo
  * - 数据王 2×2 表格（橙底 #ff6f21）：得分王 type1 / 篮板王 type2 / 助攻王 type3 / 抢断王 type5
  *   每类取前2人并列，0人或>2人该类隐藏（对齐老项目 a/b/c/d 计数逻辑）
  * - 标题图 cuba/u6/u8/u10/u12/good 从老项目 mipmap 拷贝，图本身含优肯品牌字体
@@ -257,7 +257,7 @@ function back() {
   flex-direction: row;
   align-items: center;
   width: 140rpx;
-  background-color: #141a66;
+  background-color: #ff6f21;
   border-radius: 8rpx;
   padding: 6rpx 0;
   margin: 0 10rpx;
