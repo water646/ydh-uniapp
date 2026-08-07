@@ -27,7 +27,7 @@
  * nvue 渲染：App 端 live-player 需 nvue
  */
 import { ref, onUnmounted, getCurrentInstance } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
 
 const playUrl = ref('')
 const playing = ref(false)
@@ -51,6 +51,19 @@ onLoad((opt) => {
       })
     }
   }, 300)
+})
+
+onShow(() => {
+  // #ifdef APP-PLUS
+  // 视频黑底，状态栏文字用白
+  plus.navigator.setStatusBarStyle('light')
+  // #endif
+})
+onHide(() => {
+  // #ifdef APP-PLUS
+  // 离开恢复黑字（白底页）
+  plus.navigator.setStatusBarStyle('dark')
+  // #endif
 })
 
 onUnmounted(() => {

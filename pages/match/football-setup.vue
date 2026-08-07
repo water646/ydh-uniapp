@@ -61,7 +61,7 @@ import { insertOrReplace, countWhere } from '@/utils/db'
 const gameId = ref('')
 const hostTeamId = ref('')
 const guestTeamId = ref('')
-const statusValue = ref(0)
+const statusValue = ref(1)
 const homeName = ref('')
 const guestName = ref('')
 
@@ -74,7 +74,7 @@ onLoad((opt) => {
   gameId.value = opt.gameId || ''
   hostTeamId.value = opt.hostTeamId || ''
   guestTeamId.value = opt.guestTeamId || ''
-  statusValue.value = Number(opt.statusValue || 0)
+  statusValue.value = Number(opt.statusValue || 1)
   homeName.value = opt.homeName || ''
   guestName.value = opt.guestName || ''
   loadSections()

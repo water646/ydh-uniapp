@@ -46,11 +46,12 @@ function onBack() {
   background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   position: relative;
 }
 .nav-left {
@@ -65,11 +66,18 @@ function onBack() {
   height: 100rpx;
 }
 .nav-title {
-  flex: 1;
-  text-align: center;
+  position: absolute;
+  left: 90rpx;
+  right: 90rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 34rpx;
   color: #000000;
   font-weight: 500;
+  pointer-events: none;
 }
 .nav-right {
   min-width: 90rpx;

@@ -68,10 +68,22 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
 
   // F:/项目文件/uniapp版本/unpackage/dist/dev/.nvue/_plugin-vue_export-helper.js
   var import_vue = __toESM(require_vue());
+  var ON_SHOW = "onShow";
+  var ON_HIDE = "onHide";
   var ON_LOAD = "onLoad";
   var createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = (0, import_vue.getCurrentInstance)()) => {
     !import_vue.isInSSRComponentSetup && (0, import_vue.injectHook)(lifecycle, hook, target);
   };
+  var onShow = /* @__PURE__ */ createLifeCycleHook(
+    ON_SHOW,
+    1 | 2
+    /* HookFlags.PAGE */
+  );
+  var onHide = /* @__PURE__ */ createLifeCycleHook(
+    ON_HIDE,
+    1 | 2
+    /* HookFlags.PAGE */
+  );
   var onLoad = /* @__PURE__ */ createLifeCycleHook(
     ON_LOAD,
     2
@@ -110,6 +122,12 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           }
         }, 300);
       });
+      onShow(() => {
+        plus.navigator.setStatusBarStyle("light");
+      });
+      onHide(() => {
+        plus.navigator.setStatusBarStyle("dark");
+      });
       (0, import_vue2.onUnmounted)(() => {
         if (playerCtx)
           playerCtx.stop();
@@ -132,6 +150,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         playerCtx = v;
       }, instance, onState, onError, back, ref: import_vue2.ref, onUnmounted: import_vue2.onUnmounted, getCurrentInstance: import_vue2.getCurrentInstance, get onLoad() {
         return onLoad;
+      }, get onShow() {
+        return onShow;
+      }, get onHide() {
+        return onHide;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;

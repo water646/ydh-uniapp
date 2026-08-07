@@ -32,6 +32,7 @@ if (uni.restoreGlobal) {
 (function(vue) {
   "use strict";
   const ON_SHOW = "onShow";
+  const ON_HIDE = "onHide";
   const ON_LOAD = "onLoad";
   const ON_BACK_PRESS = "onBackPress";
   function formatAppLog(type, filename, ...args) {
@@ -49,6 +50,11 @@ if (uni.restoreGlobal) {
   };
   const onShow = /* @__PURE__ */ createLifeCycleHook(
     ON_SHOW,
+    1 | 2
+    /* HookFlags.PAGE */
+  );
+  const onHide = /* @__PURE__ */ createLifeCycleHook(
+    ON_HIDE,
     1 | 2
     /* HookFlags.PAGE */
   );
@@ -2115,7 +2121,7 @@ This will fail in production.`);
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: false,
+    useMock: true,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -7170,7 +7176,7 @@ This will fail in production.`);
             return;
           }
           const g = res.data && res.data.game || res.data || {};
-          const url2 = sport === "football" ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}` : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`;
+          const url2 = sport === "football" ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}` : `/pages/match/basketball-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`;
           uni.navigateTo({ url: url2 });
         }).catch((err) => {
           uni.hideLoading();
@@ -9894,13 +9900,13 @@ This will fail in production.`);
   }
   const teamRoster = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$p], ["__scopeId", "data-v-f8ca6510"], ["__file", "F:/项目文件/uniapp版本/components/team-roster/team-roster.vue"]]);
   const _sfc_main$p = {
-    __name: "index",
+    __name: "basketball-setup",
     setup(__props, { expose: __expose }) {
       __expose();
       const gameId = vue.ref("");
       const hostTeamId = vue.ref("");
       const guestTeamId = vue.ref("");
-      const statusValue = vue.ref(0);
+      const statusValue = vue.ref(1);
       const matchType = vue.ref("5v5");
       const tabs = [{ name: "比赛信息" }, { name: "主队" }, { name: "客队" }];
       const current = vue.ref(0);
@@ -9910,7 +9916,7 @@ This will fail in production.`);
         gameId.value = opt.gameId || "";
         hostTeamId.value = opt.hostTeamId || "";
         guestTeamId.value = opt.guestTeamId || "";
-        statusValue.value = Number(opt.statusValue || 0);
+        statusValue.value = Number(opt.statusValue || 1);
         matchType.value = opt.type || "5v5";
         loadSections();
       });
@@ -9978,7 +9984,7 @@ This will fail in production.`);
   function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_tabs = resolveEasycom(vue.resolveDynamicComponent("u-tabs"), __easycom_0$1);
     const _component_u_modal = resolveEasycom(vue.resolveDynamicComponent("u-modal"), __easycom_1);
-    return vue.openBlock(), vue.createElementBlock("view", { class: "match-set" }, [
+    return vue.openBlock(), vue.createElementBlock("view", { class: "basketball-setup" }, [
       vue.createVNode($setup["customNav"], { title: "比赛设置" }, {
         right: vue.withCtx(() => [
           vue.createElementVNode("text", {
@@ -10029,7 +10035,7 @@ This will fail in production.`);
       }, null, 8, ["show", "content"])
     ]);
   }
-  const PagesMatchSetIndex = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o], ["__scopeId", "data-v-eec1efc3"], ["__file", "F:/项目文件/uniapp版本/pages/match-set/index.vue"]]);
+  const PagesMatchBasketballSetup = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o], ["__scopeId", "data-v-d2d4d0a2"], ["__file", "F:/项目文件/uniapp版本/pages/match/basketball-setup.vue"]]);
   const _sfc_main$o = {
     __name: "index",
     setup(__props, { expose: __expose }) {
@@ -10125,7 +10131,7 @@ This will fail in production.`);
       const gameId = vue.ref("");
       const hostTeamId = vue.ref("");
       const guestTeamId = vue.ref("");
-      const statusValue = vue.ref(0);
+      const statusValue = vue.ref(1);
       const homeName = vue.ref("");
       const guestName = vue.ref("");
       const tabs = [{ name: "比赛信息" }, { name: "主队" }, { name: "客队" }];
@@ -10136,7 +10142,7 @@ This will fail in production.`);
         gameId.value = opt.gameId || "";
         hostTeamId.value = opt.hostTeamId || "";
         guestTeamId.value = opt.guestTeamId || "";
-        statusValue.value = Number(opt.statusValue || 0);
+        statusValue.value = Number(opt.statusValue || 1);
         homeName.value = opt.homeName || "";
         guestName.value = opt.guestName || "";
         loadSections();
@@ -10811,6 +10817,7 @@ This will fail in production.`);
       const showAction = vue.ref(false);
       const showChange = vue.ref(false);
       const showSection = vue.ref(false);
+      const showKickoff = vue.ref(false);
       const quickActions = BasketActions.slice(0, 9);
       const basketActions = BasketActions;
       const currentMembers = vue.computed(() => selectedTeam.value === "host" ? hostMembers2.value : guestMembers2.value);
@@ -10818,8 +10825,10 @@ This will fail in production.`);
         gameId.value = opt.gameId || "";
         homeName.value = opt.homeName || "主队";
         guestName.value = opt.guestName || "客队";
-        loadMembers();
-        loadSections();
+        Promise.all([loadMembers(), loadSections()]).then(() => {
+          loadStats();
+          checkKickoff();
+        });
         loadRecords();
         startUploadQueue(gameId.value, () => {
           loadRecords();
@@ -10828,17 +10837,28 @@ This will fail in production.`);
         updateSyncNum();
       });
       vue.onUnmounted(() => stopUploadQueue());
+      function sortMembers(list) {
+        return list.sort((a, b) => (Number(b.playing) || 0) - (Number(a.playing) || 0) || a.number - b.number);
+      }
       function loadMembers() {
-        queryList("member", `game_id='${gameId.value}'`).then((list) => {
-          hostMembers2.value = list.filter((m) => m.type === 1).map((m) => ({ ...m, foul: 0 }));
-          guestMembers2.value = list.filter((m) => m.type === 0).map((m) => ({ ...m, foul: 0 }));
-          loadStats();
+        return queryList("member", `game_id='${gameId.value}'`).then((list) => {
+          const init = list.map((m) => {
+            const hasVal = m.playing !== null && m.playing !== void 0 && m.playing !== "";
+            const playing = hasVal ? Number(m.playing) : Number(m.startingLineup) ? 1 : 0;
+            if (!hasVal) {
+              executeSQL(`UPDATE member SET playing=${playing} WHERE team_member_id='${m.team_member_id}'`);
+            }
+            return { ...m, foul: 0, playing };
+          });
+          hostMembers2.value = sortMembers(init.filter((m) => m.type === 1));
+          guestMembers2.value = sortMembers(init.filter((m) => m.type === 0));
         });
       }
       function loadSections() {
-        queryList("game_section", `game_id='${gameId.value}'`, "sort ASC").then((list) => {
+        return queryList("game_section", `game_id='${gameId.value}'`, "sort ASC").then((list) => {
           sections2.value = list;
           if (list.length) {
+            currentSectionIdx.value = 0;
             currentSection.value = list[0].section_id;
             currentSectionName.value = list[0].name;
           }
@@ -10857,18 +10877,20 @@ This will fail in production.`);
         ).then((list) => {
           let hs = 0, gs = 0, hf = 0, gf = 0, hp = 0, gp = 0;
           const foulMap = {};
+          const sec = currentSection.value;
           list.forEach((r) => {
             const sc = scoreOf(r.type, "basketball");
             const fl = isFoul(r.type, "basketball");
+            const inSec = r.statistics_section_id === sec;
             if (r.team_type === 1) {
               hs += sc;
-              if (fl)
+              if (fl && inSec)
                 hf++;
               if (r.type === 5)
                 hp++;
             } else {
               gs += sc;
-              if (fl)
+              if (fl && inSec)
                 gf++;
               if (r.type === 5)
                 gp++;
@@ -10939,6 +10961,9 @@ This will fail in production.`);
           else
             guestFoul.value++;
           member.foul = (member.foul || 0) + 1;
+          if (member.foul >= 5) {
+            uni.showToast({ title: "该队员犯规已达5次或以上", icon: "none" });
+          }
         }
         if (a.type === BasketType.PAUSE) {
           if (team === "host")
@@ -11001,6 +11026,16 @@ This will fail in production.`);
           is_need_upload: 0,
           disable: 0
         });
+        executeSQL(`UPDATE member SET playing=0 WHERE team_member_id='${offId}'`);
+        executeSQL(`UPDATE member SET playing=1 WHERE team_member_id='${onId}'`);
+        if (offMember)
+          offMember.playing = 0;
+        if (onMember)
+          onMember.playing = 1;
+        if (team === "host")
+          hostMembers2.value = sortMembers([...hostMembers2.value]);
+        else
+          guestMembers2.value = sortMembers([...guestMembers2.value]);
         loadRecords();
         updateSyncNum();
       }
@@ -11018,6 +11053,7 @@ This will fail in production.`);
           insertSectionRecord(BasketType.SECTION_START);
         if (t2 === "end")
           insertSectionRecord(BasketType.SECTION_END);
+        loadStats();
       }
       function insertSectionRecord(type) {
         insertOrReplace("technical_record", {
@@ -11038,10 +11074,38 @@ This will fail in production.`);
         loadRecords();
         updateSyncNum();
       }
+      function checkKickoff() {
+        const sec = sections2.value[currentSectionIdx.value];
+        showKickoff.value = !!(sec && !Number(sec.isStart));
+      }
+      function onKickoff(teamType) {
+        const teamName = teamType === 1 ? homeName.value : guestName.value;
+        insertOrReplace("technical_record", {
+          record_number: Date.now(),
+          elapsed_time: 0,
+          statistics_section_id: currentSection.value,
+          type: 16,
+          statistics_member_id: "",
+          description: `${teamName}球权`,
+          game_id: gameId.value,
+          team_type: teamType,
+          team_name: teamName,
+          add: 0,
+          delete: 1,
+          is_need_upload: 0,
+          disable: 0
+        });
+        executeSQL(`UPDATE game_section SET isStart=1 WHERE section_id='${currentSection.value}'`);
+        if (sections2.value[currentSectionIdx.value])
+          sections2.value[currentSectionIdx.value].isStart = 1;
+        showKickoff.value = false;
+        loadRecords();
+        updateSyncNum();
+      }
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, battery, syncNum, showAction, showChange, showSection, quickActions, basketActions, currentMembers, loadMembers, loadSections, loadRecords, loadStats, updateSyncNum, selectPlayer, onQuickAction, onAction, doAction, onDelete, onChange, onSection, insertSectionRecord, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, hostPause, guestPause, records, battery, syncNum, showAction, showChange, showSection, showKickoff, quickActions, basketActions, currentMembers, sortMembers, loadMembers, loadSections, loadRecords, loadStats, updateSyncNum, selectPlayer, onQuickAction, onAction, doAction, onDelete, onChange, onSection, insertSectionRecord, checkKickoff, onKickoff, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
         return onLoad;
       }, batteryView, actionSheet, changeMemberDialog, sectionDialog, get queryList() {
         return queryList;
@@ -11106,10 +11170,12 @@ This will fail in production.`);
             ),
             vue.createElementVNode(
               "text",
-              { class: "tag foul" },
+              {
+                class: vue.normalizeClass(["tag foul", { danger: $setup.hostFoul > 4 }])
+              },
               "犯规" + vue.toDisplayString($setup.hostFoul),
-              1
-              /* TEXT */
+              3
+              /* TEXT, CLASS */
             ),
             vue.createElementVNode(
               "text",
@@ -11139,10 +11205,12 @@ This will fail in production.`);
             ),
             vue.createElementVNode(
               "text",
-              { class: "tag foul" },
+              {
+                class: vue.normalizeClass(["tag foul", { danger: $setup.guestFoul > 4 }])
+              },
               "犯规" + vue.toDisplayString($setup.guestFoul),
-              1
-              /* TEXT */
+              3
+              /* TEXT, CLASS */
             ),
             vue.createElementVNode(
               "text",
@@ -11174,7 +11242,7 @@ This will fail in production.`);
               vue.renderList($setup.hostMembers, (m) => {
                 return vue.openBlock(), vue.createElementBlock("view", {
                   key: m.team_member_id,
-                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "host" }]),
+                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "host", playing: Number(m.playing) }]),
                   onClick: ($event) => $setup.selectPlayer("host", m)
                 }, [
                   vue.createElementVNode(
@@ -11195,7 +11263,7 @@ This will fail in production.`);
                     "text",
                     {
                       key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5 }])
+                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5, yellow: m.foul === 4 }])
                     },
                     vue.toDisplayString(m.foul),
                     3
@@ -11313,7 +11381,7 @@ This will fail in production.`);
               vue.renderList($setup.guestMembers, (m) => {
                 return vue.openBlock(), vue.createElementBlock("view", {
                   key: m.team_member_id,
-                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "guest" }]),
+                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "guest", playing: Number(m.playing) }]),
                   onClick: ($event) => $setup.selectPlayer("guest", m)
                 }, [
                   vue.createElementVNode(
@@ -11334,7 +11402,7 @@ This will fail in production.`);
                     "text",
                     {
                       key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5 }])
+                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5, yellow: m.foul === 4 }])
                     },
                     vue.toDisplayString(m.foul),
                     3
@@ -11365,7 +11433,35 @@ This will fail in production.`);
         show: $setup.showSection,
         onSelect: $setup.onSection,
         onClose: _cache[5] || (_cache[5] = ($event) => $setup.showSection = false)
-      }, null, 8, ["show"])
+      }, null, 8, ["show"]),
+      $setup.showKickoff ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "kickoff-mask"
+      }, [
+        vue.createElementVNode("view", { class: "kickoff-tip" }, "选择开场球权"),
+        vue.createElementVNode("view", { class: "kickoff-teams" }, [
+          vue.createElementVNode(
+            "view",
+            {
+              class: "kickoff-ball",
+              onClick: _cache[6] || (_cache[6] = ($event) => $setup.onKickoff(1))
+            },
+            vue.toDisplayString($setup.homeName),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "kickoff-ball",
+              onClick: _cache[7] || (_cache[7] = ($event) => $setup.onKickoff(0))
+            },
+            vue.toDisplayString($setup.guestName),
+            1
+            /* TEXT */
+          )
+        ])
+      ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
   const PagesStatisticsBasketballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-ef0dfe21"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate.vue"]]);
@@ -15204,6 +15300,12 @@ This will fail in production.`);
         }
         current.value = Number(opt.position || 0);
       });
+      onShow(() => {
+        plus.navigator.setStatusBarStyle("light");
+      });
+      onHide(() => {
+        plus.navigator.setStatusBarStyle("dark");
+      });
       function onChange(e) {
         current.value = e.detail.current;
       }
@@ -15212,6 +15314,10 @@ This will fail in production.`);
       }
       const __returned__ = { urls, current, onChange, back, ref: vue.ref, get onLoad() {
         return onLoad;
+      }, get onShow() {
+        return onShow;
+      }, get onHide() {
+        return onHide;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
@@ -15359,7 +15465,7 @@ This will fail in production.`);
   __definePage("pages/loading/index", PagesLoadingIndex);
   __definePage("pages/login/index", PagesLoginIndex);
   __definePage("pages/main/index", PagesMainIndex);
-  __definePage("pages/match-set/index", PagesMatchSetIndex);
+  __definePage("pages/match/basketball-setup", PagesMatchBasketballSetup);
   __definePage("pages/game-setup/index", PagesGameSetupIndex);
   __definePage("pages/match/football-setup", PagesMatchFootballSetup);
   __definePage("pages/statistics/basketball-operate", PagesStatisticsBasketballOperate);
@@ -15389,7 +15495,7 @@ This will fail in production.`);
       initDB();
     },
     onShow() {
-      plus.navigator.setStatusBarStyle("light");
+      plus.navigator.setStatusBarStyle("dark");
     },
     onHide() {
     }

@@ -53,27 +53,35 @@ to {
   flex-direction: column;
 }
 .top-bar[data-v-a085037c] {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status[data-v-a085037c] {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner[data-v-a085037c] {
   height: 2.75rem;
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0 0.625rem;
 }
 .back[data-v-a085037c] {
   font-size: 1.375rem;
-  color: #ffffff;
+  color: #000000;
   width: 1.875rem;
 }
 .title[data-v-a085037c] {
-  color: #ffffff;
+  position: absolute;
+  left: 3.125rem;
+  right: 3.125rem;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #000000;
   font-size: 0.9375rem;
-  flex: 1;
-  text-align: center;
 }
 .list[data-v-a085037c] {
   flex: 1;

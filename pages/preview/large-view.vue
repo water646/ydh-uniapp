@@ -16,7 +16,7 @@
  * 原项目用 HackyViewPager + PhotoView 捏合缩放；uniapp 用 swiper + image aspectFit
  */
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
 
 const urls = ref([])
 const current = ref(0)
@@ -33,6 +33,19 @@ onLoad((opt) => {
     }
   }
   current.value = Number(opt.position || 0)
+})
+
+onShow(() => {
+  // #ifdef APP-PLUS
+  // 黑底全屏预览，状态栏文字用白
+  plus.navigator.setStatusBarStyle('light')
+  // #endif
+})
+onHide(() => {
+  // #ifdef APP-PLUS
+  // 离开恢复黑字（白底页）
+  plus.navigator.setStatusBarStyle('dark')
+  // #endif
 })
 
 function onChange(e) {

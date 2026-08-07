@@ -164,30 +164,42 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
-  background-color: white;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 88rpx;
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-
 }
 .back {
   font-size: 44rpx;
-  color: black;
+  color: #000000;
   width: 60rpx;
   position: absolute;
+  left: 20rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
 }
 .title {
-  color: black;
+  color: #000000;
   font-size: 32rpx;
-  flex: 1;
-  text-align: center;
   font-weight: bold;
+  position: absolute;
+  left: 100rpx;
+  right: 100rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 .body {
   flex: 1;

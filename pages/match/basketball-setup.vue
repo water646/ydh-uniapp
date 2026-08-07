@@ -1,5 +1,5 @@
 <template>
-  <view class="match-set">
+  <view class="basketball-setup">
     <custom-nav title="比赛设置">
       <template #right>
         <text class="start-btn" @click="onStart">开始统计</text>
@@ -60,7 +60,7 @@ import { insertOrReplace, countWhere } from '@/utils/db'
 const gameId = ref('')
 const hostTeamId = ref('')
 const guestTeamId = ref('')
-const statusValue = ref(0)
+const statusValue = ref(1)
 const matchType = ref('5v5')
 
 const tabs = [{ name: '比赛信息' }, { name: '主队' }, { name: '客队' }]
@@ -72,7 +72,7 @@ onLoad((opt) => {
   gameId.value = opt.gameId || ''
   hostTeamId.value = opt.hostTeamId || ''
   guestTeamId.value = opt.guestTeamId || ''
-  statusValue.value = Number(opt.statusValue || 0)
+  statusValue.value = Number(opt.statusValue || 1)
   matchType.value = opt.type || '5v5'
   loadSections()
 })
@@ -134,7 +134,7 @@ function onConfirmStart() {
 </script>
 
 <style lang="scss" scoped>
-.match-set {
+.basketball-setup {
   min-height: 100vh;
   background-color: #ffffff;
 }

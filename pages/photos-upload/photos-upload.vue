@@ -78,26 +78,35 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 88rpx;
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20rpx;
 }
 .back {
   font-size: 44rpx;
-  color: #ffffff;
+  color: #000000;
   width: 60rpx;
 }
 .title {
-  flex: 1;
-  text-align: center;
-  color: #ffffff;
+  position: absolute;
+  left: 100rpx;
+  right: 100rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #000000;
   font-size: 30rpx;
 }
 .live-btn {

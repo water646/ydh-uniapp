@@ -1,4 +1,6 @@
 import { isInSSRComponentSetup, injectHook, getCurrentInstance } from "vue";
+const ON_SHOW = "onShow";
+const ON_HIDE = "onHide";
 const ON_LOAD = "onLoad";
 const ON_READY = "onReady";
 function formatAppLog(type, filename, ...args) {
@@ -11,6 +13,16 @@ function formatAppLog(type, filename, ...args) {
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
+const onShow = /* @__PURE__ */ createLifeCycleHook(
+  ON_SHOW,
+  1 | 2
+  /* HookFlags.PAGE */
+);
+const onHide = /* @__PURE__ */ createLifeCycleHook(
+  ON_HIDE,
+  1 | 2
+  /* HookFlags.PAGE */
+);
 const onLoad = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,
   2
@@ -31,6 +43,8 @@ const _export_sfc = (sfc, props) => {
 export {
   _export_sfc as _,
   onReady as a,
+  onShow as b,
+  onHide as c,
   formatAppLog as f,
   onLoad as o
 };

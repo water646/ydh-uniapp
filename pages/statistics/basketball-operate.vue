@@ -7,13 +7,13 @@
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
         <view class="team-info">
           <text class="tname">{{ homeName }}</text>
-          <text class="tag foul">犯规{{ hostFoul }}</text>
+          <text class="tag foul" :class="{ danger: hostFoul > 4 }">犯规{{ hostFoul }}</text>
           <text class="tag pause">暂停{{ hostPause }}</text>
         </view>
         <view class="section-btn" @click="showSection = true">{{ currentSectionName }}</view>
         <view class="team-info">
           <text class="tag pause">暂停{{ guestPause }}</text>
-          <text class="tag foul">犯规{{ guestFoul }}</text>
+          <text class="tag foul" :class="{ danger: guestFoul > 4 }">犯规{{ guestFoul }}</text>
           <text class="tname">{{ guestName }}</text>
         </view>
         <battery-view :power="battery" />
@@ -30,12 +30,12 @@
             v-for="m in hostMembers"
             :key="m.team_member_id"
             class="player"
-            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'host' }"
+            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'host', playing: Number(m.playing) }"
             @click="selectPlayer('host', m)"
           >
             <text class="num">{{ m.number }}</text>
             <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text>
+            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text>
           </view>
         </scroll-view>
       </view>
@@ -82,12 +82,12 @@
             v-for="m in guestMembers"
             :key="m.team_member_id"
             class="player"
-            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'guest' }"
+            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'guest', playing: Number(m.playing) }"
             @click="selectPlayer('guest', m)"
           >
             <text class="num">{{ m.number }}</text>
             <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text>
+            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text>
           </view>
         </scroll-view>
       </view>
@@ -96,6 +96,15 @@
     <action-sheet :show="showAction" :actions="basketActions" title="选择动作" @select="onAction" @close="showAction = false" />
     <change-member-dialog :show="showChange" :members="currentMembers" @confirm="onChange" @close="showChange = false" />
     <section-dialog :show="showSection" @select="onSection" @close="showSection = false" />
+
+    <!-- 开场球权遮罩（对应 qiuquan_layout） -->
+    <view v-if="showKickoff" class="kickoff-mask">
+      <view class="kickoff-tip">选择开场球权</view>
+      <view class="kickoff-teams">
+        <view class="kickoff-ball" @click="onKickoff(1)">{{ homeName }}</view>
+        <view class="kickoff-ball" @click="onKickoff(0)">{{ guestName }}</view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -145,6 +154,7 @@ const syncNum = ref(0)
 const showAction = ref(false)
 const showChange = ref(false)
 const showSection = ref(false)
+const showKickoff = ref(false)
 
 const quickActions = BasketActions.slice(0, 9)
 const basketActions = BasketActions
@@ -154,8 +164,11 @@ onLoad((opt) => {
   gameId.value = opt.gameId || ''
   homeName.value = opt.homeName || '主队'
   guestName.value = opt.guestName || '客队'
-  loadMembers()
-  loadSections()
+  // 球员 + 小节就绪后再算统计（全队犯规依赖当前节）
+  Promise.all([loadMembers(), loadSections()]).then(() => {
+    loadStats()
+    checkKickoff()
+  })
   loadRecords()
   startUploadQueue(gameId.value, () => {
     loadRecords()
@@ -166,18 +179,30 @@ onLoad((opt) => {
 
 onUnmounted(() => stopUploadQueue())
 
+/** 在场靠前，号码升序（对应 Playing desc, Number asc） */
+function sortMembers(list) {
+  return list.sort((a, b) => (Number(b.playing) || 0) - (Number(a.playing) || 0) || (a.number - b.number))
+}
 function loadMembers() {
-  queryList('member', `game_id='${gameId.value}'`).then((list) => {
-    hostMembers.value = list.filter((m) => m.type === 1).map((m) => ({ ...m, foul: 0 }))
-    guestMembers.value = list.filter((m) => m.type === 0).map((m) => ({ ...m, foul: 0 }))
-    loadStats()
+  return queryList('member', `game_id='${gameId.value}'`).then((list) => {
+    const init = list.map((m) => {
+      const hasVal = m.playing !== null && m.playing !== undefined && m.playing !== ''
+      const playing = hasVal ? Number(m.playing) : (Number(m.startingLineup) ? 1 : 0)
+      if (!hasVal) {
+        executeSQL(`UPDATE member SET playing=${playing} WHERE team_member_id='${m.team_member_id}'`)
+      }
+      return { ...m, foul: 0, playing }
+    })
+    hostMembers.value = sortMembers(init.filter((m) => m.type === 1))
+    guestMembers.value = sortMembers(init.filter((m) => m.type === 0))
   })
 }
 
 function loadSections() {
-  queryList('game_section', `game_id='${gameId.value}'`, 'sort ASC').then((list) => {
+  return queryList('game_section', `game_id='${gameId.value}'`, 'sort ASC').then((list) => {
     sections.value = list
     if (list.length) {
+      currentSectionIdx.value = 0
       currentSection.value = list[0].section_id
       currentSectionName.value = list[0].name
     }
@@ -192,23 +217,25 @@ function loadRecords() {
   })
 }
 
-/** 从已有记录聚合比分/犯规/暂停（对应进页初始化） */
+/** 比分/暂停/球员个人犯规按全场，全队犯规按当前节（对应 getCurrentFoulAndStop 按 statisticsSectionId 过滤） */
 function loadStats() {
   selectSQL(
     `SELECT * FROM technical_record WHERE game_id='${gameId.value}' AND disable=0 AND "delete"=1`
   ).then((list) => {
     let hs = 0, gs = 0, hf = 0, gf = 0, hp = 0, gp = 0
     const foulMap = {}
+    const sec = currentSection.value
     list.forEach((r) => {
       const sc = scoreOf(r.type, 'basketball')
       const fl = isFoul(r.type, 'basketball')
+      const inSec = r.statistics_section_id === sec
       if (r.team_type === 1) {
         hs += sc
-        if (fl) hf++
+        if (fl && inSec) hf++
         if (r.type === 5) hp++
       } else {
         gs += sc
-        if (fl) gf++
+        if (fl && inSec) gf++
         if (r.type === 5) gp++
       }
       if (fl && r.statistics_member_id) foulMap[r.statistics_member_id] = (foulMap[r.statistics_member_id] || 0) + 1
@@ -279,6 +306,9 @@ function doAction(a) {
     if (team === 'host') hostFoul.value++
     else guestFoul.value++
     member.foul = (member.foul || 0) + 1
+    if (member.foul >= 5) {
+      uni.showToast({ title: '该队员犯规已达5次或以上', icon: 'none' })
+    }
   }
   if (a.type === BasketType.PAUSE) {
     if (team === 'host') hostPause.value++
@@ -321,6 +351,13 @@ function onChange({ offId, onId }) {
     statistics_member_id: onId, description: `${onMember ? onMember.name : ''} 换上`,
     game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0
   })
+  // 回写 playing 状态并重排（对应 Member.playing 落库 + Playing desc 排序）
+  executeSQL(`UPDATE member SET playing=0 WHERE team_member_id='${offId}'`)
+  executeSQL(`UPDATE member SET playing=1 WHERE team_member_id='${onId}'`)
+  if (offMember) offMember.playing = 0
+  if (onMember) onMember.playing = 1
+  if (team === 'host') hostMembers.value = sortMembers([...hostMembers.value])
+  else guestMembers.value = sortMembers([...guestMembers.value])
   loadRecords()
   updateSyncNum()
 }
@@ -335,6 +372,8 @@ function onSection(t) {
   }
   if (t === 'start') insertSectionRecord(BasketType.SECTION_START)
   if (t === 'end') insertSectionRecord(BasketType.SECTION_END)
+  // 全队犯规按当前节，切换后重算
+  loadStats()
 }
 
 function insertSectionRecord(type) {
@@ -343,6 +382,25 @@ function insertSectionRecord(type) {
     statistics_member_id: '', description: type === 16 ? '小节开始' : '小节结束',
     game_id: gameId.value, team_type: 0, team_name: '', add: 0, delete: 1, is_need_upload: 0, disable: 0
   })
+  loadRecords()
+  updateSyncNum()
+}
+
+/** 开场球权选择（对应 qiuquan_layout：未开赛时强制选球权，选后插 type16 + 标记 isStart） */
+function checkKickoff() {
+  const sec = sections.value[currentSectionIdx.value]
+  showKickoff.value = !!(sec && !Number(sec.isStart))
+}
+function onKickoff(teamType) {
+  const teamName = teamType === 1 ? homeName.value : guestName.value
+  insertOrReplace('technical_record', {
+    record_number: Date.now(), elapsed_time: 0, statistics_section_id: currentSection.value, type: 16,
+    statistics_member_id: '', description: `${teamName}球权`,
+    game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0
+  })
+  executeSQL(`UPDATE game_section SET isStart=1 WHERE section_id='${currentSection.value}'`)
+  if (sections.value[currentSectionIdx.value]) sections.value[currentSectionIdx.value].isStart = 1
+  showKickoff.value = false
   loadRecords()
   updateSyncNum()
 }
@@ -361,17 +419,17 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 80rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  color: #ffffff;
+  color: #000000;
 }
 .back {
   font-size: 44rpx;
@@ -390,8 +448,12 @@ function back() {
   font-size: 22rpx;
   padding: 2rpx 10rpx;
   border-radius: 4rpx;
+  color: #ffffff;
 }
 .tag.foul {
+  background-color: #999999;
+}
+.tag.foul.danger {
   background-color: #ff2d2d;
 }
 .tag.pause {
@@ -401,13 +463,16 @@ function back() {
   font-size: 26rpx;
   padding: 6rpx 20rpx;
   background-color: #29a871;
+  color: #ffffff;
   border-radius: 6rpx;
 }
 .body {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: row;
-  overflow: hidden;
+  // overflow: hidden;
+  height:50vh
 }
 .team-panel {
   width: 240rpx;
@@ -415,6 +480,7 @@ function back() {
   border-right: 1rpx solid #eeeeee;
   display: flex;
   flex-direction: column;
+  min-height:50vh
 }
 .panel-title {
   text-align: center;
@@ -425,6 +491,7 @@ function back() {
 }
 .player-list {
   flex: 1;
+  min-height: 0;
 }
 .player {
   display: flex;
@@ -434,6 +501,9 @@ function back() {
 }
 .player.sel {
   background-color: #e8f7ee;
+}
+.player.playing {
+  border-left: 6rpx solid #29a871;
 }
 .num {
   width: 50rpx;
@@ -453,8 +523,13 @@ function back() {
 .foul-c.red {
   color: #ff2d2d;
 }
+.foul-c.yellow {
+  color: #f5a623;
+}
 .center {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 16rpx;
@@ -525,6 +600,7 @@ function back() {
 }
 .record-preview {
   flex: 1;
+  min-height: 0;
   margin-top: 10rpx;
   background-color: #ffffff;
   border-radius: 6rpx;
@@ -552,5 +628,37 @@ function back() {
 .back-icon {
   width: 100rpx;
   height: 100rpx;
+}
+.kickoff-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.kickoff-tip {
+  color: #ffffff;
+  font-size: 32rpx;
+  margin-bottom: 40rpx;
+}
+.kickoff-teams {
+  display: flex;
+  gap: 80rpx;
+}
+.kickoff-ball {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  background-color: #29a871;
+  color: #ffffff;
+  font-size: 30rpx;
+  line-height: 200rpx;
+  text-align: center;
 }
 </style>

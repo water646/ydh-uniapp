@@ -353,17 +353,17 @@ function back() {
   background-color: #f8f8f8;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 80rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  color: #ffffff;
+  color: #000000;
 }
 .back {
   font-size: 44rpx;
@@ -383,6 +383,7 @@ function back() {
   padding: 2rpx 10rpx;
   border-radius: 4rpx;
   background-color: #ff2d2d;
+  color: #ffffff;
 }
 .timer-box {
   display: flex;
@@ -402,12 +403,14 @@ function back() {
   padding: 4rpx 12rpx;
   background-color: #29a871;
   border-radius: 4rpx;
+  color: #ffffff;
 }
 .body {
   flex: 1;
   display: flex;
   flex-direction: row;
   overflow: hidden;
+  min-height: 50vh;
 }
 .team-panel {
   width: 240rpx;
@@ -458,6 +461,7 @@ function back() {
   display: flex;
   flex-direction: column;
   padding: 16rpx;
+  min-height: 50vh;
 }
 .score-board {
   display: flex;

@@ -11,7 +11,7 @@
     { "path": "pages/loading/index", "style": { "navigationStyle": "custom", "disableScroll": true } },
     { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
     { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/match-set/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/match/basketball-setup", "style": { "navigationStyle": "custom" } },
     { "path": "pages/game-setup/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/football-setup", "style": { "navigationStyle": "custom" } },
     { "path": "pages/statistics/basketball-operate", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },

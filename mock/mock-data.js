@@ -332,7 +332,7 @@ const connectInfo = ok({
 
 /* ------------------------------------------------------------------ *
  * 【MOCK】小节列表（SectionData[]）—— statistics/section/list
- *   match-set/index.vue 消费 s.id / s.gameId / s.type.value / s.name / s.sort / s.groups
+ *   basketball-setup.vue 消费 s.id / s.gameId / s.type.value / s.name / s.sort / s.groups
  * ------------------------------------------------------------------ */
 const sectionList = ok(sections.map((s) => ({
   id: s.id,

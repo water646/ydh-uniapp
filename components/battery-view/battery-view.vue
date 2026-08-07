@@ -34,7 +34,7 @@ const levelClass = computed(() => {
 .battery-body {
   width: 44rpx;
   height: 22rpx;
-  border: 2rpx solid #ffffff;
+  border: 2rpx solid #333333;
   border-radius: 4rpx;
   padding: 2rpx;
   box-sizing: border-box;
@@ -56,7 +56,7 @@ const levelClass = computed(() => {
 .battery-tip {
   width: 4rpx;
   height: 12rpx;
-  background-color: #ffffff;
+  background-color: #333333;
   border-radius: 0 2rpx 2rpx 0;
 }
 </style>

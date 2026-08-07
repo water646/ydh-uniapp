@@ -305,7 +305,7 @@ function statusText(g) {
 //   const url =
 //     sport === 'football'
 //       ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-//       : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+//       : `/pages/match/basketball-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
 //   uni.navigateTo({ url })
 // }
 
@@ -366,7 +366,7 @@ function practice(sport) {
     const g = (res.data && res.data.game) || res.data || {}
     const url = sport === 'football'
       ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-      : `/pages/match-set/index?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+      : `/pages/match/basketball-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
     uni.navigateTo({ url })
   }).catch((err) => {
     uni.hideLoading()

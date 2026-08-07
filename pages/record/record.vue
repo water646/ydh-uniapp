@@ -111,10 +111,10 @@ function back() {
   background-color: #ffffff;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 80rpx;
@@ -124,7 +124,7 @@ function back() {
 }
 .back {
   font-size: 44rpx;
-  color: #ffffff;
+  color: #000000;
   width: 60rpx;
 }
 .tabs {

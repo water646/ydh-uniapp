@@ -366,26 +366,34 @@ function back() {
   flex-direction: column;
 }
 .top-bar {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .nav-status {
-  background-color: #2c2c2c;
+  background-color: #ffffff;
 }
 .top-bar-inner {
   height: 88rpx;
   display: flex;
   align-items: center;
   padding: 0 20rpx;
-  color: #ffffff;
+  color: #000000;
+  position: relative;
 }
 .back {
   font-size: 44rpx;
   width: 60rpx;
 }
 .title {
-  flex: 1;
-  text-align: center;
+  position: absolute;
+  left: 120rpx;
+  right: 120rpx;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 30rpx;
+  pointer-events: none;
 }
 .upload-btn {
   font-size: 26rpx;
