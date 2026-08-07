@@ -838,6 +838,9 @@ to {
   font-size: 0.875rem;
   color: #333333;
 }
+.picker[data-v-1153092f] {
+  flex: 1;
+}
 .sync-row[data-v-1153092f] {
   margin-top: 1.25rem;
 }

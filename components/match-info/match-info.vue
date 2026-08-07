@@ -2,11 +2,15 @@
   <view class="match-info">
     <view class="row">
       <text class="label">日期</text>
-      <text class="value">{{ dateStr }}</text>
+      <picker class="picker" mode="date" :value="dateStr" @change="onDateChange">
+        <view class="value">{{ dateStr || '请选择' }} ▼</view>
+      </picker>
     </view>
     <view class="row">
       <text class="label">时间</text>
-      <text class="value">{{ timeStr }}</text>
+      <picker class="picker" mode="time" :value="timeStr" @change="onTimeChange">
+        <view class="value">{{ timeStr || '请选择' }} ▼</view>
+      </picker>
     </view>
     <view class="row" @click="showStatus = true">
       <text class="label">状态</text>
@@ -83,6 +87,17 @@ function onStatus(s) {
   })
 }
 
+/**
+ * 日期/时间修改：对齐原生 MatchInfomationFragment（pvData/pvTime 选完 set_time/data_time 回填）
+ * 注意：原生 updataMatcnInfo（updateGameInfo）调用被注释，选完未写后端，故此处亦仅回填 UI
+ */
+function onDateChange(e) {
+  dateStr.value = e.detail.value
+}
+function onTimeChange(e) {
+  timeStr.value = e.detail.value
+}
+
 /** 同步历史数据：分页拉取写入本地 technical_record（对应 MatchInfomationFragment 同步逻辑） */
 function doSync() {
   if (syncing.value) return
@@ -148,6 +163,9 @@ function syncPage(pageNo) {
   flex: 1;
   font-size: 28rpx;
   color: #333333;
+}
+.picker {
+  flex: 1;
 }
 .sync-row {
   margin-top: 40rpx;

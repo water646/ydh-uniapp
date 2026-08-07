@@ -9411,6 +9411,12 @@ This will fail in production.`);
           }
         });
       }
+      function onDateChange(e) {
+        dateStr.value = e.detail.value;
+      }
+      function onTimeChange(e) {
+        timeStr.value = e.detail.value;
+      }
       function doSync() {
         if (syncing.value)
           return;
@@ -9454,7 +9460,7 @@ This will fail in production.`);
           syncing.value = false;
         });
       }
-      const __returned__ = { props: props2, emit: emit2, dateStr, timeStr, statusDesc, showStatus, syncing, syncProgress, load, onStatus, doSync, syncPage, ref: vue.ref, watch: vue.watch, get getGameDetail() {
+      const __returned__ = { props: props2, emit: emit2, dateStr, timeStr, statusDesc, showStatus, syncing, syncProgress, load, onStatus, onDateChange, onTimeChange, doSync, syncPage, ref: vue.ref, watch: vue.watch, get getGameDetail() {
         return getGameDetail;
       }, get gameStatus() {
         return gameStatus;
@@ -9473,23 +9479,37 @@ This will fail in production.`);
     return vue.openBlock(), vue.createElementBlock("view", { class: "match-info" }, [
       vue.createElementVNode("view", { class: "row" }, [
         vue.createElementVNode("text", { class: "label" }, "日期"),
-        vue.createElementVNode(
-          "text",
-          { class: "value" },
-          vue.toDisplayString($setup.dateStr),
-          1
-          /* TEXT */
-        )
+        vue.createElementVNode("picker", {
+          class: "picker",
+          mode: "date",
+          value: $setup.dateStr,
+          onChange: $setup.onDateChange
+        }, [
+          vue.createElementVNode(
+            "view",
+            { class: "value" },
+            vue.toDisplayString($setup.dateStr || "请选择") + " ▼",
+            1
+            /* TEXT */
+          )
+        ], 40, ["value"])
       ]),
       vue.createElementVNode("view", { class: "row" }, [
         vue.createElementVNode("text", { class: "label" }, "时间"),
-        vue.createElementVNode(
-          "text",
-          { class: "value" },
-          vue.toDisplayString($setup.timeStr),
-          1
-          /* TEXT */
-        )
+        vue.createElementVNode("picker", {
+          class: "picker",
+          mode: "time",
+          value: $setup.timeStr,
+          onChange: $setup.onTimeChange
+        }, [
+          vue.createElementVNode(
+            "view",
+            { class: "value" },
+            vue.toDisplayString($setup.timeStr || "请选择") + " ▼",
+            1
+            /* TEXT */
+          )
+        ], 40, ["value"])
       ]),
       vue.createElementVNode("view", {
         class: "row",
