@@ -1,6 +1,6 @@
 <template>
   <view class="basketball-setup">
-    <custom-nav title="比赛设置">
+    <custom-nav title="篮球比赛设置">
       <template #right>
         <text class="start-btn" @click="onStart">开始统计</text>
       </template>

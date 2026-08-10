@@ -51,18 +51,17 @@ const codeText = ref('获取验证码')
 let timer = null
 let currentTime = 0
 
-function sendCode() {
+async function sendCode() {
   if (counting.value) return
   if (!phone.value) return uni.showToast({ title: '请输入手机号码', icon: 'none' })
   if (!checkPhone(phone.value)) return uni.showToast({ title: '手机号格式不正确', icon: 'none' })
 
-  getNote(phone.value).then((res) => {
-    if (res.code === 1) {
-      startCountDown()
-    } else {
-      uni.showToast({ title: res.msg || '发送失败', icon: 'none' })
-    }
-  })
+  const res = await getNote(phone.value)
+  if (res.code === 1) {
+    startCountDown()
+  } else {
+    uni.showToast({ title: res.msg || '发送失败', icon: 'none' })
+  }
 }
 
 function startCountDown() {
@@ -81,19 +80,18 @@ function startCountDown() {
   }, 1000)
 }
 
-function doLogin() {
+async function doLogin() {
   if (!phone.value) return uni.showToast({ title: '请输入手机号码', icon: 'none' })
   if (!code.value) return uni.showToast({ title: '请输入短信验证码', icon: 'none' })
   if (!agreed.value) return uni.showToast({ title: '请先同意用户协议', icon: 'none' })
 
-  validateLogin(phone.value, code.value).then((res) => {
-    if (res.code === 1) {
-      userStore.setAuth(String(res.data))
-      uni.reLaunch({ url: '/pages/main/index' })
-    } else {
-      uni.showToast({ title: res.msg || '登录失败', icon: 'none' })
-    }
-  })
+  const res = await validateLogin(phone.value, code.value)
+  if (res.code === 1) {
+    userStore.setAuth(String(res.data))
+    uni.reLaunch({ url: '/pages/main/index' })
+  } else {
+    uni.showToast({ title: res.msg || '登录失败', icon: 'none' })
+  }
 }
 
 function goAgreement(type) {
