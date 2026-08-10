@@ -455,6 +455,8 @@
   flex-direction: column;
   background-color: #f8f8f8;
 }
+
+/* 顶栏：比分 + 球队名 */
 .top-bar[data-v-6d1135d0] {
   background-color: #ffffff;
 }
@@ -462,44 +464,91 @@
   background-color: #ffffff;
 }
 .top-bar-inner[data-v-6d1135d0] {
+  position: relative;
   height: 2.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 0.625rem;
-  color: #000000;
 }
-.back[data-v-6d1135d0] {
-  font-size: 1.375rem;
-  width: 1.875rem;
-}
-.team-info[data-v-6d1135d0] {
+.top-right[data-v-6d1135d0] {
   display: flex;
   align-items: center;
   gap: 0.3125rem;
+}
+.back[data-v-6d1135d0] {
+  width: 1.875rem;
+  display: flex;
+  align-items: center;
+}
+.back-icon[data-v-6d1135d0] {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.score-area[data-v-6d1135d0] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  pointer-events: none;
+}
+.team-name[data-v-6d1135d0] {
+  font-size: 0.875rem;
+  color: #141a66;
+  font-weight: bold;
+}
+.score[data-v-6d1135d0] {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2f7ed8;
+}
+.colon[data-v-6d1135d0] {
+  font-size: 1.125rem;
+  color: #999999;
+}
+
+/* 副顶栏：主队犯规 | 比赛阶段+计时器居中 | 客队犯规 */
+.sub-bar[data-v-6d1135d0] {
+  display: flex;
+  align-items: center;
+  padding: 0.3125rem 0.625rem;
+  background-color: #ffffff;
+  border-bottom: 0.03125rem solid #eeeeee;
+}
+.sub-side[data-v-6d1135d0] {
   flex: 1;
+  display: flex;
+  gap: 0.375rem;
 }
-.tname[data-v-6d1135d0] {
+.sub-side.right[data-v-6d1135d0] {
+  justify-content: flex-end;
+}
+.sub-center[data-v-6d1135d0] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-btn[data-v-6d1135d0] {
   font-size: 0.8125rem;
-}
-.tag.foul[data-v-6d1135d0] {
-  font-size: 0.6875rem;
-  padding: 0.0625rem 0.3125rem;
-  border-radius: 0.125rem;
-  background-color: #ff2d2d;
+  padding: 0.1875rem 0.625rem;
+  background-color: #29a871;
   color: #ffffff;
+  border-radius: 0.1875rem;
 }
 .timer-box[data-v-6d1135d0] {
   display: flex;
   align-items: center;
-  gap: 0.3125rem;
+  gap: 0.25rem;
 }
 .timer[data-v-6d1135d0] {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: #ff6f21;
-}
-.timer-btns[data-v-6d1135d0] {
-  display: flex;
-  gap: 0.25rem;
+  font-weight: bold;
 }
 .t-btn[data-v-6d1135d0] {
   font-size: 0.6875rem;
@@ -508,58 +557,84 @@
   border-radius: 0.125rem;
   color: #ffffff;
 }
-.body[data-v-6d1135d0] {
+.sub-tag[data-v-6d1135d0] {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.125rem;
+  color: #ffffff;
+}
+.sub-tag.foul[data-v-6d1135d0] {
+  background-color: #999999;
+}
+.sub-tag.foul.danger[data-v-6d1135d0] {
+  background-color: #ff2d2d;
+}
+.sync[data-v-6d1135d0] {
+  font-size: 0.6875rem;
+  color: #999999;
+}
+
+/* 中部栏：球员选择（主客并排，卡片网格） */
+.mid[data-v-6d1135d0] {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: row;
-  overflow: hidden;
-  min-height: 50vh;
 }
-.team-panel[data-v-6d1135d0] {
-  width: 7.5rem;
-  background-color: #ffffff;
-  border-right: 0.03125rem solid #eeeeee;
+.team-col[data-v-6d1135d0] {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: #ffffff;
+  border-right: 0.03125rem solid #eeeeee;
+  height: 15.625rem;
 }
-.panel-title[data-v-6d1135d0] {
+.team-col[data-v-6d1135d0]:last-child {
+  border-right: none;
+}
+.person-card[data-v-6d1135d0] {
+  width: 4.375rem;
+  height: 2.5rem;
+  padding: 0.3125rem;
+  margin: 0.3125rem;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.person-ball[data-v-6d1135d0] {
+  width: 0.375rem;
+  height: 0.375rem;
+  padding: 0.5625rem;
+  border-radius: 50%;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.15625rem;
+}
+.sel[data-v-6d1135d0] {
+  background-color: #E1F3E4;
+}
+.col-head[data-v-6d1135d0] {
   text-align: center;
   font-size: 0.75rem;
   color: #29a871;
-  padding: 0.375rem 0;
+  padding: 0.3125rem 0;
   border-bottom: 0.03125rem solid #f2f2f2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.1875rem;
-}
-.pt-name[data-v-6d1135d0] {
-  font-size: 0.75rem;
-}
-.pt-tags[data-v-6d1135d0] {
-  display: flex;
-  gap: 0.1875rem;
-}
-.team-info.right[data-v-6d1135d0] {
-  justify-content: flex-end;
 }
 .player-list[data-v-6d1135d0] {
-  flex: 1;
-}
-.player[data-v-6d1135d0] {
+  height: 50vh;
+  background-color: #F8F8F8;
   display: flex;
-  align-items: center;
-  padding: 0.5rem 0.625rem;
-  border-bottom: 0.03125rem solid #f2f2f2;
-}
-.player.sel[data-v-6d1135d0] {
-  background-color: #e8f7ee;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 .num[data-v-6d1135d0] {
-  width: 1.5625rem;
+  width: 1.875rem;
   font-size: 0.8125rem;
-  color: #29a871;
-  font-weight: bold;
+  color: white;
 }
 .name[data-v-6d1135d0] {
   flex: 1;
@@ -573,56 +648,42 @@
 .foul-c.red[data-v-6d1135d0] {
   color: #ff2d2d;
 }
-.center[data-v-6d1135d0] {
-  flex: 1;
+
+/* 底栏：选择具体操作 */
+.bottom-bar[data-v-6d1135d0] {
+  background-color: #ffffff;
+  border-top: 0.03125rem solid #eeeeee;
+  padding: 0.375rem 0.625rem;
+  max-height: 40vh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
-  min-height: 50vh;
+  position: absolute;
+  bottom: 0.3125rem;
 }
-.score-board[data-v-6d1135d0] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.9375rem;
-}
-.score[data-v-6d1135d0] {
-  font-size: 1.75rem;
-  font-weight: bold;
-  color: #2f7ed8;
-}
-.colon[data-v-6d1135d0] {
-  font-size: 1.25rem;
-  color: #999999;
-}
-.section-btn[data-v-6d1135d0] {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #29a871;
-  margin: 0.1875rem 0;
-}
-.sync-tag[data-v-6d1135d0] {
-  text-align: center;
-  font-size: 0.6875rem;
-  color: #999999;
-  margin-bottom: 0.1875rem;
+.action-scroll[data-v-6d1135d0] {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0.3125rem;
 }
 .action-grid[data-v-6d1135d0] {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: 0.3125rem;
 }
 .action-btn[data-v-6d1135d0] {
-  width: calc(33.33% - 0.25rem);
-  height: 2rem;
-  line-height: 2rem;
-  text-align: center;
+  flex: 0 0 calc((100% - 0.625rem) / 3);
+  height: 2.5rem;
+  line-height: 1.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 0.1875rem;
-  font-size: 0.75rem;
+  font-size: 0.9375rem;
   color: #ffffff;
 }
 .action-btn.green[data-v-6d1135d0] {
-  background-color: #29a871;
+  background-color: #48ADB3;
 }
 .action-btn.red[data-v-6d1135d0] {
   background-color: #ff2d2d;
@@ -630,15 +691,14 @@
 .action-btn.blue[data-v-6d1135d0] {
   background-color: #009de9;
 }
-.row-btns[data-v-6d1135d0] {
+.bottom-btns[data-v-6d1135d0] {
   display: flex;
   gap: 0.375rem;
-  margin: 0.3125rem 0;
 }
 .r-btn[data-v-6d1135d0] {
   flex: 1;
-  height: 1.875rem;
-  line-height: 1.875rem;
+  height: 1.5625rem;
+  line-height: 1.5625rem;
   text-align: center;
   border-radius: 0.1875rem;
   font-size: 0.75rem;
@@ -647,15 +707,45 @@
 .r-btn.orange[data-v-6d1135d0] {
   background-color: #ff6f21;
 }
-.record-preview[data-v-6d1135d0] {
-  flex: 1;
+.r-btn.gray[data-v-6d1135d0] {
+  background-color: #888888;
+}
+
+/* 记录列表弹层 */
+.record-mask[data-v-6d1135d0] {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.record-panel[data-v-6d1135d0] {
+  width: 70%;
+  max-height: 70%;
   background-color: #ffffff;
-  border-radius: 0.1875rem;
+  border-radius: 0.375rem;
+  display: flex;
+  flex-direction: column;
+}
+.record-head[data-v-6d1135d0] {
+  padding: 0.625rem;
+  text-align: center;
+  font-size: 0.875rem;
+  border-bottom: 0.03125rem solid #eeeeee;
+}
+.record-scroll[data-v-6d1135d0] {
+  flex: 1;
+  min-height: 0;
 }
 .record-item[data-v-6d1135d0] {
   display: flex;
   align-items: center;
-  padding: 0.375rem 0.5rem;
+  padding: 0.5rem 0.625rem;
   border-bottom: 0.03125rem solid #f2f2f2;
 }
 .r-team[data-v-6d1135d0] {
@@ -672,7 +762,16 @@
   font-size: 0.6875rem;
   color: #ff2d2d;
 }
-.back-icon[data-v-6d1135d0] {
-  width: 3.125rem;
-  height: 3.125rem;
+.record-empty[data-v-6d1135d0] {
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999999;
+}
+.record-close[data-v-6d1135d0] {
+  padding: 0.625rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #009de9;
+  border-top: 0.03125rem solid #eeeeee;
 }

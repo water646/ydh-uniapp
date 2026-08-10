@@ -1,54 +1,88 @@
 <template>
   <view class="foot-operate">
+    <!-- 顶栏：比分 + 球队名 -->
     <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
-        <view class="team-info" />
-        <view class="timer-box">
-          <text class="timer">{{ timerStr }}</text>
-          <view class="timer-btns">
-            <text class="t-btn" @click="toggleTimer">{{ timerRunning ? '暂停' : '开始' }}</text>
-            <text class="t-btn" @click="editTimer">改时间</text>
-          </view>
-        </view>
-        <view class="team-info right" />
-        <battery-view :power="battery" />
-      </view>
-    </view>
-
-    <view class="body">
-      <view class="team-panel">
-        <view class="panel-title">
-          <text class="pt-name">{{ homeName }}</text>
-          <view class="pt-tags">
-            <text class="tag foul">犯规{{ hostFoul }}</text>
-          </view>
-        </view>
-        <scroll-view scroll-y class="player-list">
-          <view
-            v-for="m in hostMembers"
-            :key="m.team_member_id"
-            class="player"
-            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'host' }"
-            @click="selectPlayer('host', m)"
-          >
-            <text class="num">{{ m.number }}</text>
-            <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text>
-          </view>
-        </scroll-view>
-      </view>
-
-      <view class="center">
-        <view class="score-board">
+        <view class="score-area">
+          <text class="team-name">{{ homeName }}</text>
           <text class="score">{{ hostScore }}</text>
           <text class="colon">:</text>
           <text class="score">{{ guestScore }}</text>
+          <text class="team-name">{{ guestName }}</text>
         </view>
-        <view class="section-btn" @click="showSection = true">{{ currentSectionName }}</view>
-        <view class="sync-tag">待同步 {{ syncNum }}</view>
+        <view class="top-right">
+          <text class="sync">待同步 {{ syncNum }}</text>
+          <battery-view :power="battery" />
+        </view>
+      </view>
+    </view>
 
+    <!-- 副顶栏：主队犯规 | 比赛阶段+计时器居中 | 客队犯规 -->
+    <view class="sub-bar">
+      <view class="sub-side">
+        <text class="sub-tag foul" :class="{ danger: hostFoul > 4 }">犯规{{ hostFoul }}</text>
+      </view>
+      <view class="sub-center">
+        <view class="section-btn" @click="showSection = true">{{ currentSectionName }} ▾</view>
+        <view class="timer-box">
+          <text class="timer">{{ timerStr }}</text>
+          <text class="t-btn" @click="toggleTimer">{{ timerRunning ? '暂停' : '开始' }}</text>
+          <text class="t-btn" @click="editTimer">改时间</text>
+        </view>
+      </view>
+      <view class="sub-side right">
+        <text class="sub-tag foul" :class="{ danger: guestFoul > 4 }">犯规{{ guestFoul }}</text>
+      </view>
+    </view>
+
+    <!-- 中部栏：球员选择（主客并排，卡片网格） -->
+    <view class="mid">
+      <view class="team-col">
+        <view class="col-head">{{ homeName }}</view>
+        <view class="player-list">
+          <view
+            v-for="m in hostMembers"
+            :key="m.team_member_id"
+            class="person-card"
+            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'host' }"
+            @click="selectPlayer('host', m)"
+          >
+            <view class="person-ball" style="background-color:#1D9DE8">
+              <text class="num">{{ m.number }}</text>
+            </view>
+            <text class="name">{{ m.name }}</text>
+            <!-- 犯规次数 -->
+            <!-- <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text> -->
+          </view>
+        </view>
+      </view>
+
+      <view class="team-col" style="border-left: 1rpx solid black;">
+        <view class="col-head">{{ guestName }}</view>
+        <view class="player-list">
+          <view
+            v-for="m in guestMembers"
+            :key="m.team_member_id"
+            class="person-card"
+            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'guest' }"
+            @click="selectPlayer('guest', m)"
+          >
+            <view class="person-ball">
+              <text class="num">{{ m.number }}</text>
+            </view>
+            <text class="name">{{ m.name }}</text>
+            <!-- 犯规次数 -->
+            <!-- <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text> -->
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底栏：选择具体操作 -->
+    <view class="bottom-bar">
+      <scroll-view scroll-y class="action-scroll">
         <view class="action-grid">
           <view
             v-for="a in footActions"
@@ -57,47 +91,34 @@
             :class="a.color"
             @click="onAction(a)"
           >
-            {{ a.desc }}
+            <p>{{ a.desc }}</p>
           </view>
         </view>
-        <view class="row-btns">
-          <view class="r-btn orange" @click="showChange = true">换人</view>
-        </view>
-
-        <scroll-view scroll-y class="record-preview">
-          <view v-for="r in records" :key="r.record_number" class="record-item">
-            <text class="r-team">{{ r.team_name }}</text>
-            <text class="r-desc">{{ r.description }}</text>
-            <text class="r-del" @click="onDelete(r)">删除</text>
-          </view>
-        </scroll-view>
-      </view>
-
-      <view class="team-panel">
-        <view class="panel-title">
-          <text class="pt-name">{{ guestName }}</text>
-          <view class="pt-tags">
-            <text class="tag foul">犯规{{ guestFoul }}</text>
-          </view>
-        </view>
-        <scroll-view scroll-y class="player-list">
-          <view
-            v-for="m in guestMembers"
-            :key="m.team_member_id"
-            class="player"
-            :class="{ sel: selectedId === m.team_member_id && selectedTeam === 'guest' }"
-            @click="selectPlayer('guest', m)"
-          >
-            <text class="num">{{ m.number }}</text>
-            <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5 }">{{ m.foul }}</text>
-          </view>
-        </scroll-view>
+      </scroll-view>
+      <view class="bottom-btns">
+        <view class="r-btn orange" @click="showChange = true">换人</view>
+        <view class="r-btn gray" @click="showRecord = true">记录</view>
       </view>
     </view>
 
     <change-member-dialog :show="showChange" :members="currentMembers" @confirm="onChange" @close="showChange = false" />
     <section-dialog :show="showSection" sport="football" @select="onSection" @close="showSection = false" />
+
+    <!-- 记录列表弹层（点底栏「记录」展开，可删除） -->
+    <view v-if="showRecord" class="record-mask" @click="showRecord = false">
+      <view class="record-panel" @click.stop>
+        <view class="record-head">比赛记录</view>
+        <scroll-view scroll-y class="record-scroll">
+          <view v-for="r in records" :key="r.record_number" class="record-item">
+            <text class="r-team">{{ r.team_name }}</text>
+            <text class="r-desc">{{ r.description }}</text>
+            <text class="r-del" @click="onDelete(r)">删除</text>
+          </view>
+          <view v-if="!records.length" class="record-empty">暂无记录</view>
+        </scroll-view>
+        <view class="record-close" @click="showRecord = false">关闭</view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -107,6 +128,7 @@
  * - 动作集：进球/点球/射门/助攻/黄牌/红牌/越位/手球/犯规/暂停/换人/失误
  * - 比赛计时器（开始/暂停/改时分秒），计时存 SP（对应 MyPrefsFile/gameId=MM:SS）
  * - 记录多 elapsedTime 字段上传
+ * - 布局：上下四栏（顶栏比分球队名 / 副顶栏阶段计时器犯规 / 中部球员 / 底栏动作）
  */
 import { ref, computed, onUnmounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
@@ -143,6 +165,7 @@ const battery = ref(100)
 const syncNum = ref(0)
 const showChange = ref(false)
 const showSection = ref(false)
+const showRecord = ref(false)
 
 const footActions = FootActions
 const currentMembers = computed(() => (selectedTeam.value === 'host' ? hostMembers.value : guestMembers.value))
@@ -356,6 +379,8 @@ function back() {
   flex-direction: column;
   background-color: #f8f8f8;
 }
+
+/* 顶栏：比分 + 球队名 */
 .top-bar {
   background-color: #ffffff;
 }
@@ -363,44 +388,91 @@ function back() {
   background-color: #ffffff;
 }
 .top-bar-inner {
+  position: relative;
   height: 80rpx;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20rpx;
-  color: #000000;
 }
-.back {
-  font-size: 44rpx;
-  width: 60rpx;
-}
-.team-info {
+.top-right {
   display: flex;
   align-items: center;
   gap: 10rpx;
+}
+.back {
+  width: 60rpx;
+  display: flex;
+  align-items: center;
+}
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+.score-area {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  pointer-events: none;
+}
+.team-name {
+  font-size: 28rpx;
+  color: #141a66;
+  font-weight: bold;
+}
+.score {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2f7ed8;
+}
+.colon {
+  font-size: 36rpx;
+  color: #999999;
+}
+
+/* 副顶栏：主队犯规 | 比赛阶段+计时器居中 | 客队犯规 */
+.sub-bar {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #eeeeee;
+}
+.sub-side {
   flex: 1;
+  display: flex;
+  gap: 12rpx;
 }
-.tname {
+.sub-side.right {
+  justify-content: flex-end;
+}
+.sub-center {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.section-btn {
   font-size: 26rpx;
-}
-.tag.foul {
-  font-size: 22rpx;
-  padding: 2rpx 10rpx;
-  border-radius: 4rpx;
-  background-color: #ff2d2d;
+  padding: 6rpx 20rpx;
+  background-color: #29a871;
   color: #ffffff;
+  border-radius: 6rpx;
 }
 .timer-box {
   display: flex;
   align-items: center;
-  gap: 10rpx;
+  gap: 8rpx;
 }
 .timer {
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #ff6f21;
-}
-.timer-btns {
-  display: flex;
-  gap: 8rpx;
+  font-weight: bold;
 }
 .t-btn {
   font-size: 22rpx;
@@ -409,58 +481,89 @@ function back() {
   border-radius: 4rpx;
   color: #ffffff;
 }
-.body {
+.sub-tag {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 4rpx;
+  color: #ffffff;
+}
+.sub-tag.foul {
+  background-color: #999999;
+}
+.sub-tag.foul.danger {
+  background-color: #ff2d2d;
+}
+.sync {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 中部栏：球员选择（主客并排，卡片网格） */
+.mid {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: row;
-  overflow: hidden;
-  min-height: 50vh;
 }
-.team-panel {
-  width: 240rpx;
-  background-color: #ffffff;
-  border-right: 1rpx solid #eeeeee;
+.team-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: #ffffff;
+  border-right: 1rpx solid #eeeeee;
+  height: 500rpx;
 }
-.panel-title {
+.team-col:last-child {
+  border-right: none;
+}
+
+.person-card {
+  width: 140rpx;
+  height: 80rpx;
+  padding: 10rpx;
+  margin: 10rpx;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.person-ball {
+  width: 12rpx;
+  height: 12rpx;
+  padding: 18rpx;
+  border-radius: 50%;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5rpx;
+}
+
+.sel {
+  background-color: #E1F3E4;
+}
+
+.col-head {
   text-align: center;
   font-size: 24rpx;
   color: #29a871;
-  padding: 12rpx 0;
+  padding: 10rpx 0;
   border-bottom: 1rpx solid #f2f2f2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6rpx;
-}
-.pt-name {
-  font-size: 24rpx;
-}
-.pt-tags {
-  display: flex;
-  gap: 6rpx;
-}
-.team-info.right {
-  justify-content: flex-end;
 }
 .player-list {
-  flex: 1;
-}
-.player {
+  height: 50vh;
+  background-color: #F8F8F8;
   display: flex;
-  align-items: center;
-  padding: 16rpx 20rpx;
-  border-bottom: 1rpx solid #f2f2f2;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
-.player.sel {
-  background-color: #e8f7ee;
-}
+
 .num {
-  width: 50rpx;
+  width: 60rpx;
   font-size: 26rpx;
-  color: #29a871;
-  font-weight: bold;
+  color: white;
 }
 .name {
   flex: 1;
@@ -474,56 +577,42 @@ function back() {
 .foul-c.red {
   color: #ff2d2d;
 }
-.center {
-  flex: 1;
+
+/* 底栏：选择具体操作 */
+.bottom-bar {
+  background-color: #ffffff;
+  border-top: 1rpx solid #eeeeee;
+  padding: 12rpx 20rpx;
+  max-height: 40vh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 16rpx;
-  min-height: 50vh;
+  position: absolute;
+  bottom: 10rpx;
 }
-.score-board {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 30rpx;
-}
-.score {
-  font-size: 56rpx;
-  font-weight: bold;
-  color: #2f7ed8;
-}
-.colon {
-  font-size: 40rpx;
-  color: #999999;
-}
-.section-btn {
-  text-align: center;
-  font-size: 24rpx;
-  color: #29a871;
-  margin: 6rpx 0;
-}
-.sync-tag {
-  text-align: center;
-  font-size: 22rpx;
-  color: #999999;
-  margin-bottom: 6rpx;
+.action-scroll {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 10rpx;
 }
 .action-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 .action-btn {
-  width: calc(33.33% - 8rpx);
-  height: 64rpx;
-  line-height: 64rpx;
-  text-align: center;
+  flex: 0 0 calc((100% - 20rpx) / 3);
+  height: 80rpx;
+  line-height: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6rpx;
-  font-size: 24rpx;
+  font-size: 30rpx;
   color: #ffffff;
 }
 .action-btn.green {
-  background-color: #29a871;
+  background-color: #48ADB3;
 }
 .action-btn.red {
   background-color: #ff2d2d;
@@ -531,15 +620,14 @@ function back() {
 .action-btn.blue {
   background-color: #009de9;
 }
-.row-btns {
+.bottom-btns {
   display: flex;
   gap: 12rpx;
-  margin: 10rpx 0;
 }
 .r-btn {
   flex: 1;
-  height: 60rpx;
-  line-height: 60rpx;
+  height: 50rpx;
+  line-height: 50rpx;
   text-align: center;
   border-radius: 6rpx;
   font-size: 24rpx;
@@ -548,15 +636,45 @@ function back() {
 .r-btn.orange {
   background-color: #ff6f21;
 }
-.record-preview {
-  flex: 1;
+.r-btn.gray {
+  background-color: #888888;
+}
+
+/* 记录列表弹层 */
+.record-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.record-panel {
+  width: 70%;
+  max-height: 70%;
   background-color: #ffffff;
-  border-radius: 6rpx;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+}
+.record-head {
+  padding: 20rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #eeeeee;
+}
+.record-scroll {
+  flex: 1;
+  min-height: 0;
 }
 .record-item {
   display: flex;
   align-items: center;
-  padding: 12rpx 16rpx;
+  padding: 16rpx 20rpx;
   border-bottom: 1rpx solid #f2f2f2;
 }
 .r-team {
@@ -573,8 +691,17 @@ function back() {
   font-size: 22rpx;
   color: #ff2d2d;
 }
-.back-icon {
-  width: 100rpx;
-  height: 100rpx;
+.record-empty {
+  padding: 40rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999999;
+}
+.record-close {
+  padding: 20rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #009de9;
+  border-top: 1rpx solid #eeeeee;
 }
 </style>

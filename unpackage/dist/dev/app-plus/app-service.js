@@ -11505,6 +11505,7 @@ This will fail in production.`);
       const syncNum = vue.ref(0);
       const showChange = vue.ref(false);
       const showSection = vue.ref(false);
+      const showRecord = vue.ref(false);
       const footActions = FootActions;
       const currentMembers = vue.computed(() => selectedTeam.value === "host" ? hostMembers2.value : guestMembers2.value);
       const timerStr = vue.ref("00:00");
@@ -11708,7 +11709,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, battery, syncNum, showChange, showSection, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, battery, syncNum, showChange, showSection, showRecord, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
         return timerSeconds;
       }, set timerSeconds(v) {
         timerSeconds = v;
@@ -11771,102 +11772,14 @@ This will fail in production.`);
               mode: "aspectFit"
             })
           ]),
-          vue.createElementVNode("view", { class: "team-info" }),
-          vue.createElementVNode("view", { class: "timer-box" }, [
+          vue.createElementVNode("view", { class: "score-area" }, [
             vue.createElementVNode(
               "text",
-              { class: "timer" },
-              vue.toDisplayString($setup.timerStr),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode("view", { class: "timer-btns" }, [
-              vue.createElementVNode(
-                "text",
-                {
-                  class: "t-btn",
-                  onClick: $setup.toggleTimer
-                },
-                vue.toDisplayString($setup.timerRunning ? "暂停" : "开始"),
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode("text", {
-                class: "t-btn",
-                onClick: $setup.editTimer
-              }, "改时间")
-            ])
-          ]),
-          vue.createElementVNode("view", { class: "team-info right" }),
-          vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
-        ])
-      ]),
-      vue.createElementVNode("view", { class: "body" }, [
-        vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode("view", { class: "panel-title" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "pt-name" },
+              { class: "team-name" },
               vue.toDisplayString($setup.homeName),
               1
               /* TEXT */
             ),
-            vue.createElementVNode("view", { class: "pt-tags" }, [
-              vue.createElementVNode(
-                "text",
-                { class: "tag foul" },
-                "犯规" + vue.toDisplayString($setup.hostFoul),
-                1
-                /* TEXT */
-              )
-            ])
-          ]),
-          vue.createElementVNode("scroll-view", {
-            "scroll-y": "",
-            class: "player-list"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.hostMembers, (m) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: m.team_member_id,
-                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "host" }]),
-                  onClick: ($event) => $setup.selectPlayer("host", m)
-                }, [
-                  vue.createElementVNode(
-                    "text",
-                    { class: "num" },
-                    vue.toDisplayString(m.number),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode(
-                    "text",
-                    { class: "name" },
-                    vue.toDisplayString(m.name),
-                    1
-                    /* TEXT */
-                  ),
-                  m.foul > 0 ? (vue.openBlock(), vue.createElementBlock(
-                    "text",
-                    {
-                      key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5 }])
-                    },
-                    vue.toDisplayString(m.foul),
-                    3
-                    /* TEXT, CLASS */
-                  )) : vue.createCommentVNode("v-if", true)
-                ], 10, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "center" }, [
-          vue.createElementVNode("view", { class: "score-board" }, [
             vue.createElementVNode(
               "text",
               { class: "score" },
@@ -11881,25 +11794,181 @@ This will fail in production.`);
               vue.toDisplayString($setup.guestScore),
               1
               /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              { class: "team-name" },
+              vue.toDisplayString($setup.guestName),
+              1
+              /* TEXT */
             )
           ]),
+          vue.createElementVNode("view", { class: "top-right" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "sync" },
+              "待同步 " + vue.toDisplayString($setup.syncNum),
+              1
+              /* TEXT */
+            ),
+            vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
+          ])
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "sub-bar" }, [
+        vue.createElementVNode("view", { class: "sub-side" }, [
+          vue.createElementVNode(
+            "text",
+            {
+              class: vue.normalizeClass(["sub-tag foul", { danger: $setup.hostFoul > 4 }])
+            },
+            "犯规" + vue.toDisplayString($setup.hostFoul),
+            3
+            /* TEXT, CLASS */
+          )
+        ]),
+        vue.createElementVNode("view", { class: "sub-center" }, [
           vue.createElementVNode(
             "view",
             {
               class: "section-btn",
               onClick: _cache[0] || (_cache[0] = ($event) => $setup.showSection = true)
             },
-            vue.toDisplayString($setup.currentSectionName),
+            vue.toDisplayString($setup.currentSectionName) + " ▾",
             1
             /* TEXT */
           ),
+          vue.createElementVNode("view", { class: "timer-box" }, [
+            vue.createElementVNode(
+              "text",
+              { class: "timer" },
+              vue.toDisplayString($setup.timerStr),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "text",
+              {
+                class: "t-btn",
+                onClick: $setup.toggleTimer
+              },
+              vue.toDisplayString($setup.timerRunning ? "暂停" : "开始"),
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode("text", {
+              class: "t-btn",
+              onClick: $setup.editTimer
+            }, "改时间")
+          ])
+        ]),
+        vue.createElementVNode("view", { class: "sub-side right" }, [
+          vue.createElementVNode(
+            "text",
+            {
+              class: vue.normalizeClass(["sub-tag foul", { danger: $setup.guestFoul > 4 }])
+            },
+            "犯规" + vue.toDisplayString($setup.guestFoul),
+            3
+            /* TEXT, CLASS */
+          )
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "mid" }, [
+        vue.createElementVNode("view", { class: "team-col" }, [
           vue.createElementVNode(
             "view",
-            { class: "sync-tag" },
-            "待同步 " + vue.toDisplayString($setup.syncNum),
+            { class: "col-head" },
+            vue.toDisplayString($setup.homeName),
             1
             /* TEXT */
           ),
+          vue.createElementVNode("view", { class: "player-list" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.hostMembers, (m) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: m.team_member_id,
+                  class: vue.normalizeClass(["person-card", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "host" }]),
+                  onClick: ($event) => $setup.selectPlayer("host", m)
+                }, [
+                  vue.createElementVNode("view", {
+                    class: "person-ball",
+                    style: { "background-color": "#1D9DE8" }
+                  }, [
+                    vue.createElementVNode(
+                      "text",
+                      { class: "num" },
+                      vue.toDisplayString(m.number),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode(
+                    "text",
+                    { class: "name" },
+                    vue.toDisplayString(m.name),
+                    1
+                    /* TEXT */
+                  )
+                ], 10, ["onClick"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ])
+        ]),
+        vue.createElementVNode("view", {
+          class: "team-col",
+          style: { "border-left": "1rpx solid black" }
+        }, [
+          vue.createElementVNode(
+            "view",
+            { class: "col-head" },
+            vue.toDisplayString($setup.guestName),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("view", { class: "player-list" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.guestMembers, (m) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: m.team_member_id,
+                  class: vue.normalizeClass(["person-card", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "guest" }]),
+                  onClick: ($event) => $setup.selectPlayer("guest", m)
+                }, [
+                  vue.createElementVNode("view", { class: "person-ball" }, [
+                    vue.createElementVNode(
+                      "text",
+                      { class: "num" },
+                      vue.toDisplayString(m.number),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode(
+                    "text",
+                    { class: "name" },
+                    vue.toDisplayString(m.name),
+                    1
+                    /* TEXT */
+                  )
+                ], 10, ["onClick"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ])
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "bottom-bar" }, [
+        vue.createElementVNode("scroll-view", {
+          "scroll-y": "",
+          class: "action-scroll"
+        }, [
           vue.createElementVNode("view", { class: "action-grid" }, [
             (vue.openBlock(true), vue.createElementBlock(
               vue.Fragment,
@@ -11909,21 +11978,58 @@ This will fail in production.`);
                   key: a.type,
                   class: vue.normalizeClass(["action-btn", a.color]),
                   onClick: ($event) => $setup.onAction(a)
-                }, vue.toDisplayString(a.desc), 11, ["onClick"]);
+                }, [
+                  vue.createElementVNode(
+                    "p",
+                    null,
+                    vue.toDisplayString(a.desc),
+                    1
+                    /* TEXT */
+                  )
+                ], 10, ["onClick"]);
               }),
               128
               /* KEYED_FRAGMENT */
             ))
-          ]),
-          vue.createElementVNode("view", { class: "row-btns" }, [
-            vue.createElementVNode("view", {
-              class: "r-btn orange",
-              onClick: _cache[1] || (_cache[1] = ($event) => $setup.showChange = true)
-            }, "换人")
-          ]),
+          ])
+        ]),
+        vue.createElementVNode("view", { class: "bottom-btns" }, [
+          vue.createElementVNode("view", {
+            class: "r-btn orange",
+            onClick: _cache[1] || (_cache[1] = ($event) => $setup.showChange = true)
+          }, "换人"),
+          vue.createElementVNode("view", {
+            class: "r-btn gray",
+            onClick: _cache[2] || (_cache[2] = ($event) => $setup.showRecord = true)
+          }, "记录")
+        ])
+      ]),
+      vue.createVNode($setup["changeMemberDialog"], {
+        show: $setup.showChange,
+        members: $setup.currentMembers,
+        onConfirm: $setup.onChange,
+        onClose: _cache[3] || (_cache[3] = ($event) => $setup.showChange = false)
+      }, null, 8, ["show", "members"]),
+      vue.createVNode($setup["sectionDialog"], {
+        show: $setup.showSection,
+        sport: "football",
+        onSelect: $setup.onSection,
+        onClose: _cache[4] || (_cache[4] = ($event) => $setup.showSection = false)
+      }, null, 8, ["show"]),
+      $setup.showRecord ? (vue.openBlock(), vue.createElementBlock("view", {
+        key: 0,
+        class: "record-mask",
+        onClick: _cache[7] || (_cache[7] = ($event) => $setup.showRecord = false)
+      }, [
+        vue.createElementVNode("view", {
+          class: "record-panel",
+          onClick: _cache[6] || (_cache[6] = vue.withModifiers(() => {
+          }, ["stop"]))
+        }, [
+          vue.createElementVNode("view", { class: "record-head" }, "比赛记录"),
           vue.createElementVNode("scroll-view", {
             "scroll-y": "",
-            class: "record-preview"
+            class: "record-scroll"
           }, [
             (vue.openBlock(true), vue.createElementBlock(
               vue.Fragment,
@@ -11955,85 +12061,18 @@ This will fail in production.`);
               }),
               128
               /* KEYED_FRAGMENT */
-            ))
-          ])
-        ]),
-        vue.createElementVNode("view", { class: "team-panel" }, [
-          vue.createElementVNode("view", { class: "panel-title" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "pt-name" },
-              vue.toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode("view", { class: "pt-tags" }, [
-              vue.createElementVNode(
-                "text",
-                { class: "tag foul" },
-                "犯规" + vue.toDisplayString($setup.guestFoul),
-                1
-                /* TEXT */
-              )
-            ])
+            )),
+            !$setup.records.length ? (vue.openBlock(), vue.createElementBlock("view", {
+              key: 0,
+              class: "record-empty"
+            }, "暂无记录")) : vue.createCommentVNode("v-if", true)
           ]),
-          vue.createElementVNode("scroll-view", {
-            "scroll-y": "",
-            class: "player-list"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.guestMembers, (m) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: m.team_member_id,
-                  class: vue.normalizeClass(["player", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "guest" }]),
-                  onClick: ($event) => $setup.selectPlayer("guest", m)
-                }, [
-                  vue.createElementVNode(
-                    "text",
-                    { class: "num" },
-                    vue.toDisplayString(m.number),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode(
-                    "text",
-                    { class: "name" },
-                    vue.toDisplayString(m.name),
-                    1
-                    /* TEXT */
-                  ),
-                  m.foul > 0 ? (vue.openBlock(), vue.createElementBlock(
-                    "text",
-                    {
-                      key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5 }])
-                    },
-                    vue.toDisplayString(m.foul),
-                    3
-                    /* TEXT, CLASS */
-                  )) : vue.createCommentVNode("v-if", true)
-                ], 10, ["onClick"]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            ))
-          ])
+          vue.createElementVNode("view", {
+            class: "record-close",
+            onClick: _cache[5] || (_cache[5] = ($event) => $setup.showRecord = false)
+          }, "关闭")
         ])
-      ]),
-      vue.createVNode($setup["changeMemberDialog"], {
-        show: $setup.showChange,
-        members: $setup.currentMembers,
-        onConfirm: $setup.onChange,
-        onClose: _cache[2] || (_cache[2] = ($event) => $setup.showChange = false)
-      }, null, 8, ["show", "members"]),
-      vue.createVNode($setup["sectionDialog"], {
-        show: $setup.showSection,
-        sport: "football",
-        onSelect: $setup.onSection,
-        onClose: _cache[3] || (_cache[3] = ($event) => $setup.showSection = false)
-      }, null, 8, ["show"])
+      ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
   const PagesStatisticsFootballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-6d1135d0"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/football-operate.vue"]]);
