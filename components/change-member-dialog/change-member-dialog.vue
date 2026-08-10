@@ -6,10 +6,10 @@
       <view class="player-grid">
         <view
           v-for="m in playingMembers"
-          :key="m.teamMemberId"
+          :key="m.team_member_id"
           class="player"
-          :class="{ sel: offId === m.teamMemberId }"
-          @click="offId = m.teamMemberId"
+          :class="{ sel: offId === m.team_member_id }"
+          @click="offId = m.team_member_id"
         >
           {{ m.number }} {{ m.name }}
         </view>
@@ -19,10 +19,10 @@
       <view class="player-grid">
         <view
           v-for="m in benchMembers"
-          :key="m.teamMemberId"
+          :key="m.team_member_id"
           class="player"
-          :class="{ sel: onId === m.teamMemberId }"
-          @click="onId = m.teamMemberId"
+          :class="{ sel: onId === m.team_member_id }"
+          @click="onId = m.team_member_id"
         >
           {{ m.number }} {{ m.name }}
         </view>

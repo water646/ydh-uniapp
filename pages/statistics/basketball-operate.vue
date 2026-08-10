@@ -48,7 +48,8 @@
             	<text class="num">{{ m.number }}</text>
             </view>
             <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text>
+			<!-- 犯规次数 -->
+            <!-- <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text> -->
           </view>
         </view>
       </view>
@@ -68,7 +69,8 @@
 			</view>
             
             <text class="name">{{ m.name }}</text>
-            <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text>
+			<!-- 犯规次数 -->
+            <!-- <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text> -->
           </view>
         </view>
       </view>
@@ -667,7 +669,7 @@ function back() {
   color: #ffffff;
 }
 .action-btn.green {
-  background-color: #29a871;
+  background-color: #48ADB3;
 }
 .action-btn.red {
   background-color: #ff2d2d;

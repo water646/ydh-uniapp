@@ -10408,9 +10408,9 @@ This will fail in production.`);
               null,
               vue.renderList($setup.playingMembers, (m) => {
                 return vue.openBlock(), vue.createElementBlock("view", {
-                  key: m.teamMemberId,
-                  class: vue.normalizeClass(["player", { sel: $setup.offId === m.teamMemberId }]),
-                  onClick: ($event) => $setup.offId = m.teamMemberId
+                  key: m.team_member_id,
+                  class: vue.normalizeClass(["player", { sel: $setup.offId === m.team_member_id }]),
+                  onClick: ($event) => $setup.offId = m.team_member_id
                 }, vue.toDisplayString(m.number) + " " + vue.toDisplayString(m.name), 11, ["onClick"]);
               }),
               128
@@ -10428,9 +10428,9 @@ This will fail in production.`);
               null,
               vue.renderList($setup.benchMembers, (m) => {
                 return vue.openBlock(), vue.createElementBlock("view", {
-                  key: m.teamMemberId,
-                  class: vue.normalizeClass(["player", { sel: $setup.onId === m.teamMemberId }]),
-                  onClick: ($event) => $setup.onId = m.teamMemberId
+                  key: m.team_member_id,
+                  class: vue.normalizeClass(["player", { sel: $setup.onId === m.team_member_id }]),
+                  onClick: ($event) => $setup.onId = m.team_member_id
                 }, vue.toDisplayString(m.number) + " " + vue.toDisplayString(m.name), 11, ["onClick"]);
               }),
               128
@@ -11286,17 +11286,7 @@ This will fail in production.`);
                     vue.toDisplayString(m.name),
                     1
                     /* TEXT */
-                  ),
-                  m.foul > 0 ? (vue.openBlock(), vue.createElementBlock(
-                    "text",
-                    {
-                      key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5, yellow: m.foul === 4 }])
-                    },
-                    vue.toDisplayString(m.foul),
-                    3
-                    /* TEXT, CLASS */
-                  )) : vue.createCommentVNode("v-if", true)
+                  )
                 ], 10, ["onClick"]);
               }),
               128
@@ -11340,17 +11330,7 @@ This will fail in production.`);
                     vue.toDisplayString(m.name),
                     1
                     /* TEXT */
-                  ),
-                  m.foul > 0 ? (vue.openBlock(), vue.createElementBlock(
-                    "text",
-                    {
-                      key: 0,
-                      class: vue.normalizeClass(["foul-c", { red: m.foul >= 5, yellow: m.foul === 4 }])
-                    },
-                    vue.toDisplayString(m.foul),
-                    3
-                    /* TEXT, CLASS */
-                  )) : vue.createCommentVNode("v-if", true)
+                  )
                 ], 10, ["onClick"]);
               }),
               128
