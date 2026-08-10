@@ -690,12 +690,15 @@
 }
 .r-btn[data-v-ef0dfe21] {
   flex: 1;
-  height: 1.5625rem;
+  height: 2.5rem;
   line-height: 1.5625rem;
   text-align: center;
   border-radius: 0.1875rem;
-  font-size: 0.75rem;
+  font-size: 0.9375rem;
   color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .r-btn.orange[data-v-ef0dfe21] {
   background-color: #ff6f21;

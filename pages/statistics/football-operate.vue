@@ -96,8 +96,8 @@
         </view>
       </scroll-view>
       <view class="bottom-btns">
-        <view class="r-btn orange" @click="showChange = true">换人</view>
-        <view class="r-btn gray" @click="showRecord = true">记录</view>
+        <view class="r-btn orange" @click="showChange = true"> <p>换人</p> </view>
+        <view class="r-btn gray" @click="showRecord = true"> <p>记录</p> </view>
       </view>
     </view>
 
@@ -626,12 +626,15 @@ function back() {
 }
 .r-btn {
   flex: 1;
-  height: 50rpx;
+  height: 80rpx;
   line-height: 50rpx;
   text-align: center;
   border-radius: 6rpx;
-  font-size: 24rpx;
+  font-size: 30rpx;
   color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .r-btn.orange {
   background-color: #ff6f21;
