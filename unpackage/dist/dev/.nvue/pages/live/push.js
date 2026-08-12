@@ -1,5 +1,5 @@
 import { f as formatAppLog, _ as _export_sfc, o as onLoad, a as onReady, b as onUnload, c as onBackPress } from "../../_plugin-vue_export-helper.js";
-import { ref, resolveComponent, openBlock, createElementBlock, createElementVNode, createVNode, toDisplayString } from "vue";
+import { ref, resolveComponent, openBlock, createElementBlock, createElementVNode, createVNode, createCommentVNode, toDisplayString } from "vue";
 const config = {
   /**
    * ⚠️【MOCK 开关】⚠️
@@ -321,7 +321,8 @@ function request(options) {
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "12rpx" } }, "gray-btn": { "": { "paddingTop": "8rpx", "paddingRight": "20rpx", "paddingBottom": "8rpx", "paddingLeft": "20rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "24rpx", "lineHeight": "40rpx", "marginRight": "16rpx" } } };
+const _imports_0 = "/static/mipmap-xxhdpi/watermark.png";
+const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "16rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "24rpx" } }, "gray-btn": { "": { "paddingTop": "5rpx", "paddingRight": "13rpx", "paddingBottom": "5rpx", "paddingLeft": "13rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "16rpx", "lineHeight": "27rpx", "marginRight": "11rpx" } }, "preview-layer": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-top-left": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "flexDirection": "row", "alignItems": "center" } }, "pv-league-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginRight": "10rpx" } }, "pv-league-name": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "2rpx", "paddingRight": "10rpx", "paddingBottom": "2rpx", "paddingLeft": "10rpx", "backgroundColor": "rgba(0,0,0,0.4)", "borderRadius": "4rpx" } }, "pv-watermark-clip": { "": { "position": "absolute", "top": "64rpx", "right": "24rpx", "width": "57.6rpx", "height": "19rpx", "overflow": "hidden", "alignItems": "flex-start" } }, "pv-watermark-img": { "": { "width": "120rpx", "height": "19rpx" } }, "pv-scorebar-wrap": { "": { "position": "absolute", "bottom": "56rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-scorebar": { "": { "flexDirection": "row", "alignItems": "center", "paddingTop": "5rpx", "paddingRight": "12rpx", "paddingBottom": "5rpx", "paddingLeft": "12rpx", "backgroundColor": "rgba(0,0,0,0.55)", "borderRadius": "6rpx" } }, "pv-team-logo": { "": { "width": "30rpx", "height": "30rpx", "borderRadius": "15rpx" } }, "pv-name-box": { "": { "width": "90rpx", "alignItems": "center", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-team-name": { "": { "fontSize": "16rpx", "color": "#ffffff", "lines": 1, "textOverflow": "ellipsis" } }, "pv-score-box": { "": { "flexDirection": "row", "alignItems": "center", "marginTop": 0, "marginRight": "12rpx", "marginBottom": 0, "marginLeft": "12rpx" } }, "pv-score": { "": { "fontSize": "26rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-colon": { "": { "fontSize": "20rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "6rpx", "marginBottom": 0, "marginLeft": "6rpx" } }, "pv-sub-row": { "": { "flexDirection": "row", "marginTop": "6rpx" } }, "pv-sub-text": { "": { "fontSize": "14rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-msg": { "": { "position": "absolute", "bottom": "24rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-msg-text": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "4rpx", "paddingRight": "24rpx", "paddingBottom": "4rpx", "paddingLeft": "24rpx", "backgroundColor": "rgba(0,0,0,0.5)", "borderRadius": "4rpx" } } };
 const _sfc_main = {
   __name: "push",
   setup(__props, { expose: __expose }) {
@@ -357,7 +358,7 @@ const _sfc_main = {
         fw.write(ts + " " + msg2 + "\n");
         fw.close();
       } catch (e) {
-        formatAppLog("log", "at pages/live/push.nvue:79", "logToFile err: " + e);
+        formatAppLog("log", "at pages/live/push.nvue:118", "logToFile err: " + e);
       }
     }
     onLoad((opt) => {
@@ -365,7 +366,7 @@ const _sfc_main = {
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:131", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
@@ -385,7 +386,7 @@ const _sfc_main = {
     }
     onReady(() => {
       ensurePermissions().then((granted) => {
-        formatAppLog("log", "at pages/live/push.nvue:120", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        formatAppLog("log", "at pages/live/push.nvue:159", "[push] permissions granted=", granted, "pusher=", pusher.value);
         logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
         if (!granted) {
           uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
@@ -395,7 +396,7 @@ const _sfc_main = {
         let tries = 0;
         const tryPreview = () => {
           if (pusher.value) {
-            formatAppLog("log", "at pages/live/push.nvue:131", "[push] startPreview 调用");
+            formatAppLog("log", "at pages/live/push.nvue:170", "[push] startPreview 调用");
             logToFile("[push] startPreview 调用，组件已挂载");
             pusher.value.startPreview();
             logToFile("[push] startPreview 调用完成");
@@ -404,7 +405,7 @@ const _sfc_main = {
           } else if (tries++ < 20) {
             setTimeout(tryPreview, 100);
           } else {
-            formatAppLog("log", "at pages/live/push.nvue:141", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            formatAppLog("log", "at pages/live/push.nvue:180", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
             logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
             uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
           }
@@ -492,11 +493,11 @@ const _sfc_main = {
       connectScore();
     }
     function pushScore() {
-      if (!pusher.value || !showScore.value) {
-        logToFile("[push] pushScore skip: pusher=" + (pusher.value ? "yes" : "null") + " show=" + showScore.value);
+      if (!pusher.value) {
+        logToFile("[push] pushScore skip: pusher=null");
         return;
       }
-      logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value);
+      logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value + " showScorebar=" + showScore.value);
       pusher.value.updateScore({
         hostName: homeName.value,
         guestName: guestName.value,
@@ -510,7 +511,8 @@ const _sfc_main = {
         leagueName: leagueName.value,
         leagueLogo: leagueLogo.value,
         leagueStageName: leagueStageName.value,
-        msg: msg.value
+        msg: msg.value,
+        showScorebar: showScore.value
       });
     }
     function startPush() {
@@ -541,15 +543,11 @@ const _sfc_main = {
     }
     function toggleScore() {
       showScore.value = !showScore.value;
-      if (showScore.value) {
-        pushScore();
-      } else if (pusher.value) {
-        pusher.value.hideScore();
-      }
+      pushScore();
     }
     function onState(e) {
       const d = e.detail || {};
-      formatAppLog("log", "at pages/live/push.nvue:278", "[pusher] state", d);
+      formatAppLog("log", "at pages/live/push.nvue:316", "[pusher] state", d);
       logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
       if (d.msg)
         statusText.value = d.msg;
@@ -636,6 +634,115 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         url: $setup.publishUrl,
         onStatechange: $setup.onState
       }, null, 8, ["url"]),
+      createElementVNode("view", { class: "preview-layer" }, [
+        createElementVNode("view", { class: "pv-top-left" }, [
+          $setup.leagueLogo ? (openBlock(), createElementBlock("u-image", {
+            key: 0,
+            class: "pv-league-logo",
+            src: $setup.leagueLogo,
+            mode: "aspectFill"
+          }, null, 8, ["src"])) : createCommentVNode("v-if", true),
+          createElementVNode(
+            "u-text",
+            { class: "pv-league-name" },
+            toDisplayString($setup.leagueName),
+            1
+            /* TEXT */
+          )
+        ]),
+        createElementVNode("view", { class: "pv-watermark-clip" }, [
+          createElementVNode("u-image", {
+            class: "pv-watermark-img",
+            src: _imports_0,
+            mode: "aspectFit"
+          })
+        ]),
+        $setup.showScore ? (openBlock(), createElementBlock("view", {
+          key: 0,
+          class: "pv-scorebar-wrap"
+        }, [
+          createElementVNode("view", { class: "pv-scorebar" }, [
+            $setup.homeLogo ? (openBlock(), createElementBlock("u-image", {
+              key: 0,
+              class: "pv-team-logo",
+              src: $setup.homeLogo,
+              mode: "aspectFill"
+            }, null, 8, ["src"])) : createCommentVNode("v-if", true),
+            createElementVNode("view", { class: "pv-name-box" }, [
+              createElementVNode(
+                "u-text",
+                { class: "pv-team-name" },
+                toDisplayString($setup.homeName),
+                1
+                /* TEXT */
+              )
+            ]),
+            createElementVNode("view", { class: "pv-score-box" }, [
+              createElementVNode(
+                "u-text",
+                { class: "pv-score" },
+                toDisplayString($setup.hostScore),
+                1
+                /* TEXT */
+              ),
+              createElementVNode("u-text", { class: "pv-colon" }, ":"),
+              createElementVNode(
+                "u-text",
+                { class: "pv-score" },
+                toDisplayString($setup.guestScore),
+                1
+                /* TEXT */
+              )
+            ]),
+            createElementVNode("view", { class: "pv-name-box" }, [
+              createElementVNode(
+                "u-text",
+                { class: "pv-team-name" },
+                toDisplayString($setup.guestName),
+                1
+                /* TEXT */
+              )
+            ]),
+            $setup.guestLogo ? (openBlock(), createElementBlock("u-image", {
+              key: 1,
+              class: "pv-team-logo",
+              src: $setup.guestLogo,
+              mode: "aspectFill"
+            }, null, 8, ["src"])) : createCommentVNode("v-if", true)
+          ]),
+          createElementVNode("view", { class: "pv-sub-row" }, [
+            createElementVNode(
+              "u-text",
+              { class: "pv-sub-text" },
+              toDisplayString($setup.leagueStageName),
+              1
+              /* TEXT */
+            ),
+            $setup.section ? (openBlock(), createElementBlock(
+              "u-text",
+              {
+                key: 0,
+                class: "pv-sub-text"
+              },
+              toDisplayString($setup.section),
+              1
+              /* TEXT */
+            )) : createCommentVNode("v-if", true)
+          ])
+        ])) : createCommentVNode("v-if", true),
+        $setup.msg && $setup.msg !== "小节结束" ? (openBlock(), createElementBlock("view", {
+          key: 1,
+          class: "pv-msg"
+        }, [
+          createElementVNode(
+            "u-text",
+            { class: "pv-msg-text" },
+            toDisplayString($setup.msg),
+            1
+            /* TEXT */
+          )
+        ])) : createCommentVNode("v-if", true)
+      ]),
       createElementVNode("view", { class: "overlay" }, [
         createElementVNode("view", { class: "top" }, [
           createElementVNode("u-text", {

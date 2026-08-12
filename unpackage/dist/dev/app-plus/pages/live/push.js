@@ -455,7 +455,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   }
   var getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   var compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "12rpx" } }, "gray-btn": { "": { "paddingTop": "8rpx", "paddingRight": "20rpx", "paddingBottom": "8rpx", "paddingLeft": "20rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "24rpx", "lineHeight": "40rpx", "marginRight": "16rpx" } } };
+  var _imports_0 = "/static/mipmap-xxhdpi/watermark.png";
+  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "16rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "24rpx" } }, "gray-btn": { "": { "paddingTop": "5rpx", "paddingRight": "13rpx", "paddingBottom": "5rpx", "paddingLeft": "13rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "16rpx", "lineHeight": "27rpx", "marginRight": "11rpx" } }, "preview-layer": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-top-left": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "flexDirection": "row", "alignItems": "center" } }, "pv-league-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginRight": "10rpx" } }, "pv-league-name": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "2rpx", "paddingRight": "10rpx", "paddingBottom": "2rpx", "paddingLeft": "10rpx", "backgroundColor": "rgba(0,0,0,0.4)", "borderRadius": "4rpx" } }, "pv-watermark-clip": { "": { "position": "absolute", "top": "64rpx", "right": "24rpx", "width": "57.6rpx", "height": "19rpx", "overflow": "hidden", "alignItems": "flex-start" } }, "pv-watermark-img": { "": { "width": "120rpx", "height": "19rpx" } }, "pv-scorebar-wrap": { "": { "position": "absolute", "bottom": "56rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-scorebar": { "": { "flexDirection": "row", "alignItems": "center", "paddingTop": "5rpx", "paddingRight": "12rpx", "paddingBottom": "5rpx", "paddingLeft": "12rpx", "backgroundColor": "rgba(0,0,0,0.55)", "borderRadius": "6rpx" } }, "pv-team-logo": { "": { "width": "30rpx", "height": "30rpx", "borderRadius": "15rpx" } }, "pv-name-box": { "": { "width": "90rpx", "alignItems": "center", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-team-name": { "": { "fontSize": "16rpx", "color": "#ffffff", "lines": 1, "textOverflow": "ellipsis" } }, "pv-score-box": { "": { "flexDirection": "row", "alignItems": "center", "marginTop": 0, "marginRight": "12rpx", "marginBottom": 0, "marginLeft": "12rpx" } }, "pv-score": { "": { "fontSize": "26rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-colon": { "": { "fontSize": "20rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "6rpx", "marginBottom": 0, "marginLeft": "6rpx" } }, "pv-sub-row": { "": { "flexDirection": "row", "marginTop": "6rpx" } }, "pv-sub-text": { "": { "fontSize": "14rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-msg": { "": { "position": "absolute", "bottom": "24rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-msg-text": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "4rpx", "paddingRight": "24rpx", "paddingBottom": "4rpx", "paddingLeft": "24rpx", "backgroundColor": "rgba(0,0,0,0.5)", "borderRadius": "4rpx" } } };
   var _sfc_main = {
     __name: "push",
     setup(__props, { expose: __expose }) {
@@ -491,7 +492,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           fw.write(ts + " " + msg2 + "\n");
           fw.close();
         } catch (e) {
-          formatAppLog("log", "at pages/live/push.nvue:79", "logToFile err: " + e);
+          formatAppLog("log", "at pages/live/push.nvue:118", "logToFile err: " + e);
         }
       }
       onLoad((opt) => {
@@ -499,7 +500,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:131", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
         logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
         loadGameDetail();
         connectScore();
@@ -519,7 +520,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       }
       onReady(() => {
         ensurePermissions().then((granted) => {
-          formatAppLog("log", "at pages/live/push.nvue:120", "[push] permissions granted=", granted, "pusher=", pusher.value);
+          formatAppLog("log", "at pages/live/push.nvue:159", "[push] permissions granted=", granted, "pusher=", pusher.value);
           logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
           if (!granted) {
             uni.showToast({ title: "\u9700\u8981\u76F8\u673A/\u9EA6\u514B\u98CE\u6743\u9650", icon: "none" });
@@ -529,7 +530,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           let tries = 0;
           const tryPreview = () => {
             if (pusher.value) {
-              formatAppLog("log", "at pages/live/push.nvue:131", "[push] startPreview \u8C03\u7528");
+              formatAppLog("log", "at pages/live/push.nvue:170", "[push] startPreview \u8C03\u7528");
               logToFile("[push] startPreview \u8C03\u7528\uFF0C\u7EC4\u4EF6\u5DF2\u6302\u8F7D");
               pusher.value.startPreview();
               logToFile("[push] startPreview \u8C03\u7528\u5B8C\u6210");
@@ -538,7 +539,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             } else if (tries++ < 20) {
               setTimeout(tryPreview, 100);
             } else {
-              formatAppLog("log", "at pages/live/push.nvue:141", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
+              formatAppLog("log", "at pages/live/push.nvue:180", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
               logToFile("[push] \u2717 pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D\uFF08\u63D2\u4EF6\u672A\u6253\u8FDB\u57FA\u5EA7\uFF09");
               uni.showToast({ title: "\u63A8\u6D41\u7EC4\u4EF6\u672A\u52A0\u8F7D\uFF0C\u8BF7\u786E\u8BA4\u63D2\u4EF6\u5DF2\u6253\u5305", icon: "none" });
             }
@@ -626,11 +627,11 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         connectScore();
       }
       function pushScore() {
-        if (!pusher.value || !showScore.value) {
-          logToFile("[push] pushScore skip: pusher=" + (pusher.value ? "yes" : "null") + " show=" + showScore.value);
+        if (!pusher.value) {
+          logToFile("[push] pushScore skip: pusher=null");
           return;
         }
-        logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value);
+        logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value + " showScorebar=" + showScore.value);
         pusher.value.updateScore({
           hostName: homeName.value,
           guestName: guestName.value,
@@ -644,7 +645,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           leagueName: leagueName.value,
           leagueLogo: leagueLogo.value,
           leagueStageName: leagueStageName.value,
-          msg: msg.value
+          msg: msg.value,
+          showScorebar: showScore.value
         });
       }
       function startPush() {
@@ -675,15 +677,11 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       }
       function toggleScore() {
         showScore.value = !showScore.value;
-        if (showScore.value) {
-          pushScore();
-        } else if (pusher.value) {
-          pusher.value.hideScore();
-        }
+        pushScore();
       }
       function onState(e) {
         const d = e.detail || {};
-        formatAppLog("log", "at pages/live/push.nvue:278", "[pusher] state", d);
+        formatAppLog("log", "at pages/live/push.nvue:316", "[pusher] state", d);
         logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
         if (d.msg)
           statusText.value = d.msg;
@@ -770,6 +768,115 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           url: $setup.publishUrl,
           onStatechange: $setup.onState
         }, null, 8, ["url"]),
+        (0, import_vue2.createElementVNode)("view", { class: "preview-layer" }, [
+          (0, import_vue2.createElementVNode)("view", { class: "pv-top-left" }, [
+            $setup.leagueLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+              key: 0,
+              class: "pv-league-logo",
+              src: $setup.leagueLogo,
+              mode: "aspectFill"
+            }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
+            (0, import_vue2.createElementVNode)(
+              "u-text",
+              { class: "pv-league-name" },
+              (0, import_vue2.toDisplayString)($setup.leagueName),
+              1
+              /* TEXT */
+            )
+          ]),
+          (0, import_vue2.createElementVNode)("view", { class: "pv-watermark-clip" }, [
+            (0, import_vue2.createElementVNode)("u-image", {
+              class: "pv-watermark-img",
+              src: _imports_0,
+              mode: "aspectFit"
+            })
+          ]),
+          $setup.showScore ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
+            key: 0,
+            class: "pv-scorebar-wrap"
+          }, [
+            (0, import_vue2.createElementVNode)("view", { class: "pv-scorebar" }, [
+              $setup.homeLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+                key: 0,
+                class: "pv-team-logo",
+                src: $setup.homeLogo,
+                mode: "aspectFill"
+              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
+              (0, import_vue2.createElementVNode)("view", { class: "pv-name-box" }, [
+                (0, import_vue2.createElementVNode)(
+                  "u-text",
+                  { class: "pv-team-name" },
+                  (0, import_vue2.toDisplayString)($setup.homeName),
+                  1
+                  /* TEXT */
+                )
+              ]),
+              (0, import_vue2.createElementVNode)("view", { class: "pv-score-box" }, [
+                (0, import_vue2.createElementVNode)(
+                  "u-text",
+                  { class: "pv-score" },
+                  (0, import_vue2.toDisplayString)($setup.hostScore),
+                  1
+                  /* TEXT */
+                ),
+                (0, import_vue2.createElementVNode)("u-text", { class: "pv-colon" }, ":"),
+                (0, import_vue2.createElementVNode)(
+                  "u-text",
+                  { class: "pv-score" },
+                  (0, import_vue2.toDisplayString)($setup.guestScore),
+                  1
+                  /* TEXT */
+                )
+              ]),
+              (0, import_vue2.createElementVNode)("view", { class: "pv-name-box" }, [
+                (0, import_vue2.createElementVNode)(
+                  "u-text",
+                  { class: "pv-team-name" },
+                  (0, import_vue2.toDisplayString)($setup.guestName),
+                  1
+                  /* TEXT */
+                )
+              ]),
+              $setup.guestLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
+                key: 1,
+                class: "pv-team-logo",
+                src: $setup.guestLogo,
+                mode: "aspectFill"
+              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true)
+            ]),
+            (0, import_vue2.createElementVNode)("view", { class: "pv-sub-row" }, [
+              (0, import_vue2.createElementVNode)(
+                "u-text",
+                { class: "pv-sub-text" },
+                (0, import_vue2.toDisplayString)($setup.leagueStageName),
+                1
+                /* TEXT */
+              ),
+              $setup.section ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)(
+                "u-text",
+                {
+                  key: 0,
+                  class: "pv-sub-text"
+                },
+                (0, import_vue2.toDisplayString)($setup.section),
+                1
+                /* TEXT */
+              )) : (0, import_vue2.createCommentVNode)("v-if", true)
+            ])
+          ])) : (0, import_vue2.createCommentVNode)("v-if", true),
+          $setup.msg && $setup.msg !== "\u5C0F\u8282\u7ED3\u675F" ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
+            key: 1,
+            class: "pv-msg"
+          }, [
+            (0, import_vue2.createElementVNode)(
+              "u-text",
+              { class: "pv-msg-text" },
+              (0, import_vue2.toDisplayString)($setup.msg),
+              1
+              /* TEXT */
+            )
+          ])) : (0, import_vue2.createCommentVNode)("v-if", true)
+        ]),
         (0, import_vue2.createElementVNode)("view", { class: "overlay" }, [
           (0, import_vue2.createElementVNode)("view", { class: "top" }, [
             (0, import_vue2.createElementVNode)("u-text", {

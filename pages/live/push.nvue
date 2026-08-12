@@ -7,6 +7,45 @@
       @statechange="onState"
     ></livepusherview>
 
+    <!-- 本地预览覆盖层：模拟推流烧入的比分条+水印，让直播者预览观众端画面。水印常驻，仅比分条随"隐藏比分"隐藏 -->
+    <view class="preview-layer">
+      <!-- 左上：联赛 logo + 联赛名 -->
+      <view class="pv-top-left">
+        <image v-if="leagueLogo" class="pv-league-logo" :src="leagueLogo" mode="aspectFill" />
+        <text class="pv-league-name">{{ leagueName }}</text>
+      </view>
+      <!-- 右上：水印（只保留左半，右半裁掉） -->
+      <view class="pv-watermark-clip">
+        <image class="pv-watermark-img" src="/static/mipmap-xxhdpi/watermark.png" mode="aspectFit" />
+      </view>
+      <!-- 底部比分条（随"隐藏比分"隐藏，水印保留） -->
+      <view v-if="showScore" class="pv-scorebar-wrap">
+        <view class="pv-scorebar">
+          <image v-if="homeLogo" class="pv-team-logo" :src="homeLogo" mode="aspectFill" />
+          <view class="pv-name-box">
+            <text class="pv-team-name">{{ homeName }}</text>
+          </view>
+          <view class="pv-score-box">
+            <text class="pv-score">{{ hostScore }}</text>
+            <text class="pv-colon">:</text>
+            <text class="pv-score">{{ guestScore }}</text>
+          </view>
+          <view class="pv-name-box">
+            <text class="pv-team-name">{{ guestName }}</text>
+          </view>
+          <image v-if="guestLogo" class="pv-team-logo" :src="guestLogo" mode="aspectFill" />
+        </view>
+        <view class="pv-sub-row">
+          <text class="pv-sub-text">{{ leagueStageName }}</text>
+          <text class="pv-sub-text" v-if="section">{{ section }}</text>
+        </view>
+      </view>
+      <!-- 底部消息条 -->
+      <view v-if="msg && msg !== '小节结束'" class="pv-msg">
+        <text class="pv-msg-text">{{ msg }}</text>
+      </view>
+    </view>
+
     <!-- 控制覆盖层（横屏铺满，view 可覆盖原生推流组件） -->
     <view class="overlay">
       <view class="top">
@@ -214,11 +253,12 @@ function reconnectScore() {
 
 /** 把当前比分烧进推流画面（ScoreBitmapDrawer 画 960×545 Bitmap -> setWatermark） */
 function pushScore() {
-  if (!pusher.value || !showScore.value) {
-    logToFile('[push] pushScore skip: pusher=' + (pusher.value ? 'yes' : 'null') + ' show=' + showScore.value)
+  if (!pusher.value) {
+    logToFile('[push] pushScore skip: pusher=null')
     return
   }
-  logToFile('[push] updateScore host=' + hostScore.value + ' guest=' + guestScore.value)
+  // showScore=false 时仍调用,传 showScorebar=false 让原生只画水印(隐藏比分条,保留水印烧流)
+  logToFile('[push] updateScore host=' + hostScore.value + ' guest=' + guestScore.value + ' showScorebar=' + showScore.value)
   pusher.value.updateScore({
     hostName: homeName.value,
     guestName: guestName.value,
@@ -232,7 +272,8 @@ function pushScore() {
     leagueName: leagueName.value,
     leagueLogo: leagueLogo.value,
     leagueStageName: leagueStageName.value,
-    msg: msg.value
+    msg: msg.value,
+    showScorebar: showScore.value
   })
 }
 
@@ -266,11 +307,8 @@ function switchCamera() {
 
 function toggleScore() {
   showScore.value = !showScore.value
-  if (showScore.value) {
-    pushScore()
-  } else if (pusher.value) {
-    pusher.value.hideScore()
-  }
+  // 隐藏比分时只隐藏比分条,水印保留(showScorebar=false 让原生只画水印)
+  pushScore()
 }
 
 function onState(e) {
@@ -343,7 +381,7 @@ onBackPress(() => {
   flex: 1;
   text-align: center;
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 16rpx;
 }
 .bottom {
   position: absolute;
@@ -351,19 +389,130 @@ onBackPress(() => {
   left: 0;
   flex-direction: column;
   align-items: flex-start;
-  padding: 20rpx;
+  padding: 30rpx;
 }
 .bottom-row {
   flex-direction: row;
-  margin-bottom: 12rpx;
+  margin-bottom: 24rpx;
 }
 /* 对齐老项目：wrap_content + 背景 #10000000(近透明) + 白字，无圆角无填色 */
+/* 按钮等比缩小为原值 2/3：原 padding 8/20, font 24, line-height 40, margin 16 */
 .gray-btn {
-  padding: 8rpx 20rpx;
+  padding: 5rpx 13rpx;
   background-color: rgba(0, 0, 0, 0.06);
   color: #ffffff;
-  font-size: 24rpx;
-  line-height: 40rpx;
-  margin-right: 16rpx;
+  font-size: 16rpx;
+  line-height: 27rpx;
+  margin-right: 11rpx;
+}
+
+/* 本地预览覆盖层（模拟推流烧入的比分条+水印，仅给直播者预览观众端效果，不进推流） */
+.preview-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.pv-top-left {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  flex-direction: row;
+  align-items: center;
+}
+.pv-league-logo {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  margin-right: 10rpx;
+}
+.pv-league-name {
+  font-size: 20rpx;
+  color: #ffffff;
+  padding: 2rpx 10rpx;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 4rpx;
+}
+.pv-watermark-clip {
+  position: absolute;
+  top: 64rpx;
+  right: 24rpx;
+  width: 57.6rpx;
+  height: 19rpx;
+  overflow: hidden;
+  align-items: flex-start;
+}
+.pv-watermark-img {
+  width: 120rpx;
+  height: 19rpx;
+}
+.pv-scorebar-wrap {
+  position: absolute;
+  bottom: 56rpx;
+  left: 0;
+  right: 0;
+  align-items: center;
+}
+.pv-scorebar {
+  flex-direction: row;
+  align-items: center;
+  padding: 5rpx 12rpx;
+  background-color: rgba(0, 0, 0, 0.55);
+  border-radius: 6rpx;
+}
+.pv-team-logo {
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 15rpx;
+}
+.pv-name-box {
+  width: 90rpx;
+  align-items: center;
+  margin: 0 8rpx;
+}
+.pv-team-name {
+  font-size: 16rpx;
+  color: #ffffff;
+  lines: 1;
+  text-overflow: ellipsis;
+}
+.pv-score-box {
+  flex-direction: row;
+  align-items: center;
+  margin: 0 12rpx;
+}
+.pv-score {
+  font-size: 26rpx;
+  color: #ffffff;
+  font-weight: bold;
+}
+.pv-colon {
+  font-size: 20rpx;
+  color: #ffffff;
+  margin: 0 6rpx;
+}
+.pv-sub-row {
+  flex-direction: row;
+  margin-top: 6rpx;
+}
+.pv-sub-text {
+  font-size: 14rpx;
+  color: #ffffff;
+  margin: 0 8rpx;
+}
+.pv-msg {
+  position: absolute;
+  bottom: 24rpx;
+  left: 0;
+  right: 0;
+  align-items: center;
+}
+.pv-msg-text {
+  font-size: 20rpx;
+  color: #ffffff;
+  padding: 4rpx 24rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4rpx;
 }
 </style>
