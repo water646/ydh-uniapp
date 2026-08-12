@@ -1,5 +1,5 @@
-import { f as formatAppLog, _ as _export_sfc, o as onLoad, a as onReady } from "../../_plugin-vue_export-helper.js";
-import { ref, getCurrentInstance, onUnmounted, openBlock, createElementBlock, createElementVNode, normalizeStyle, toDisplayString, createCommentVNode } from "vue";
+import { f as formatAppLog, _ as _export_sfc, o as onLoad, a as onReady, b as onUnload, c as onBackPress } from "../../_plugin-vue_export-helper.js";
+import { ref, resolveComponent, openBlock, createElementBlock, createElementVNode, createVNode, toDisplayString } from "vue";
 const config = {
   /**
    * ⚠️【MOCK 开关】⚠️
@@ -7,7 +7,7 @@ const config = {
    * false => 走真实后端接口（baseUrl）
    * 测试完毕请改回 false。
    */
-  useMock: true,
+  useMock: false,
   /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
   baseUrl: "http://app.ydh123.com/ydh-service/",
   /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -126,24 +126,6 @@ const IDS = {
   leagueId: "mock-league-001",
   token: "mock-token-test-001"
 };
-const userInfo = {
-  id: "mock-user-001",
-  avatar: "",
-  nickName: "测试管理员",
-  sex: E(1, "男"),
-  sketch: "【MOCK】测试账号",
-  birthday: "1990-01-01",
-  position: E(1, "控球后卫"),
-  number: 23,
-  weight: "75",
-  height: "180",
-  city: "北京",
-  province: "北京",
-  phone: "13800000000",
-  isBindWx: EB(0, "未绑定", false),
-  follows: 12,
-  fans: 36
-};
 const basketGame1 = {
   id: IDS.gameId,
   name: "测试联赛-红蓝大战",
@@ -174,7 +156,7 @@ const basketGame1 = {
   venueName: "1号场地",
   isMedia: EB(1, "是", true)
 };
-const basketGame2 = {
+({
   ...basketGame1,
   id: IDS.game2,
   name: "测试联赛-绿黄之战",
@@ -187,8 +169,8 @@ const basketGame2 = {
   guestTeamScore: 0,
   hostGameTeamId: "mock-host-team-002",
   guestGameTeamId: "mock-guest-team-002"
-};
-const basketGame3 = {
+});
+({
   ...basketGame1,
   id: IDS.game3,
   name: "测试联赛-青紫之战",
@@ -202,8 +184,8 @@ const basketGame3 = {
   guestTeamScore: 49,
   hostGameTeamId: "mock-host-team-003",
   guestGameTeamId: "mock-guest-team-003"
-};
-const footGame1 = {
+});
+({
   ...basketGame1,
   id: IDS.footGame,
   name: "测试杯-足球半决赛",
@@ -216,90 +198,6 @@ const footGame1 = {
   hostGameTeamId: "mock-foot-host-001",
   guestGameTeamId: "mock-foot-guest-001",
   leagueName: "测试杯"
-};
-function matchList(sport, status) {
-  const isFoot = sport === "football";
-  const ongoing = isFoot ? footGame1 : basketGame1;
-  const notStart = isFoot ? { ...footGame1, id: "mock-foot-002", status: E(1, "未开始"), runStatus: E(1, "未开始"), hostTeamScore: 0, guestTeamScore: 0 } : basketGame2;
-  const ended = isFoot ? { ...footGame1, id: "mock-foot-003", status: E(3, "已结束"), runStatus: E(3, "已结束"), hostTeamScore: 3, guestTeamScore: 0 } : basketGame3;
-  if (status === "end") {
-    return ok([{ date: "2026-07-30", games: [ended] }]);
-  }
-  return ok([{ date: "2026-07-31", games: [ongoing, notStart] }]);
-}
-function buildMembers(teamName, teamId) {
-  const names = teamName === "红队" ? ["赵一", "钱二", "孙三", "李四", "周五", "吴六", "郑七", "王八"] : ["冯一", "陈二", "褚三", "卫四", "蒋五", "沈六", "韩七", "杨八"];
-  const pos = ["控球后卫", "得分后卫", "小前锋", "大前锋", "中锋", "替补后卫", "替补前锋", "替补中锋"];
-  return names.map((name, i) => ({
-    id: `mock-${teamId}-m${i + 1}`,
-    teamMemberId: `mock-${teamId}-member-${i + 1}`,
-    startingLineup: EB(i < 5 ? 1 : 0, i < 5 ? "首发" : "替补", i < 5),
-    playing: EB(i < 5 ? 1 : 0, i < 5 ? "在场" : "场下", i < 5),
-    number: i + 1,
-    name,
-    temporary: 0,
-    position: E(i < 5 ? i + 1 : 0, i < 5 ? pos[i] : "替补"),
-    teamName,
-    avatar: "",
-    foul: i === 1 ? 2 : i === 3 ? 1 : 0
-  }));
-}
-const hostMembers = buildMembers("红队", "host");
-const guestMembers = buildMembers("蓝队", "guest");
-const sections = [
-  { id: "mock-sec-1", gameSectionId: "mock-sec-1", name: "第1节", gameId: IDS.gameId, type: E(1, "小节"), sort: 1, groups: "", running: EB(1, "进行中", true) },
-  { id: "mock-sec-2", gameSectionId: "mock-sec-2", name: "第2节", gameId: IDS.gameId, type: E(1, "小节"), sort: 2, groups: "", running: EB(0, "未开始", false) },
-  { id: "mock-sec-3", gameSectionId: "mock-sec-3", name: "第3节", gameId: IDS.gameId, type: E(1, "小节"), sort: 3, groups: "", running: EB(0, "未开始", false) },
-  { id: "mock-sec-4", gameSectionId: "mock-sec-4", name: "第4节", gameId: IDS.gameId, type: E(1, "小节"), sort: 4, groups: "", running: EB(0, "未开始", false) }
-];
-const footSections = [
-  { id: "mock-foot-sec-1", gameSectionId: "mock-foot-sec-1", name: "上半场", gameId: IDS.footGame, type: E(2, "半场"), sort: 1, groups: "", running: EB(1, "进行中", true) },
-  { id: "mock-foot-sec-2", gameSectionId: "mock-foot-sec-2", name: "下半场", gameId: IDS.footGame, type: E(2, "半场"), sort: 2, groups: "", running: EB(0, "未开始", false) }
-];
-const basketDetail = ok({
-  game: {
-    id: IDS.gameId,
-    name: "测试联赛-红蓝大战",
-    status: E(2, "进行中"),
-    runStatus: E(2, "进行中"),
-    type: E(1, "篮球"),
-    event: E(1, "联赛"),
-    time: "2026-07-31 15:00",
-    isMedia: EB(1, "是", true),
-    venueId: "mock-venue-1",
-    venueName: "1号场地",
-    venueAddress: "测试体育馆1号场",
-    leagueGroupId: "mock-lg-1",
-    leagueGroupName: "A组",
-    leagueGroupSort: 1,
-    leagueStageId: "mock-ls-1",
-    leagueStageName: "小组赛",
-    leagueStageSort: 1,
-    leagueId: IDS.leagueId,
-    leagueName: "测试联赛",
-    leagueLogo: "",
-    leagueStartTime: "2026-07-01",
-    hostGameTeamId: IDS.hostTeamId,
-    hostTeamId: "ht1",
-    hostTeamLogo: "",
-    hostTeamName: "红队",
-    hostTeamScore: 28,
-    guestGameTeamId: IDS.guestTeamId,
-    guestTeamId: "gt2",
-    guestTeamLogo: "",
-    guestTeamName: "蓝队",
-    guestTeamScore: 24,
-    gameResult: E(0, "未结束"),
-    videoStatus: E(0, "未直播"),
-    section: "1"
-  },
-  hostTeamFoul: 3,
-  guestTeamFoul: 2,
-  hostTeamStop: 1,
-  guestTeamStop: 0,
-  hostMembers,
-  guestMembers,
-  sections
 });
 const gameDetail = ok({
   id: IDS.gameId,
@@ -338,184 +236,8 @@ const gameDetail = ok({
   assists: 8,
   number: 8
 });
-const footDetail = ok({ ...gameDetail.data, type: E(2, "足球"), hostTeamName: "飞虎队", guestTeamName: "雄鹰队", hostTeamScore: 1, guestTeamScore: 1, name: "测试杯-足球半决赛", leagueName: "测试杯" });
-const connectInfo = ok({
-  id: IDS.gameId,
-  event: E(1, "联赛"),
-  name: "测试联赛-红蓝大战",
-  status: E(2, "进行中"),
-  runStatus: E(2, "进行中"),
-  time: "2026-07-31 15:00",
-  type: E(1, "篮球"),
-  isMedia: EB(1, "是", true),
-  venueId: "mock-venue-1",
-  venueName: "1号场地",
-  venueAddress: "测试体育馆1号场",
-  leagueGroupId: "mock-lg-1",
-  leagueGroupName: "A组",
-  leagueGroupSort: 1,
-  leagueStageId: "mock-ls-1",
-  leagueStageName: "小组赛",
-  leagueStageSort: 1,
-  leagueId: IDS.leagueId,
-  leagueName: "测试联赛",
-  leagueLogo: "",
-  leagueStartTime: "2026-07-01",
-  hostGameTeamId: IDS.hostTeamId,
-  hostTeamId: "ht1",
-  hostTeamLogo: "",
-  hostTeamName: "红队",
-  hostTeamScore: 28,
-  guestGameTeamId: IDS.guestTeamId,
-  guestTeamId: "gt2",
-  guestTeamLogo: "",
-  guestTeamName: "蓝队",
-  guestTeamScore: 24,
-  gameResult: E(0, "未结束"),
-  videoStatus: E(0, "未直播"),
-  section: "1"
-});
-function sectionList(query) {
-  const isFoot = query && query.gameId && String(query.gameId).indexOf("foot") >= 0;
-  const list = isFoot ? footSections : sections;
-  return ok(list.map((s) => ({
-    id: s.id,
-    name: s.name,
-    gameId: s.gameId,
-    type: s.type,
-    sort: s.sort,
-    groups: s.groups
-  })));
-}
-function memberList(query) {
-  const isGuest = query && query.gameTeamId && String(query.gameTeamId).indexOf("guest") >= 0;
-  return ok(isGuest ? guestMembers : hostMembers);
-}
-const recordList = ok({
-  totalCount: 6,
-  pageSize: 10,
-  totalPage: 1,
-  pageNo: 1,
-  nextPage: false,
-  list: [
-    { id: "mock-rec-1", recordNumber: "mock-rec-1", statisticsSectionId: "mock-sec-1", type: E(7, "三分命中"), occurrenceTime: "15:02:10", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "赵一 三分命中", sectionName: "第1节", memberName: "赵一", teamName: "红队" },
-    { id: "mock-rec-2", recordNumber: "mock-rec-2", statisticsSectionId: "mock-sec-1", type: E(1, "篮板"), occurrenceTime: "15:03:25", statisticsMemberId: "mock-guest-member-5", statisticsTeamId: IDS.guestTeamId, description: "冯五 篮板", sectionName: "第1节", memberName: "蒋五", teamName: "蓝队" },
-    { id: "mock-rec-3", recordNumber: "mock-rec-3", statisticsSectionId: "mock-sec-1", type: E(6, "两分命中"), occurrenceTime: "15:04:40", statisticsMemberId: "mock-host-member-2", statisticsTeamId: IDS.hostTeamId, description: "钱二 两分命中", sectionName: "第1节", memberName: "钱二", teamName: "红队" },
-    { id: "mock-rec-4", recordNumber: "mock-rec-4", statisticsSectionId: "mock-sec-1", type: E(9, "犯规"), occurrenceTime: "15:05:55", statisticsMemberId: "mock-guest-member-2", statisticsTeamId: IDS.guestTeamId, description: "陈二 犯规", sectionName: "第1节", memberName: "陈二", teamName: "蓝队" },
-    { id: "mock-rec-5", recordNumber: "mock-rec-5", statisticsSectionId: "mock-sec-1", type: E(2, "助攻"), occurrenceTime: "15:07:12", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "赵一 助攻", sectionName: "第1节", memberName: "赵一", teamName: "红队" },
-    { id: "mock-rec-6", recordNumber: "mock-rec-6", statisticsSectionId: "mock-sec-1", type: E(17, "失误"), occurrenceTime: "15:08:30", statisticsMemberId: "mock-guest-member-3", statisticsTeamId: IDS.guestTeamId, description: "褚三 失误", sectionName: "第1节", memberName: "褚三", teamName: "蓝队" }
-  ]
-});
-const weekList = ok([
-  {
-    groupName: "A组",
-    games: [basketGame1, basketGame3],
-    optimals: [
-      { name: "赵一", avatar: "", count: 18, type: E(6, "得分王") },
-      { name: "蒋五", avatar: "", count: 11, type: E(1, "篮板王") }
-    ]
-  },
-  {
-    groupName: "B组",
-    games: [basketGame2],
-    optimals: [{ name: "吴六", avatar: "", count: 7, type: E(2, "助攻王") }]
-  }
-]);
-const photoActivityList = ok({
-  totalCount: 2,
-  pageSize: 10,
-  totalPage: 1,
-  pageNo: 1,
-  nextPage: false,
-  list: [
-    { id: "mock-photo-act-1", type: E(1, "比赛"), title: "红蓝大战拍照直播", description: "【MOCK】测试活动", status: E(1, "进行中"), startTime: "2026-07-31 15:00", endTime: "2026-07-31 17:00", address: "1号场地", visitors: 128, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "显示") },
-    { id: "mock-photo-act-2", type: E(2, "联赛"), title: "测试杯拍照直播", description: "【MOCK】测试活动2", status: E(2, "已结束"), startTime: "2026-07-30 15:00", endTime: "2026-07-30 17:00", address: "2号场地", visitors: 56, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "显示") }
-  ]
-});
-const uploadPhotoList = ok([
-  { id: "mock-pic-1", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-1.jpg", fileSize: 102400, fileTime: "2026-07-31 15:01:00", showStatus: E(1, "显示"), likeCount: 3 },
-  { id: "mock-pic-2", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-2.jpg", fileSize: 204800, fileTime: "2026-07-31 15:02:00", showStatus: E(1, "显示"), likeCount: 5 },
-  { id: "mock-pic-3", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-3.jpg", fileSize: 153600, fileTime: "2026-07-31 15:03:00", showStatus: E(1, "显示"), likeCount: 0 }
-]);
-const liveGameList = ok([
-  { id: "mock-live-1", recordId: "mock-rec-live-1", type: E(1, "直播"), appName: "mock", streamName: "mock-stream-1", name: "1号机位", status: E(1, "直播中"), cover: "", publish: "rtmp://mock/live/mock-stream-1", liveRtmp: "rtmp://mock/live/mock-stream-1", liveFlv: "http://mock/live/mock-stream-1.flv", liveM3u8: "http://mock/live/mock-stream-1.m3u8" }
-]);
-const versionCheckResult = ok({
-  id: "mock-ver-1",
-  deviceType: E(1, "android"),
-  url: "",
-  upgradeType: E(0, "可选"),
-  remark: "【MOCK】当前已是最新版本（测试数据）",
-  packageSize: "0",
-  versionCode: 0,
-  versionName: "2.8.4",
-  notice: E(0, "不提醒")
-});
-const RULES = [
-  /* ----- 登录 ----- */
-  { method: "POST", url: "sms/login", handler: () => ok(null, "【MOCK】验证码已发送(测试码:1234)") },
-  { method: "POST", url: "user/login", handler: () => ok(IDS.token, "【MOCK】登录成功") },
-  { method: "GET", url: "user/info", handler: () => ok(userInfo) },
-  /* ----- 比赛列表（篮球 / 足球，按 query.status 区分未结束/已结束）----- */
-  { method: "GET", url: "game/list-my-manage", handler: (o) => matchList("basketball", o.query && o.query.status) },
-  { method: "GET", url: "soccer/game/list-my-manage", handler: (o) => matchList("football", o.query && o.query.status) },
-  /* ----- 比赛详情 / 连接信息 ----- */
-  { method: "GET", url: "ts/game/info", handler: () => connectInfo },
-  { method: "GET", url: "game//info", handler: () => connectInfo },
-  { method: "GET", url: "soccer/game//info", handler: () => connectInfo },
-  { method: "GET", url: "game/{gameId}/detail", handler: () => gameDetail },
-  { method: "GET", url: "soccer/game/{gameId}/detail", handler: () => gameDetail },
-  { method: "GET", url: "game/{gameId}/foot-detail", handler: () => footDetail },
-  { method: "GET", url: "statistics/game-detail-basketball", handler: () => basketDetail },
-  /* ----- 小节 / 球员 ----- */
-  { method: "GET", url: "statistics/section/list", handler: (o) => sectionList(o.query) },
-  { method: "GET", url: "statistics/member/list", handler: (o) => memberList(o.query) },
-  /* ----- 统计记录 ----- */
-  { method: "GET", url: "statistics/page", handler: () => recordList },
-  /* ----- 优肯周赛况 ----- */
-  { method: "GET", url: "game/list-week", handler: () => weekList },
-  /* ----- 拍照 / 相册 ----- */
-  { method: "GET", url: "photo/activity/list-my-manage", handler: () => photoActivityList },
-  { method: "GET", url: "photo/activity/create-game", handler: () => ok("mock-photo-act-new", "【MOCK】活动创建成功") },
-  { method: "GET", url: "photo/picture/upload-list", handler: () => uploadPhotoList },
-  /* ----- 直播 ----- */
-  { method: "GET", url: "live/stream/game-list", handler: () => liveGameList },
-  { method: "POST", url: "live/stream/game", handler: () => ok(liveGameList.data[0], "【MOCK】获取直播地址成功") },
-  { method: "POST", url: "live/stream/game-add", handler: () => ok("mock-live-new", "【MOCK】直播添加成功") },
-  { method: "POST", url: "live/stream/compose", handler: () => ok(null, "【MOCK】合成回放请求已提交") },
-  /* ----- 版本检查 ----- */
-  { method: "GET", url: "sys/app-version/check", handler: () => versionCheckResult },
-  /* ----- 写操作：统一返回成功（mock 不真实落库）----- */
-  { method: "POST", url: "ts/game/update-info", handler: () => ok(null, "【MOCK】保存成功") },
-  { method: "POST", url: "game/status", handler: () => ok(null, "【MOCK】状态修改成功") },
-  { method: "POST", url: "soccer/game/status", handler: () => ok(null, "【MOCK】状态修改成功") },
-  { method: "POST", url: "statistics/member/sign", handler: () => ok(null, "【MOCK】签到成功") },
-  { method: "POST", url: "statistics/member/sign-cancel", handler: () => ok(null, "【MOCK】取消签到成功") },
-  { method: "POST", url: "statistics/member/starting-lineup", handler: () => ok(null, "【MOCK】设置首发成功") },
-  { method: "POST", url: "statistics/member/starting-lineup-cancel", handler: () => ok(null, "【MOCK】取消首发成功") },
-  { method: "POST", url: "statistics/member/temporary", handler: () => ok("mock-member-new", "【MOCK】添加临时球员成功") },
-  { method: "POST", url: "statistics/member/edit-position", handler: () => ok(null, "【MOCK】位置修改成功") },
-  { method: "GET", url: "statistics/member/delete-temporary", handler: () => ok(null, "【MOCK】删除球员成功") },
-  { method: "POST", url: "statistics/add", handler: () => ok(null, "【MOCK】统计提交成功") },
-  { method: "POST", url: "statistics/add-all", handler: () => ok(null, "【MOCK】批量统计提交成功") },
-  { method: "POST", url: "statistics/cancel", handler: () => ok(null, "【MOCK】取消记录成功") },
-  { method: "POST", url: "statistics/section/running", handler: () => ok(null, "【MOCK】小节状态切换成功") }
-];
-function matchUrl(template, realUrl) {
-  const re = new RegExp("^" + template.replace(/\{[^}]+\}/g, "([^/]+)") + "$");
-  return re.test(realUrl);
-}
+ok({ ...gameDetail.data, type: E(2, "足球"), hostTeamName: "飞虎队", guestTeamName: "雄鹰队", hostTeamScore: 1, guestTeamScore: 1, name: "测试杯-足球半决赛", leagueName: "测试杯" });
 function mockResolve(options) {
-  const { url, method = "GET" } = options;
-  const m = method.toUpperCase();
-  for (const rule of RULES) {
-    if (rule.method !== m)
-      continue;
-    if (!matchUrl(rule.url, url))
-      continue;
-    return rule.handler(options);
-  }
-  formatAppLog("warn", "at mock/mock-data.js:536", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url}`, "color:#f56c6c");
   return null;
 }
 function request(options) {
@@ -530,7 +252,7 @@ function request(options) {
     loading = false
   } = options;
   let finalUrl = config.baseUrl + url;
-  const mocked = mockResolve(options);
+  const mocked = mockResolve();
   if (mocked !== null) {
     if (loading)
       uni.showLoading({ title: typeof loading === "string" ? loading : "加载中", mask: true });
@@ -599,9 +321,7 @@ function request(options) {
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-const _imports_0 = "/static/mipmap-xhdpi/new_bifen.png";
-const _imports_1 = "/static/watermark.png";
-const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "550rpx", "left": "380rpx", "width": "800rpx", "height": "80rpx" } }, "score-bg": { "": { "position": "absolute", "top": 0, "left": 0, "width": "800rpx", "height": "80rpx" } }, "s-logo": { "": { "position": "absolute", "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "top": "14rpx" } }, "s-logo-left": { "": { "left": "13rpx" } }, "s-logo-right": { "": { "right": "13rpx" } }, "s-team": { "": { "position": "absolute", "top": "30rpx", "width": "240rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center", "lines": 1, "textOverflow": "ellipsis" } }, "s-host": { "": { "left": "32rpx" } }, "s-guest": { "": { "left": "528rpx" } }, "s-score": { "": { "position": "absolute", "top": "22rpx", "width": "128rpx", "fontSize": "40rpx", "color": "#ffffff", "fontWeight": "bold", "textAlign": "center" } }, "s-score-host": { "": { "left": "416rpx" } }, "s-score-guest": { "": { "left": "256rpx" } }, "s-section": { "": { "position": "absolute", "top": "32rpx", "left": "336rpx", "width": "128rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center" } }, "bottom": { "": { "position": "absolute", "bottom": "0rpx", "paddingTop": 0, "paddingRight": "60rpx", "paddingBottom": 0, "paddingLeft": "60rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "flex-start", "flexWrap": "wrap", "width": "700rpx" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } }, "gray-btn": { "": { "width": "170rpx", "height": "90rpx", "backgroundColor": "rgba(0,0,0,0.3)", "borderRadius": "4rpx", "display": "flex", "alignItems": "center", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx", "textAlign": "center", "marginTop": "40rpx", "marginRight": "40rpx", "marginBottom": "40rpx", "marginLeft": "40rpx", "color": "#FFFFFF", "fontSize": "28rpx" } }, "top-btn": { "": { "position": "relative", "right": "300rpx" } } };
+const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "12rpx" } }, "gray-btn": { "": { "paddingTop": "8rpx", "paddingRight": "20rpx", "paddingBottom": "8rpx", "paddingLeft": "20rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "24rpx", "lineHeight": "40rpx", "marginRight": "16rpx" } } };
 const _sfc_main = {
   __name: "push",
   setup(__props, { expose: __expose }) {
@@ -615,40 +335,38 @@ const _sfc_main = {
     const hostScore = ref(0);
     const guestScore = ref(0);
     const section = ref("");
+    const hostFoul = ref(0);
+    const guestFoul = ref(0);
+    const leagueName = ref("");
+    const leagueLogo = ref("");
+    const leagueStageName = ref("");
+    const msg = ref("");
     const showScore = ref(true);
     const pushing = ref(false);
     const statusText = ref("未连接");
-    let pusherCtx = null;
-    const instance = getCurrentInstance();
-    const overlayStyle = (() => {
-      let h = 1334;
+    const pusher = ref(null);
+    function logToFile(msg2) {
       try {
-        const info = uni.getSystemInfoSync();
-        if (info.windowWidth && info.windowHeight) {
-          h = Math.round(750 * info.windowHeight / info.windowWidth);
-        }
+        const ts = (/* @__PURE__ */ new Date()).toLocaleString();
+        const main = plus.android.runtimeMainActivity();
+        const File = plus.android.importClass("java.io.File");
+        const FileWriter = plus.android.importClass("java.io.FileWriter");
+        const dir = main.getExternalFilesDir(null);
+        const f = new File(dir, "push_debug.log");
+        const fw = new FileWriter(f, true);
+        fw.write(ts + " " + msg2 + "\n");
+        fw.close();
       } catch (e) {
+        formatAppLog("log", "at pages/live/push.nvue:79", "logToFile err: " + e);
       }
-      return {
-        width: h + "rpx",
-        height: "750rpx",
-        left: (750 - h) / 2 + "rpx",
-        top: (h - 750) / 2 + "rpx"
-      };
-    })();
-    function getPusherCtx() {
-      if (!pusherCtx) {
-        pusherCtx = uni.createLivePusherContext("pusher", instance && instance.proxy);
-      }
-      return pusherCtx;
     }
     onLoad((opt) => {
-      plus.screen.lockOrientation("portrait-primary");
+      plus.screen.lockOrientation("landscape-primary");
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:121", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
-      formatAppLog("log", "at pages/live/push.nvue:122", opt);
+      formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
     });
@@ -665,40 +383,52 @@ const _sfc_main = {
         }
       });
     }
-    function startPreview() {
-      const ctx = getPusherCtx();
-      if (!ctx) {
-        formatAppLog("log", "at pages/live/push.nvue:152", "[pusher] createLivePusherContext 失败，组件未挂载");
-        return;
-      }
-      ctx.startPreview({
-        success: () => formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] 预览已开启"),
-        fail: (err) => {
-          formatAppLog("log", "at pages/live/push.nvue:158", "[pusher] 预览开启失败", err);
-          uni.showToast({ title: "摄像头开启失败，请检查权限", icon: "none" });
-        }
-      });
-    }
     onReady(() => {
-      ensurePermissions().then(() => {
-        setTimeout(startPreview, 200);
+      ensurePermissions().then((granted) => {
+        formatAppLog("log", "at pages/live/push.nvue:120", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
+        if (!granted) {
+          uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
+          logToFile("[push] 权限未授予，无法预览");
+          return;
+        }
+        let tries = 0;
+        const tryPreview = () => {
+          if (pusher.value) {
+            formatAppLog("log", "at pages/live/push.nvue:131", "[push] startPreview 调用");
+            logToFile("[push] startPreview 调用，组件已挂载");
+            pusher.value.startPreview();
+            logToFile("[push] startPreview 调用完成");
+            pushScore();
+            logToFile("[push] startPreview 后立即 pushScore 一次");
+          } else if (tries++ < 20) {
+            setTimeout(tryPreview, 100);
+          } else {
+            formatAppLog("log", "at pages/live/push.nvue:141", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
+            uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
+          }
+        };
+        setTimeout(tryPreview, 300);
       });
     });
-    onUnmounted(() => {
+    onUnload(() => {
       stopPush();
-      if (pusherCtx) {
+      if (pusher.value) {
         try {
-          pusherCtx.stopPreview();
+          pusher.value.stopPreview();
         } catch (e) {
         }
       }
       closeSocket();
-      plus.screen.unlockOrientation();
+      plus.screen.lockOrientation("portrait-primary");
     });
     function loadGameDetail() {
       getGameDetail(gameId.value, "basketball").then((res) => {
-        if (res.code !== 1)
+        if (res.code !== 1) {
+          logToFile("[push] loadGameDetail code=" + res.code);
           return;
+        }
         const page = res.data || {};
         const g = page.game || page;
         if (g.hostTeamName)
@@ -711,6 +441,18 @@ const _sfc_main = {
           guestLogo.value = g.guestTeamLogo;
         hostScore.value = g.hostTeamScore || 0;
         guestScore.value = g.guestTeamScore || 0;
+        if (g.leagueName)
+          leagueName.value = g.leagueName;
+        if (g.leagueLogo)
+          leagueLogo.value = g.leagueLogo;
+        if (g.leagueStageName)
+          leagueStageName.value = g.leagueStageName;
+        if (g.hostTeamFoul !== void 0)
+          hostFoul.value = g.hostTeamFoul;
+        if (g.guestTeamFoul !== void 0)
+          guestFoul.value = g.guestTeamFoul;
+        logToFile("[push] loadGameDetail OK host=" + homeName.value + " guest=" + guestName.value + " score=" + hostScore.value + ":" + guestScore.value);
+        pushScore();
       });
     }
     function connectScore() {
@@ -724,11 +466,21 @@ const _sfc_main = {
             guestScore.value = data.guestTeamScore;
           if (data.section !== void 0)
             section.value = data.section;
+          if (data.hostTeamFoul !== void 0)
+            hostFoul.value = data.hostTeamFoul;
+          if (data.guestTeamFoul !== void 0)
+            guestFoul.value = data.guestTeamFoul;
+          if (data.msg !== void 0)
+            msg.value = data.msg;
+          if (data.leagueStageName !== void 0)
+            leagueStageName.value = data.leagueStageName;
+          pushScore();
         },
         (event) => {
-          if (event === "open")
+          if (event === "open") {
             statusText.value = "比分接口已连接";
-          else if (event === "close")
+            logToFile("[push] ws open");
+          } else if (event === "close")
             statusText.value = "比分接口已断开，重连中…";
           else if (event === "error")
             statusText.value = "比分接口连接失败";
@@ -739,46 +491,72 @@ const _sfc_main = {
       closeSocket();
       connectScore();
     }
+    function pushScore() {
+      if (!pusher.value || !showScore.value) {
+        logToFile("[push] pushScore skip: pusher=" + (pusher.value ? "yes" : "null") + " show=" + showScore.value);
+        return;
+      }
+      logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value);
+      pusher.value.updateScore({
+        hostName: homeName.value,
+        guestName: guestName.value,
+        hostScore: String(hostScore.value),
+        guestScore: String(guestScore.value),
+        section: section.value,
+        hostFoul: hostFoul.value,
+        guestFoul: guestFoul.value,
+        hostLogo: homeLogo.value,
+        guestLogo: guestLogo.value,
+        leagueName: leagueName.value,
+        leagueLogo: leagueLogo.value,
+        leagueStageName: leagueStageName.value,
+        msg: msg.value
+      });
+    }
     function startPush() {
       if (!publishUrl.value) {
         uni.showToast({ title: "推流地址为空，无法直播", icon: "none" });
         return;
       }
-      const ctx = getPusherCtx();
-      if (!ctx) {
+      if (!pusher.value) {
         uni.showToast({ title: "推流组件未就绪", icon: "none" });
+        logToFile("[push] startPush 失败：pusher ref null");
         return;
       }
-      ctx.start({
-        success: () => {
-          pushing.value = true;
-          statusText.value = "直播中";
-        },
-        fail: () => {
-          uni.showToast({ title: "推流失败", icon: "none" });
-        }
-      });
+      logToFile("[push] startPush url=" + publishUrl.value);
+      pusher.value.startPush(publishUrl.value);
+      statusText.value = "推流连接中…";
     }
     function stopPush() {
-      if (pusherCtx) {
-        pusherCtx.stop();
+      if (pusher.value) {
+        pusher.value.stopPush();
         pushing.value = false;
         statusText.value = "已结束";
+        logToFile("[push] stopPush");
       }
     }
     function switchCamera() {
-      if (pusherCtx)
-        pusherCtx.switchCamera();
+      if (pusher.value)
+        pusher.value.switchCamera();
     }
     function toggleScore() {
       showScore.value = !showScore.value;
+      if (showScore.value) {
+        pushScore();
+      } else if (pusher.value) {
+        pusher.value.hideScore();
+      }
     }
     function onState(e) {
-      formatAppLog("log", "at pages/live/push.nvue:260", "[pusher] state", e.detail);
-    }
-    function onError(e) {
-      formatAppLog("log", "at pages/live/push.nvue:264", "[pusher] error", e.detail);
-      uni.showToast({ title: "推流错误", icon: "none" });
+      const d = e.detail || {};
+      formatAppLog("log", "at pages/live/push.nvue:278", "[pusher] state", d);
+      logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
+      if (d.msg)
+        statusText.value = d.msg;
+      if (d.code === 1005)
+        pushing.value = true;
+      else if (d.code === -1305)
+        pushing.value = false;
     }
     function onCompose() {
       compose({ gameId: gameId.value }).then((res) => {
@@ -786,16 +564,49 @@ const _sfc_main = {
       });
     }
     function back() {
+      try {
+        stopPush();
+      } catch (e) {
+      }
+      if (pusher.value) {
+        try {
+          pusher.value.stopPreview();
+        } catch (e) {
+        }
+      }
+      try {
+        closeSocket();
+      } catch (e) {
+      }
+      plus.screen.lockOrientation("portrait-primary");
       uni.navigateBack();
     }
-    const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
-      return pusherCtx;
-    }, set pusherCtx(v) {
-      pusherCtx = v;
-    }, instance, overlayStyle, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref, onUnmounted, getCurrentInstance, get onLoad() {
+    onBackPress(() => {
+      try {
+        stopPush();
+      } catch (e) {
+      }
+      if (pusher.value) {
+        try {
+          pusher.value.stopPreview();
+        } catch (e) {
+        }
+      }
+      try {
+        closeSocket();
+      } catch (e) {
+      }
+      plus.screen.lockOrientation("portrait-primary");
+      return false;
+    });
+    const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, showScore, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, switchCamera, toggleScore, onState, onCompose, back, ref, get onLoad() {
       return onLoad;
     }, get onReady() {
       return onReady;
+    }, get onUnload() {
+      return onUnload;
+    }, get onBackPress() {
+      return onBackPress;
     }, get connectSocket() {
       return connectSocket;
     }, get closeSocket() {
@@ -810,6 +621,7 @@ const _sfc_main = {
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_livepusherview = resolveComponent("livepusherview");
   return openBlock(), createElementBlock("scroll-view", {
     scrollY: true,
     showScrollbar: true,
@@ -818,132 +630,57 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     style: { flexDirection: "column" }
   }, [
     createElementVNode("view", { class: "live-push" }, [
-      createElementVNode("live-pusher", {
-        id: "pusher",
+      createVNode(_component_livepusherview, {
+        ref: "pusher",
         class: "pusher",
         url: $setup.publishUrl,
-        mode: "FHD",
-        enableCamera: true,
-        autoFocus: true,
-        beauty: 0,
-        muted: false,
-        devicePosition: "back",
-        onStatechange: $setup.onState,
-        onError: $setup.onError
-      }, null, 40, ["url"]),
-      createElementVNode(
-        "view",
-        {
-          class: "overlay",
-          style: normalizeStyle($setup.overlayStyle)
-        },
-        [
-          createElementVNode("view", { class: "top" }, [
-            createElementVNode("view", { onClick: $setup.back }, [
-              createElementVNode("u-text", { class: "gray-btn" }, "返回")
-            ]),
-            createElementVNode(
-              "u-text",
-              { class: "status" },
-              toDisplayString($setup.statusText),
-              1
-              /* TEXT */
-            ),
-            createElementVNode(
-              "u-text",
-              {
-                class: "gray-btn top-btn",
-                onClick: $setup.toggleScore
-              },
-              toDisplayString($setup.showScore ? "隐藏" : "显示") + "比分",
-              1
-              /* TEXT */
-            ),
-            createElementVNode("u-text", {
-              class: "reconnect",
-              onClick: $setup.reconnectScore
-            }, "比分重连")
-          ]),
-          $setup.showScore ? (openBlock(), createElementBlock("view", {
-            key: 0,
-            class: "score-overlay"
-          }, [
-            createElementVNode("u-image", {
-              class: "score-bg",
-              src: _imports_0
-            }),
-            $setup.homeLogo ? (openBlock(), createElementBlock("u-image", {
-              key: 0,
-              class: "s-logo s-logo-left",
-              mode: "aspectFill",
-              src: $setup.homeLogo
-            }, null, 8, ["src"])) : createCommentVNode("v-if", true),
-            $setup.guestLogo ? (openBlock(), createElementBlock("u-image", {
-              key: 1,
-              class: "s-logo s-logo-right",
-              mode: "aspectFill",
-              src: $setup.guestLogo
-            }, null, 8, ["src"])) : createCommentVNode("v-if", true),
-            createElementVNode(
-              "u-text",
-              { class: "s-team s-host" },
-              toDisplayString($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            createElementVNode(
-              "u-text",
-              { class: "s-score s-score-host" },
-              toDisplayString($setup.hostScore),
-              1
-              /* TEXT */
-            ),
-            createElementVNode(
-              "u-text",
-              { class: "s-section" },
-              toDisplayString($setup.section),
-              1
-              /* TEXT */
-            ),
-            createElementVNode(
-              "u-text",
-              { class: "s-score s-score-guest" },
-              toDisplayString($setup.guestScore),
-              1
-              /* TEXT */
-            ),
-            createElementVNode(
-              "u-text",
-              { class: "s-team s-guest" },
-              toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ])) : createCommentVNode("v-if", true),
-          createElementVNode("u-image", {
-            class: "top-logo",
-            mode: "left",
-            src: _imports_1
-          }),
-          createElementVNode("view", { class: "bottom" }, [
-            !$setup.pushing ? (openBlock(), createElementBlock("u-text", {
-              key: 0,
-              class: "gray-btn start",
-              onClick: $setup.startPush
-            }, "开始直播")) : createCommentVNode("v-if", true),
-            createElementVNode("u-text", {
-              class: "gray-btn stop",
-              onClick: $setup.stopPush
-            }, "结束直播"),
+        onStatechange: $setup.onState
+      }, null, 8, ["url"]),
+      createElementVNode("view", { class: "overlay" }, [
+        createElementVNode("view", { class: "top" }, [
+          createElementVNode("u-text", {
+            class: "gray-btn",
+            onClick: $setup.back
+          }, "返回"),
+          createElementVNode(
+            "u-text",
+            { class: "status" },
+            toDisplayString($setup.statusText),
+            1
+            /* TEXT */
+          ),
+          createElementVNode(
+            "u-text",
+            {
+              class: "gray-btn",
+              onClick: $setup.toggleScore
+            },
+            toDisplayString($setup.showScore ? "隐藏" : "显示") + "比分",
+            1
+            /* TEXT */
+          ),
+          createElementVNode("u-text", {
+            class: "gray-btn",
+            onClick: $setup.reconnectScore
+          }, "比分重连")
+        ]),
+        createElementVNode("view", { class: "bottom" }, [
+          createElementVNode("view", { class: "bottom-row" }, [
             createElementVNode("u-text", {
               class: "gray-btn",
-              onClick: $setup.onCompose
-            }, "生成回放")
-          ])
-        ],
-        4
-        /* STYLE */
-      )
+              onClick: $setup.startPush
+            }, "开始直播"),
+            createElementVNode("u-text", {
+              class: "gray-btn",
+              onClick: $setup.stopPush
+            }, "结束直播")
+          ]),
+          createElementVNode("u-text", {
+            class: "gray-btn",
+            onClick: $setup.onCompose
+          }, "生成回放")
+        ])
+      ])
     ])
   ]);
 }

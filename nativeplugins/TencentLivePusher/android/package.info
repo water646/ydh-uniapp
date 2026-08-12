@@ -1,0 +1,10 @@
+{
+  "name": "TencentLivePusher",
+  "description": "腾讯云 LiteAV 推流 + 比分条 Canvas 烧流(setWatermark 动态替换)",
+  "type": "module",
+  "version": "1.0.0",
+  "android": {
+    "package": "com.ydh123.plugin",
+    "class": "com.ydh123.plugin.LivePusherModule"
+  }
+}

@@ -1,48 +1,26 @@
 <template>
   <view class="live-push">
-    <live-pusher
-      id="pusher"
+    <livepusherview
+      ref="pusher"
       class="pusher"
       :url="publishUrl"
-      mode="FHD"
-      :enable-camera="true"
-      :auto-focus="true"
-      :beauty="0"
-      :muted="false"
-      device-position="back"
       @statechange="onState"
-      @error="onError"
-    ></live-pusher>
+    ></livepusherview>
 
-    <!-- 控制覆盖层（nvue 中 view 可覆盖 live-pusher） -->
-    <!-- 容器宽高与屏幕互换 + 顺时针旋转90°，旋转后正好铺满竖屏，内容不超出 -->
-    <view class="overlay" :style="overlayStyle">
+    <!-- 控制覆盖层（横屏铺满，view 可覆盖原生推流组件） -->
+    <view class="overlay">
       <view class="top">
-        <view @click="back"><text class="gray-btn">返回</text></view>
+        <text class="gray-btn" @click="back">返回</text>
         <text class="status">{{ statusText }}</text>
-		<text class="gray-btn top-btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
-        <text class="reconnect" @click="reconnectScore">比分重连</text>
+        <text class="gray-btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
+        <text class="gray-btn" @click="reconnectScore">比分重连</text>
       </view>
 
-      <!-- 实时比分浮层（降级方案：本地显示，不烧进推流画面） -->
-	  <view v-if="showScore" class="score-overlay">
-		<image class="score-bg" src="/static/mipmap-xhdpi/new_bifen.png"></image>
-		<image v-if="homeLogo" class="s-logo s-logo-left" mode="aspectFill" :src="homeLogo"></image>
-		<image v-if="guestLogo" class="s-logo s-logo-right" mode="aspectFill" :src="guestLogo"></image>
-		<text class="s-team s-host">{{ homeName }}</text>
-		<text class="s-score s-score-host">{{ hostScore }}</text>
-		<text class="s-section">{{ section }}</text>
-		<text class="s-score s-score-guest">{{ guestScore }}</text>
-		<text class="s-team s-guest">{{ guestName }}</text>
-	  </view>
-	  <image class="top-logo" mode="left" src="/static/watermark.png"></image>
-
-		  
-
       <view class="bottom">
-        <text v-if="!pushing" class="gray-btn start" @click="startPush">开始直播</text>
-        <text class="gray-btn stop" @click="stopPush">结束直播</text>
-        <!-- <text class="gray-btn" @click="switchCamera">翻转</text> -->
+        <view class="bottom-row">
+          <text class="gray-btn" @click="startPush">开始直播</text>
+          <text class="gray-btn" @click="stopPush">结束直播</text>
+        </view>
         <text class="gray-btn" @click="onCompose">生成回放</text>
       </view>
     </view>
@@ -51,17 +29,14 @@
 
 <script setup>
 /**
- * 统一推流页（合并原 TencentCloudActivity / NeWTencentLiveActivity / StreamingFootActivity）
- * - 用 <live-pusher> 替代腾讯 LiteAV / 网易 / 金山云三套推流 SDK
- * - WebSocket group=push 接收实时比分，更新本地比分浮层
- *   （原项目用 Canvas 合成比分 Bitmap 烧进推流画面 setWatermark，
- *    uniapp live-pusher 仅支持静态水印无法烧动态 Canvas，降级为本地浮层；
- *    保真需封装 uni 原生插件包装 TXLivePusher.setWatermark）
- * - 生成回放 POST live/stream/compose
- * - nvue 渲染：App 端 live-pusher 需 nvue 才能正常显示预览并允许 view 覆盖
+ * 统一推流页（横屏，腾讯 LiteAV 原生插件 TencentLivePusher 烧流版）
+ * - <livepusherview> 原生组件封装 TXLivePusher，setWatermark 把比分条 Bitmap 烧进推流画面
+ * - WebSocket group=push 接收实时比分 -> updateScore() 烧流
+ * - 荣耀机 logcat 加密，诊断日志写 /sdcard/push_debug.log 供 adb pull 读取
+ * - 原生插件不支持标准基座，须自定义调试基座或正式云打包勾选 TencentLivePusher
  */
-import { ref, onUnmounted, getCurrentInstance } from 'vue'
-import { onLoad, onReady } from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { onLoad, onReady, onUnload, onBackPress } from '@dcloudio/uni-app'
 import { connectSocket, closeSocket } from '@/utils/websocket'
 import { getGameDetail } from '@/api/game'
 import { compose } from '@/api/live'
@@ -75,54 +50,49 @@ const guestLogo = ref('')
 const hostScore = ref(0)
 const guestScore = ref(0)
 const section = ref('')
+const hostFoul = ref(0)
+const guestFoul = ref(0)
+const leagueName = ref('')
+const leagueLogo = ref('')
+const leagueStageName = ref('')
+const msg = ref('')
+
 const showScore = ref(true)
 const pushing = ref(false)
 const statusText = ref('未连接')
-let pusherCtx = null
-const instance = getCurrentInstance()
+const pusher = ref(null)
 
-/**
- * 横屏浮层：将容器宽高与屏幕互换（宽=屏高 h、高=屏宽 750）并居中，
- * 顺时针旋转 90° 后视觉正好铺满竖屏（视觉宽=750、高=h）。
- * 直接旋转全屏浮层会让视觉宽变成 h（>750）从而超出屏幕，互换尺寸即可避免。
- */
-const overlayStyle = (() => {
-  let h = 1334 // 屏高(rpx)兜底值
+/** 诊断日志写到 app 私有目录 push_debug.log（荣耀机 logcat 加密，改用文件供 adb pull） */
+function logToFile(msg) {
+  // #ifdef APP-PLUS
   try {
-    const info = uni.getSystemInfoSync()
-    if (info.windowWidth && info.windowHeight) {
-      h = Math.round((750 * info.windowHeight) / info.windowWidth)
-    }
-  } catch (e) {}
-  return {
-    width: h + 'rpx',
-    height: '750rpx',
-    left: (750 - h) / 2 + 'rpx',
-    top: (h - 750) / 2 + 'rpx'
+    const ts = new Date().toLocaleString()
+    const main = plus.android.runtimeMainActivity()
+    const File = plus.android.importClass('java.io.File')
+    const FileWriter = plus.android.importClass('java.io.FileWriter')
+    const dir = main.getExternalFilesDir(null)  // /sdcard/Android/data/<包名>/files，免存储权限
+    const f = new File(dir, 'push_debug.log')
+    const fw = new FileWriter(f, true)
+    fw.write(ts + ' ' + msg + '\n')
+    fw.close()
+  } catch (e) {
+    console.log('logToFile err: ' + e)
   }
-})()
-
-/** 创建推流上下文（nvue 需传入当前组件实例，否则回调里报 $page undefined） */
-function getPusherCtx() {
-  if (!pusherCtx) {
-    pusherCtx = uni.createLivePusherContext('pusher', instance && instance.proxy)
-  }
-  return pusherCtx
+  // #endif
 }
 
 onLoad((opt) => {
-  // 锁定竖屏：画面竖屏、按钮横排，均不随手机翻转
+  // 锁定横屏：腾讯推流 540×960 横向采集 + 比分条 960×545 横向，方向才正确
   // #ifdef APP-PLUS
-  plus.screen.lockOrientation('portrait-primary')
+  plus.screen.lockOrientation('landscape-primary')
   // #endif
   publishUrl.value = decodeURIComponent(opt.livepublish || '')
   gameId.value = opt.gameId || ''
   homeName.value = opt.name || '直播'
   console.log('[push] publishUrl=', publishUrl.value, 'gameId=', gameId.value)
-  console.log(opt);
+  logToFile('[push] onLoad url=' + publishUrl.value + ' gameId=' + gameId.value + ' name=' + opt.name)
   loadGameDetail()
   connectScore()
-  
 })
 
 /** 申请相机/麦克风权限（Android 运行时权限） */
@@ -145,44 +115,57 @@ function ensurePermissions() {
   // #endif
 }
 
-/** 开启本地摄像头预览（不推流） */
-function startPreview() {
-  const ctx = getPusherCtx()
-  if (!ctx) {
-    console.log('[pusher] createLivePusherContext 失败，组件未挂载')
-    return
-  }
-  ctx.startPreview({
-    success: () => console.log('[pusher] 预览已开启'),
-    fail: (err) => {
-      console.log('[pusher] 预览开启失败', err)
-      uni.showToast({ title: '摄像头开启失败，请检查权限', icon: 'none' })
-    }
-  })
-}
-
-// 组件挂载完成后申请权限并开启预览
 onReady(() => {
-  ensurePermissions().then(() => {
-    setTimeout(startPreview, 200)
+  ensurePermissions().then((granted) => {
+    console.log('[push] permissions granted=', granted, 'pusher=', pusher.value)
+    logToFile('[push] onReady permissions=' + granted + ' pusher=' + (pusher.value ? 'yes' : 'null'))
+    if (!granted) {
+      uni.showToast({ title: '需要相机/麦克风权限', icon: 'none' })
+      logToFile('[push] 权限未授予，无法预览')
+      return
+    }
+    // 原生组件 ref 绑定可能晚于 onReady，轮询确保拿到再开预览
+    let tries = 0
+    const tryPreview = () => {
+      if (pusher.value) {
+        console.log('[push] startPreview 调用')
+        logToFile('[push] startPreview 调用，组件已挂载')
+        pusher.value.startPreview()
+        logToFile('[push] startPreview 调用完成')
+        // 预览启动后立即烧一次比分条(用当前已有数据,不等 WebSocket/loadGameDetail)
+        pushScore()
+        logToFile('[push] startPreview 后立即 pushScore 一次')
+      } else if (tries++ < 20) {
+        setTimeout(tryPreview, 100)
+      } else {
+        console.log('[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载')
+        logToFile('[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）')
+        uni.showToast({ title: '推流组件未加载，请确认插件已打包', icon: 'none' })
+      }
+    }
+    setTimeout(tryPreview, 300)
   })
 })
 
-onUnmounted(() => {
+onUnload(() => {
   stopPush()
-  if (pusherCtx) {
-    try { pusherCtx.stopPreview() } catch (e) {}
+  if (pusher.value) {
+    try { pusher.value.stopPreview() } catch (e) {}
   }
   closeSocket()
   // #ifdef APP-PLUS
-  plus.screen.unlockOrientation()
+  // 主动锁回竖屏（unlockOrientation 仅解除锁定，不会自动转回竖屏，导致退出后仍横屏）
+  plus.screen.lockOrientation('portrait-primary')
   // #endif
 })
 
 function loadGameDetail() {
-  // 拉比赛详情取队名/比分（篮球 game/{id}/detail；足球 soccer/）
+  // 拉比赛详情取队名/比分/联赛（篮球 game/{id}/detail；足球 soccer/）
   getGameDetail(gameId.value, 'basketball').then((res) => {
-    if (res.code !== 1) return
+    if (res.code !== 1) {
+      logToFile('[push] loadGameDetail code=' + res.code)
+      return
+    }
     const page = res.data || {}
     const g = page.game || page
     if (g.hostTeamName) homeName.value = g.hostTeamName
@@ -191,6 +174,13 @@ function loadGameDetail() {
     if (g.guestTeamLogo) guestLogo.value = g.guestTeamLogo
     hostScore.value = g.hostTeamScore || 0
     guestScore.value = g.guestTeamScore || 0
+    if (g.leagueName) leagueName.value = g.leagueName
+    if (g.leagueLogo) leagueLogo.value = g.leagueLogo
+    if (g.leagueStageName) leagueStageName.value = g.leagueStageName
+    if (g.hostTeamFoul !== undefined) hostFoul.value = g.hostTeamFoul
+    if (g.guestTeamFoul !== undefined) guestFoul.value = g.guestTeamFoul
+    logToFile('[push] loadGameDetail OK host=' + homeName.value + ' guest=' + guestName.value + ' score=' + hostScore.value + ':' + guestScore.value)
+    pushScore()
   })
 }
 
@@ -200,14 +190,17 @@ function connectScore() {
   connectSocket(
     'push',
     (data) => {
-      // 收到实时比分数据
       if (data.hostTeamScore !== undefined) hostScore.value = data.hostTeamScore
       if (data.guestTeamScore !== undefined) guestScore.value = data.guestTeamScore
       if (data.section !== undefined) section.value = data.section
+      if (data.hostTeamFoul !== undefined) hostFoul.value = data.hostTeamFoul
+      if (data.guestTeamFoul !== undefined) guestFoul.value = data.guestTeamFoul
+      if (data.msg !== undefined) msg.value = data.msg
+      if (data.leagueStageName !== undefined) leagueStageName.value = data.leagueStageName
+      pushScore()
     },
     (event) => {
-      // 连接状态：以 onOpen 为准，不再依赖收到消息
-      if (event === 'open') statusText.value = '比分接口已连接'
+      if (event === 'open') { statusText.value = '比分接口已连接'; logToFile('[push] ws open') }
       else if (event === 'close') statusText.value = '比分接口已断开，重连中…'
       else if (event === 'error') statusText.value = '比分接口连接失败'
     }
@@ -219,50 +212,74 @@ function reconnectScore() {
   connectScore()
 }
 
+/** 把当前比分烧进推流画面（ScoreBitmapDrawer 画 960×545 Bitmap -> setWatermark） */
+function pushScore() {
+  if (!pusher.value || !showScore.value) {
+    logToFile('[push] pushScore skip: pusher=' + (pusher.value ? 'yes' : 'null') + ' show=' + showScore.value)
+    return
+  }
+  logToFile('[push] updateScore host=' + hostScore.value + ' guest=' + guestScore.value)
+  pusher.value.updateScore({
+    hostName: homeName.value,
+    guestName: guestName.value,
+    hostScore: String(hostScore.value),
+    guestScore: String(guestScore.value),
+    section: section.value,
+    hostFoul: hostFoul.value,
+    guestFoul: guestFoul.value,
+    hostLogo: homeLogo.value,
+    guestLogo: guestLogo.value,
+    leagueName: leagueName.value,
+    leagueLogo: leagueLogo.value,
+    leagueStageName: leagueStageName.value,
+    msg: msg.value
+  })
+}
+
 function startPush() {
   if (!publishUrl.value) {
     uni.showToast({ title: '推流地址为空，无法直播', icon: 'none' })
     return
   }
-  const ctx = getPusherCtx()
-  if (!ctx) {
+  if (!pusher.value) {
     uni.showToast({ title: '推流组件未就绪', icon: 'none' })
+    logToFile('[push] startPush 失败：pusher ref null')
     return
   }
-  ctx.start({
-    success: () => {
-      pushing.value = true
-      statusText.value = '直播中'
-    },
-    fail: () => {
-      uni.showToast({ title: '推流失败', icon: 'none' })
-    }
-  })
+  logToFile('[push] startPush url=' + publishUrl.value)
+  pusher.value.startPush(publishUrl.value)
+  statusText.value = '推流连接中…'
 }
 
 function stopPush() {
-  if (pusherCtx) {
-    pusherCtx.stop()
+  if (pusher.value) {
+    pusher.value.stopPush()
     pushing.value = false
     statusText.value = '已结束'
+    logToFile('[push] stopPush')
   }
 }
 
 function switchCamera() {
-  if (pusherCtx) pusherCtx.switchCamera()
+  if (pusher.value) pusher.value.switchCamera()
 }
 
 function toggleScore() {
   showScore.value = !showScore.value
+  if (showScore.value) {
+    pushScore()
+  } else if (pusher.value) {
+    pusher.value.hideScore()
+  }
 }
 
 function onState(e) {
-  console.log('[pusher] state', e.detail)
-}
-
-function onError(e) {
-  console.log('[pusher] error', e.detail)
-  uni.showToast({ title: '推流错误', icon: 'none' })
+  const d = e.detail || {}
+  console.log('[pusher] state', d)
+  logToFile('[pusher] state code=' + d.code + ' msg=' + d.msg)
+  if (d.msg) statusText.value = d.msg
+  if (d.code === 1005) pushing.value = true           // PUSH_EVT_CONNECT_SUCC
+  else if (d.code === -1305) pushing.value = false     // PUSH_ERR_NET_DISCONNECT
 }
 
 /** 生成回放（POST live/stream/compose） */
@@ -273,8 +290,25 @@ function onCompose() {
 }
 
 function back() {
+  try { stopPush() } catch (e) {}
+  if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
+  try { closeSocket() } catch (e) {}
+  // #ifdef APP-PLUS
+  plus.screen.lockOrientation('portrait-primary')
+  // #endif
   uni.navigateBack()
 }
+
+// 系统手势/物理返回兜底：onUnload 在 nvue 不触发，用 onBackPress 保证锁回竖屏
+onBackPress(() => {
+  try { stopPush() } catch (e) {}
+  if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
+  try { closeSocket() } catch (e) {}
+  // #ifdef APP-PLUS
+  plus.screen.lockOrientation('portrait-primary')
+  // #endif
+  return false
+})
 </script>
 
 <style lang="scss" scoped>
@@ -283,14 +317,18 @@ function back() {
   background-color: #000000;
 }
 .pusher {
-  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .overlay {
   position: absolute;
-  /* 宽高/位置由 overlayStyle 注入（与屏幕互换并居中），
-     以中心为原点顺时针旋转90°后铺满竖屏 */
-  transform: rotate(90deg);
-  transform-origin: 50% 50%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .top {
   position: absolute;
@@ -299,21 +337,7 @@ function back() {
   right: 0;
   flex-direction: row;
   align-items: center;
-  padding: 20rpx;
-  height: 80rpx;
-}
-.back {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 32rpx;
-  background-color: rgba(0, 0, 0, 0.4);
-  align-items: center;
-  justify-content: center;
-  margin-left: 50rpx;
-}
-.back-icon {
-  font-size: 44rpx;
-  color: #ffffff;
+  padding: 16rpx 20rpx;
 }
 .status {
   flex: 1;
@@ -321,129 +345,25 @@ function back() {
   color: #ffffff;
   font-size: 24rpx;
 }
-.reconnect {
-  font-size: 24rpx;
-  color: #009de9;
-}
-.score-overlay {
-  position: absolute;
-  top: 550rpx;
-  left: 380rpx;
-  width: 800rpx;
-  height: 80rpx;
-}
-.score-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 800rpx;
-  height: 80rpx;
-}
-.s-logo {
-  position: absolute;
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 24rpx;
-  top: 14rpx;
-}
-.s-logo-left {
-  left: 13rpx;
-}
-.s-logo-right {
-  right: 13rpx;
-}
-.s-team {
-  position: absolute;
-  top: 30rpx;
-  width: 240rpx;
-  font-size: 22rpx;
-  color: #ffffff;
-  text-align: center;
-  lines: 1;
-  text-overflow: ellipsis;
-}
-.s-host {
-  left: 32rpx;
-}
-.s-guest {
-  left: 528rpx;
-}
-.s-score {
-  position: absolute;
-  top: 22rpx;
-  width: 128rpx;
-  font-size: 40rpx;
-  color: #ffffff;
-  font-weight: bold;
-  text-align: center;
-}
-.s-score-host {
-  left: 416rpx;
-}
-.s-score-guest {
-  left: 256rpx;
-}
-.s-section {
-  position: absolute;
-  top: 32rpx;
-  left: 336rpx;
-  width: 128rpx;
-  font-size: 22rpx;
-  color: #ffffff;
-  text-align: center;
-}
 .bottom {
   position: absolute;
-  bottom: 0rpx;
-  padding:0 60rpx;
+  bottom: 0;
   left: 0;
-  right: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20rpx;
+}
+.bottom-row {
   flex-direction: row;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  width: 700rpx;
+  margin-bottom: 12rpx;
 }
-.btn {
-  font-size: 26rpx;
+/* 对齐老项目：wrap_content + 背景 #10000000(近透明) + 白字，无圆角无填色 */
+.gray-btn {
+  padding: 8rpx 20rpx;
+  background-color: rgba(0, 0, 0, 0.06);
   color: #ffffff;
-  padding: 16rpx 28rpx;
-  margin: 10rpx;
-  border-radius: 30rpx;
-  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 24rpx;
+  line-height: 40rpx;
+  margin-right: 16rpx;
 }
-.btn.start {
-  background-color: #29a871;
-}
-.btn.stop {
-  background-color: #ff2d2d;
-}
-.top-logo{
-	width: 420rpx;
-	height:150rpx;
-	align-self: flex-end;
-	position: relative;
-	top:20rpx;
-	right:20rpx;
-	transform: scale(0.5);
-}
-
-.gray-btn{
-	width: 170rpx;
-	height:90rpx;
-	background-color: rgba(0, 0, 0, 0.3);
-	border-radius: 4rpx;
-	display: flex;
-	align-items: center;
-	padding: 30rpx 30rpx;
-	text-align: center;
-	margin:40rpx;
-	color: white;
-	font-size: 28rpx;
-}
-
-.top-btn{
-	position: relative;
-	right:300rpx;
-}
-
 </style>

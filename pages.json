@@ -26,7 +26,7 @@
     { "path": "pages/game/operation-record", "style": { "navigationStyle": "custom" } },
     { "path": "pages/game/week-outs", "style": { "navigationStyle": "custom" } },
     { "path": "pages/live/multiple", "style": { "navigationStyle": "custom" } },
-    { "path": "pages/live/push", "style": { "navigationStyle": "custom", "pageOrientation": "portrait" } },
+    { "path": "pages/live/push", "style": { "navigationStyle": "custom", "pageOrientation": "landscape" } },
     { "path": "pages/live/play", "style": { "navigationStyle": "custom", "pageOrientation": "portrait", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
     { "path": "pages/photo/photo", "style": { "navigationStyle": "custom" } },
     { "path": "pages/photos-upload/photos-upload", "style": { "navigationStyle": "custom" } },

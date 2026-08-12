@@ -1,0 +1,35 @@
+{
+  "name": "TencentLivePusher",
+  "id": "TencentLivePusher",
+  "version": "1.0.0",
+  "description": "腾讯云 LiteAV 推流 + 比分条 Canvas 烧流(setWatermark 动态替换)",
+  "_dp_type": "nativeplugin",
+  "_dp_nativeplugin": {
+    "android": {
+      "plugins": [
+        {
+          "type": "component",
+          "name": "livepusherview",
+          "class": "com.ydh123.plugin.LivePusherView"
+        },
+        {
+          "type": "module",
+          "name": "TencentLivePusher",
+          "class": "com.ydh123.plugin.LivePusherModule"
+        }
+      ],
+      "integrateType": "aar",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_PHONE_STATE"
+      ]
+    }
+  }
+}

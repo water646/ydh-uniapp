@@ -2121,7 +2121,7 @@ This will fail in production.`);
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: true,
+    useMock: false,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -12001,11 +12001,15 @@ This will fail in production.`);
           vue.createElementVNode("view", {
             class: "r-btn orange",
             onClick: _cache[1] || (_cache[1] = ($event) => $setup.showChange = true)
-          }, "换人"),
+          }, [
+            vue.createElementVNode("p", null, "换人")
+          ]),
           vue.createElementVNode("view", {
             class: "r-btn gray",
             onClick: _cache[2] || (_cache[2] = ($event) => $setup.showRecord = true)
-          }, "记录")
+          }, [
+            vue.createElementVNode("p", null, "记录")
+          ])
         ])
       ]),
       vue.createVNode($setup["changeMemberDialog"], {

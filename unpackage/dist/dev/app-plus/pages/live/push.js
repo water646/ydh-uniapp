@@ -86,6 +86,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   var ON_HIDE = "onHide";
   var ON_LOAD = "onLoad";
   var ON_READY = "onReady";
+  var ON_UNLOAD = "onUnload";
+  var ON_BACK_PRESS = "onBackPress";
   function formatAppLog(type, filename, ...args) {
     if (uni.__log__) {
       uni.__log__(type, filename, ...args);
@@ -116,6 +118,16 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     2
     /* HookFlags.PAGE */
   );
+  var onUnload = /* @__PURE__ */ createLifeCycleHook(
+    ON_UNLOAD,
+    2
+    /* HookFlags.PAGE */
+  );
+  var onBackPress = /* @__PURE__ */ createLifeCycleHook(
+    ON_BACK_PRESS,
+    2
+    /* HookFlags.PAGE */
+  );
   var _export_sfc = (sfc, props) => {
     const target = sfc.__vccOpts || sfc;
     for (const [key, val] of props) {
@@ -133,7 +145,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: true,
+    useMock: false,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -252,24 +264,6 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     leagueId: "mock-league-001",
     token: "mock-token-test-001"
   };
-  var userInfo = {
-    id: "mock-user-001",
-    avatar: "",
-    nickName: "\u6D4B\u8BD5\u7BA1\u7406\u5458",
-    sex: E(1, "\u7537"),
-    sketch: "\u3010MOCK\u3011\u6D4B\u8BD5\u8D26\u53F7",
-    birthday: "1990-01-01",
-    position: E(1, "\u63A7\u7403\u540E\u536B"),
-    number: 23,
-    weight: "75",
-    height: "180",
-    city: "\u5317\u4EAC",
-    province: "\u5317\u4EAC",
-    phone: "13800000000",
-    isBindWx: EB(0, "\u672A\u7ED1\u5B9A", false),
-    follows: 12,
-    fans: 36
-  };
   var basketGame1 = {
     id: IDS.gameId,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
@@ -300,7 +294,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     venueName: "1\u53F7\u573A\u5730",
     isMedia: EB(1, "\u662F", true)
   };
-  var basketGame2 = __spreadProps(__spreadValues({}, basketGame1), {
+  __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.game2,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EFF\u9EC4\u4E4B\u6218",
     status: E(1, "\u672A\u5F00\u59CB"),
@@ -313,7 +307,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-host-team-002",
     guestGameTeamId: "mock-guest-team-002"
   });
-  var basketGame3 = __spreadProps(__spreadValues({}, basketGame1), {
+  __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.game3,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u9752\u7D2B\u4E4B\u6218",
     status: E(3, "\u5DF2\u7ED3\u675F"),
@@ -327,7 +321,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-host-team-003",
     guestGameTeamId: "mock-guest-team-003"
   });
-  var footGame1 = __spreadProps(__spreadValues({}, basketGame1), {
+  __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.footGame,
     name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B",
     type: E(2, "\u8DB3\u7403"),
@@ -339,90 +333,6 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-foot-host-001",
     guestGameTeamId: "mock-foot-guest-001",
     leagueName: "\u6D4B\u8BD5\u676F"
-  });
-  function matchList(sport, status) {
-    const isFoot = sport === "football";
-    const ongoing = isFoot ? footGame1 : basketGame1;
-    const notStart = isFoot ? __spreadProps(__spreadValues({}, footGame1), { id: "mock-foot-002", status: E(1, "\u672A\u5F00\u59CB"), runStatus: E(1, "\u672A\u5F00\u59CB"), hostTeamScore: 0, guestTeamScore: 0 }) : basketGame2;
-    const ended = isFoot ? __spreadProps(__spreadValues({}, footGame1), { id: "mock-foot-003", status: E(3, "\u5DF2\u7ED3\u675F"), runStatus: E(3, "\u5DF2\u7ED3\u675F"), hostTeamScore: 3, guestTeamScore: 0 }) : basketGame3;
-    if (status === "end") {
-      return ok([{ date: "2026-07-30", games: [ended] }]);
-    }
-    return ok([{ date: "2026-07-31", games: [ongoing, notStart] }]);
-  }
-  function buildMembers(teamName, teamId) {
-    const names = teamName === "\u7EA2\u961F" ? ["\u8D75\u4E00", "\u94B1\u4E8C", "\u5B59\u4E09", "\u674E\u56DB", "\u5468\u4E94", "\u5434\u516D", "\u90D1\u4E03", "\u738B\u516B"] : ["\u51AF\u4E00", "\u9648\u4E8C", "\u891A\u4E09", "\u536B\u56DB", "\u848B\u4E94", "\u6C88\u516D", "\u97E9\u4E03", "\u6768\u516B"];
-    const pos = ["\u63A7\u7403\u540E\u536B", "\u5F97\u5206\u540E\u536B", "\u5C0F\u524D\u950B", "\u5927\u524D\u950B", "\u4E2D\u950B", "\u66FF\u8865\u540E\u536B", "\u66FF\u8865\u524D\u950B", "\u66FF\u8865\u4E2D\u950B"];
-    return names.map((name, i) => ({
-      id: `mock-${teamId}-m${i + 1}`,
-      teamMemberId: `mock-${teamId}-member-${i + 1}`,
-      startingLineup: EB(i < 5 ? 1 : 0, i < 5 ? "\u9996\u53D1" : "\u66FF\u8865", i < 5),
-      playing: EB(i < 5 ? 1 : 0, i < 5 ? "\u5728\u573A" : "\u573A\u4E0B", i < 5),
-      number: i + 1,
-      name,
-      temporary: 0,
-      position: E(i < 5 ? i + 1 : 0, i < 5 ? pos[i] : "\u66FF\u8865"),
-      teamName,
-      avatar: "",
-      foul: i === 1 ? 2 : i === 3 ? 1 : 0
-    }));
-  }
-  var hostMembers = buildMembers("\u7EA2\u961F", "host");
-  var guestMembers = buildMembers("\u84DD\u961F", "guest");
-  var sections = [
-    { id: "mock-sec-1", gameSectionId: "mock-sec-1", name: "\u7B2C1\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 1, groups: "", running: EB(1, "\u8FDB\u884C\u4E2D", true) },
-    { id: "mock-sec-2", gameSectionId: "mock-sec-2", name: "\u7B2C2\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 2, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) },
-    { id: "mock-sec-3", gameSectionId: "mock-sec-3", name: "\u7B2C3\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 3, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) },
-    { id: "mock-sec-4", gameSectionId: "mock-sec-4", name: "\u7B2C4\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 4, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
-  ];
-  var footSections = [
-    { id: "mock-foot-sec-1", gameSectionId: "mock-foot-sec-1", name: "\u4E0A\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 1, groups: "", running: EB(1, "\u8FDB\u884C\u4E2D", true) },
-    { id: "mock-foot-sec-2", gameSectionId: "mock-foot-sec-2", name: "\u4E0B\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 2, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
-  ];
-  var basketDetail = ok({
-    game: {
-      id: IDS.gameId,
-      name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
-      status: E(2, "\u8FDB\u884C\u4E2D"),
-      runStatus: E(2, "\u8FDB\u884C\u4E2D"),
-      type: E(1, "\u7BEE\u7403"),
-      event: E(1, "\u8054\u8D5B"),
-      time: "2026-07-31 15:00",
-      isMedia: EB(1, "\u662F", true),
-      venueId: "mock-venue-1",
-      venueName: "1\u53F7\u573A\u5730",
-      venueAddress: "\u6D4B\u8BD5\u4F53\u80B2\u99861\u53F7\u573A",
-      leagueGroupId: "mock-lg-1",
-      leagueGroupName: "A\u7EC4",
-      leagueGroupSort: 1,
-      leagueStageId: "mock-ls-1",
-      leagueStageName: "\u5C0F\u7EC4\u8D5B",
-      leagueStageSort: 1,
-      leagueId: IDS.leagueId,
-      leagueName: "\u6D4B\u8BD5\u8054\u8D5B",
-      leagueLogo: "",
-      leagueStartTime: "2026-07-01",
-      hostGameTeamId: IDS.hostTeamId,
-      hostTeamId: "ht1",
-      hostTeamLogo: "",
-      hostTeamName: "\u7EA2\u961F",
-      hostTeamScore: 28,
-      guestGameTeamId: IDS.guestTeamId,
-      guestTeamId: "gt2",
-      guestTeamLogo: "",
-      guestTeamName: "\u84DD\u961F",
-      guestTeamScore: 24,
-      gameResult: E(0, "\u672A\u7ED3\u675F"),
-      videoStatus: E(0, "\u672A\u76F4\u64AD"),
-      section: "1"
-    },
-    hostTeamFoul: 3,
-    guestTeamFoul: 2,
-    hostTeamStop: 1,
-    guestTeamStop: 0,
-    hostMembers,
-    guestMembers,
-    sections
   });
   var gameDetail = ok({
     id: IDS.gameId,
@@ -461,184 +371,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     assists: 8,
     number: 8
   });
-  var footDetail = ok(__spreadProps(__spreadValues({}, gameDetail.data), { type: E(2, "\u8DB3\u7403"), hostTeamName: "\u98DE\u864E\u961F", guestTeamName: "\u96C4\u9E70\u961F", hostTeamScore: 1, guestTeamScore: 1, name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B", leagueName: "\u6D4B\u8BD5\u676F" }));
-  var connectInfo = ok({
-    id: IDS.gameId,
-    event: E(1, "\u8054\u8D5B"),
-    name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
-    status: E(2, "\u8FDB\u884C\u4E2D"),
-    runStatus: E(2, "\u8FDB\u884C\u4E2D"),
-    time: "2026-07-31 15:00",
-    type: E(1, "\u7BEE\u7403"),
-    isMedia: EB(1, "\u662F", true),
-    venueId: "mock-venue-1",
-    venueName: "1\u53F7\u573A\u5730",
-    venueAddress: "\u6D4B\u8BD5\u4F53\u80B2\u99861\u53F7\u573A",
-    leagueGroupId: "mock-lg-1",
-    leagueGroupName: "A\u7EC4",
-    leagueGroupSort: 1,
-    leagueStageId: "mock-ls-1",
-    leagueStageName: "\u5C0F\u7EC4\u8D5B",
-    leagueStageSort: 1,
-    leagueId: IDS.leagueId,
-    leagueName: "\u6D4B\u8BD5\u8054\u8D5B",
-    leagueLogo: "",
-    leagueStartTime: "2026-07-01",
-    hostGameTeamId: IDS.hostTeamId,
-    hostTeamId: "ht1",
-    hostTeamLogo: "",
-    hostTeamName: "\u7EA2\u961F",
-    hostTeamScore: 28,
-    guestGameTeamId: IDS.guestTeamId,
-    guestTeamId: "gt2",
-    guestTeamLogo: "",
-    guestTeamName: "\u84DD\u961F",
-    guestTeamScore: 24,
-    gameResult: E(0, "\u672A\u7ED3\u675F"),
-    videoStatus: E(0, "\u672A\u76F4\u64AD"),
-    section: "1"
-  });
-  function sectionList(query) {
-    const isFoot = query && query.gameId && String(query.gameId).indexOf("foot") >= 0;
-    const list = isFoot ? footSections : sections;
-    return ok(list.map((s) => ({
-      id: s.id,
-      name: s.name,
-      gameId: s.gameId,
-      type: s.type,
-      sort: s.sort,
-      groups: s.groups
-    })));
-  }
-  function memberList(query) {
-    const isGuest = query && query.gameTeamId && String(query.gameTeamId).indexOf("guest") >= 0;
-    return ok(isGuest ? guestMembers : hostMembers);
-  }
-  var recordList = ok({
-    totalCount: 6,
-    pageSize: 10,
-    totalPage: 1,
-    pageNo: 1,
-    nextPage: false,
-    list: [
-      { id: "mock-rec-1", recordNumber: "mock-rec-1", statisticsSectionId: "mock-sec-1", type: E(7, "\u4E09\u5206\u547D\u4E2D"), occurrenceTime: "15:02:10", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "\u8D75\u4E00 \u4E09\u5206\u547D\u4E2D", sectionName: "\u7B2C1\u8282", memberName: "\u8D75\u4E00", teamName: "\u7EA2\u961F" },
-      { id: "mock-rec-2", recordNumber: "mock-rec-2", statisticsSectionId: "mock-sec-1", type: E(1, "\u7BEE\u677F"), occurrenceTime: "15:03:25", statisticsMemberId: "mock-guest-member-5", statisticsTeamId: IDS.guestTeamId, description: "\u51AF\u4E94 \u7BEE\u677F", sectionName: "\u7B2C1\u8282", memberName: "\u848B\u4E94", teamName: "\u84DD\u961F" },
-      { id: "mock-rec-3", recordNumber: "mock-rec-3", statisticsSectionId: "mock-sec-1", type: E(6, "\u4E24\u5206\u547D\u4E2D"), occurrenceTime: "15:04:40", statisticsMemberId: "mock-host-member-2", statisticsTeamId: IDS.hostTeamId, description: "\u94B1\u4E8C \u4E24\u5206\u547D\u4E2D", sectionName: "\u7B2C1\u8282", memberName: "\u94B1\u4E8C", teamName: "\u7EA2\u961F" },
-      { id: "mock-rec-4", recordNumber: "mock-rec-4", statisticsSectionId: "mock-sec-1", type: E(9, "\u72AF\u89C4"), occurrenceTime: "15:05:55", statisticsMemberId: "mock-guest-member-2", statisticsTeamId: IDS.guestTeamId, description: "\u9648\u4E8C \u72AF\u89C4", sectionName: "\u7B2C1\u8282", memberName: "\u9648\u4E8C", teamName: "\u84DD\u961F" },
-      { id: "mock-rec-5", recordNumber: "mock-rec-5", statisticsSectionId: "mock-sec-1", type: E(2, "\u52A9\u653B"), occurrenceTime: "15:07:12", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "\u8D75\u4E00 \u52A9\u653B", sectionName: "\u7B2C1\u8282", memberName: "\u8D75\u4E00", teamName: "\u7EA2\u961F" },
-      { id: "mock-rec-6", recordNumber: "mock-rec-6", statisticsSectionId: "mock-sec-1", type: E(17, "\u5931\u8BEF"), occurrenceTime: "15:08:30", statisticsMemberId: "mock-guest-member-3", statisticsTeamId: IDS.guestTeamId, description: "\u891A\u4E09 \u5931\u8BEF", sectionName: "\u7B2C1\u8282", memberName: "\u891A\u4E09", teamName: "\u84DD\u961F" }
-    ]
-  });
-  var weekList = ok([
-    {
-      groupName: "A\u7EC4",
-      games: [basketGame1, basketGame3],
-      optimals: [
-        { name: "\u8D75\u4E00", avatar: "", count: 18, type: E(6, "\u5F97\u5206\u738B") },
-        { name: "\u848B\u4E94", avatar: "", count: 11, type: E(1, "\u7BEE\u677F\u738B") }
-      ]
-    },
-    {
-      groupName: "B\u7EC4",
-      games: [basketGame2],
-      optimals: [{ name: "\u5434\u516D", avatar: "", count: 7, type: E(2, "\u52A9\u653B\u738B") }]
-    }
-  ]);
-  var photoActivityList = ok({
-    totalCount: 2,
-    pageSize: 10,
-    totalPage: 1,
-    pageNo: 1,
-    nextPage: false,
-    list: [
-      { id: "mock-photo-act-1", type: E(1, "\u6BD4\u8D5B"), title: "\u7EA2\u84DD\u5927\u6218\u62CD\u7167\u76F4\u64AD", description: "\u3010MOCK\u3011\u6D4B\u8BD5\u6D3B\u52A8", status: E(1, "\u8FDB\u884C\u4E2D"), startTime: "2026-07-31 15:00", endTime: "2026-07-31 17:00", address: "1\u53F7\u573A\u5730", visitors: 128, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "\u663E\u793A") },
-      { id: "mock-photo-act-2", type: E(2, "\u8054\u8D5B"), title: "\u6D4B\u8BD5\u676F\u62CD\u7167\u76F4\u64AD", description: "\u3010MOCK\u3011\u6D4B\u8BD5\u6D3B\u52A82", status: E(2, "\u5DF2\u7ED3\u675F"), startTime: "2026-07-30 15:00", endTime: "2026-07-30 17:00", address: "2\u53F7\u573A\u5730", visitors: 56, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "\u663E\u793A") }
-    ]
-  });
-  var uploadPhotoList = ok([
-    { id: "mock-pic-1", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-1.jpg", fileSize: 102400, fileTime: "2026-07-31 15:01:00", showStatus: E(1, "\u663E\u793A"), likeCount: 3 },
-    { id: "mock-pic-2", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-2.jpg", fileSize: 204800, fileTime: "2026-07-31 15:02:00", showStatus: E(1, "\u663E\u793A"), likeCount: 5 },
-    { id: "mock-pic-3", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-3.jpg", fileSize: 153600, fileTime: "2026-07-31 15:03:00", showStatus: E(1, "\u663E\u793A"), likeCount: 0 }
-  ]);
-  var liveGameList = ok([
-    { id: "mock-live-1", recordId: "mock-rec-live-1", type: E(1, "\u76F4\u64AD"), appName: "mock", streamName: "mock-stream-1", name: "1\u53F7\u673A\u4F4D", status: E(1, "\u76F4\u64AD\u4E2D"), cover: "", publish: "rtmp://mock/live/mock-stream-1", liveRtmp: "rtmp://mock/live/mock-stream-1", liveFlv: "http://mock/live/mock-stream-1.flv", liveM3u8: "http://mock/live/mock-stream-1.m3u8" }
-  ]);
-  var versionCheckResult = ok({
-    id: "mock-ver-1",
-    deviceType: E(1, "android"),
-    url: "",
-    upgradeType: E(0, "\u53EF\u9009"),
-    remark: "\u3010MOCK\u3011\u5F53\u524D\u5DF2\u662F\u6700\u65B0\u7248\u672C\uFF08\u6D4B\u8BD5\u6570\u636E\uFF09",
-    packageSize: "0",
-    versionCode: 0,
-    versionName: "2.8.4",
-    notice: E(0, "\u4E0D\u63D0\u9192")
-  });
-  var RULES = [
-    /* ----- 登录 ----- */
-    { method: "POST", url: "sms/login", handler: () => ok(null, "\u3010MOCK\u3011\u9A8C\u8BC1\u7801\u5DF2\u53D1\u9001(\u6D4B\u8BD5\u7801:1234)") },
-    { method: "POST", url: "user/login", handler: () => ok(IDS.token, "\u3010MOCK\u3011\u767B\u5F55\u6210\u529F") },
-    { method: "GET", url: "user/info", handler: () => ok(userInfo) },
-    /* ----- 比赛列表（篮球 / 足球，按 query.status 区分未结束/已结束）----- */
-    { method: "GET", url: "game/list-my-manage", handler: (o) => matchList("basketball", o.query && o.query.status) },
-    { method: "GET", url: "soccer/game/list-my-manage", handler: (o) => matchList("football", o.query && o.query.status) },
-    /* ----- 比赛详情 / 连接信息 ----- */
-    { method: "GET", url: "ts/game/info", handler: () => connectInfo },
-    { method: "GET", url: "game//info", handler: () => connectInfo },
-    { method: "GET", url: "soccer/game//info", handler: () => connectInfo },
-    { method: "GET", url: "game/{gameId}/detail", handler: () => gameDetail },
-    { method: "GET", url: "soccer/game/{gameId}/detail", handler: () => gameDetail },
-    { method: "GET", url: "game/{gameId}/foot-detail", handler: () => footDetail },
-    { method: "GET", url: "statistics/game-detail-basketball", handler: () => basketDetail },
-    /* ----- 小节 / 球员 ----- */
-    { method: "GET", url: "statistics/section/list", handler: (o) => sectionList(o.query) },
-    { method: "GET", url: "statistics/member/list", handler: (o) => memberList(o.query) },
-    /* ----- 统计记录 ----- */
-    { method: "GET", url: "statistics/page", handler: () => recordList },
-    /* ----- 优肯周赛况 ----- */
-    { method: "GET", url: "game/list-week", handler: () => weekList },
-    /* ----- 拍照 / 相册 ----- */
-    { method: "GET", url: "photo/activity/list-my-manage", handler: () => photoActivityList },
-    { method: "GET", url: "photo/activity/create-game", handler: () => ok("mock-photo-act-new", "\u3010MOCK\u3011\u6D3B\u52A8\u521B\u5EFA\u6210\u529F") },
-    { method: "GET", url: "photo/picture/upload-list", handler: () => uploadPhotoList },
-    /* ----- 直播 ----- */
-    { method: "GET", url: "live/stream/game-list", handler: () => liveGameList },
-    { method: "POST", url: "live/stream/game", handler: () => ok(liveGameList.data[0], "\u3010MOCK\u3011\u83B7\u53D6\u76F4\u64AD\u5730\u5740\u6210\u529F") },
-    { method: "POST", url: "live/stream/game-add", handler: () => ok("mock-live-new", "\u3010MOCK\u3011\u76F4\u64AD\u6DFB\u52A0\u6210\u529F") },
-    { method: "POST", url: "live/stream/compose", handler: () => ok(null, "\u3010MOCK\u3011\u5408\u6210\u56DE\u653E\u8BF7\u6C42\u5DF2\u63D0\u4EA4") },
-    /* ----- 版本检查 ----- */
-    { method: "GET", url: "sys/app-version/check", handler: () => versionCheckResult },
-    /* ----- 写操作：统一返回成功（mock 不真实落库）----- */
-    { method: "POST", url: "ts/game/update-info", handler: () => ok(null, "\u3010MOCK\u3011\u4FDD\u5B58\u6210\u529F") },
-    { method: "POST", url: "game/status", handler: () => ok(null, "\u3010MOCK\u3011\u72B6\u6001\u4FEE\u6539\u6210\u529F") },
-    { method: "POST", url: "soccer/game/status", handler: () => ok(null, "\u3010MOCK\u3011\u72B6\u6001\u4FEE\u6539\u6210\u529F") },
-    { method: "POST", url: "statistics/member/sign", handler: () => ok(null, "\u3010MOCK\u3011\u7B7E\u5230\u6210\u529F") },
-    { method: "POST", url: "statistics/member/sign-cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u7B7E\u5230\u6210\u529F") },
-    { method: "POST", url: "statistics/member/starting-lineup", handler: () => ok(null, "\u3010MOCK\u3011\u8BBE\u7F6E\u9996\u53D1\u6210\u529F") },
-    { method: "POST", url: "statistics/member/starting-lineup-cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u9996\u53D1\u6210\u529F") },
-    { method: "POST", url: "statistics/member/temporary", handler: () => ok("mock-member-new", "\u3010MOCK\u3011\u6DFB\u52A0\u4E34\u65F6\u7403\u5458\u6210\u529F") },
-    { method: "POST", url: "statistics/member/edit-position", handler: () => ok(null, "\u3010MOCK\u3011\u4F4D\u7F6E\u4FEE\u6539\u6210\u529F") },
-    { method: "GET", url: "statistics/member/delete-temporary", handler: () => ok(null, "\u3010MOCK\u3011\u5220\u9664\u7403\u5458\u6210\u529F") },
-    { method: "POST", url: "statistics/add", handler: () => ok(null, "\u3010MOCK\u3011\u7EDF\u8BA1\u63D0\u4EA4\u6210\u529F") },
-    { method: "POST", url: "statistics/add-all", handler: () => ok(null, "\u3010MOCK\u3011\u6279\u91CF\u7EDF\u8BA1\u63D0\u4EA4\u6210\u529F") },
-    { method: "POST", url: "statistics/cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u8BB0\u5F55\u6210\u529F") },
-    { method: "POST", url: "statistics/section/running", handler: () => ok(null, "\u3010MOCK\u3011\u5C0F\u8282\u72B6\u6001\u5207\u6362\u6210\u529F") }
-  ];
-  function matchUrl(template, realUrl) {
-    const re = new RegExp("^" + template.replace(/\{[^}]+\}/g, "([^/]+)") + "$");
-    return re.test(realUrl);
-  }
+  ok(__spreadProps(__spreadValues({}, gameDetail.data), { type: E(2, "\u8DB3\u7403"), hostTeamName: "\u98DE\u864E\u961F", guestTeamName: "\u96C4\u9E70\u961F", hostTeamScore: 1, guestTeamScore: 1, name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B", leagueName: "\u6D4B\u8BD5\u676F" }));
   function mockResolve(options) {
-    const { url, method = "GET" } = options;
-    const m = method.toUpperCase();
-    for (const rule of RULES) {
-      if (rule.method !== m)
-        continue;
-      if (!matchUrl(rule.url, url))
-        continue;
-      return rule.handler(options);
-    }
-    formatAppLog("warn", "at mock/mock-data.js:536", `%c\u3010MOCK\u3011\u672A\u5339\u914D\u5230\u9759\u6001\u6570\u636E\uFF0C\u8D70\u771F\u5B9E\u8BF7\u6C42\uFF1A${m} ${url}`, "color:#f56c6c");
     return null;
   }
   function request(options) {
@@ -653,7 +387,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       loading = false
     } = options;
     let finalUrl = config.baseUrl + url;
-    const mocked = mockResolve(options);
+    const mocked = mockResolve();
     if (mocked !== null) {
       if (loading)
         uni.showLoading({ title: typeof loading === "string" ? loading : "\u52A0\u8F7D\u4E2D", mask: true });
@@ -721,9 +455,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
   }
   var getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   var compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-  var _imports_0 = "/static/mipmap-xhdpi/new_bifen.png";
-  var _imports_1 = "/static/watermark.png";
-  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "flex": 1 } }, "overlay": { "": { "position": "absolute", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx", "height": "80rpx" } }, "back": { "": { "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "marginLeft": "50rpx" } }, "back-icon": { "": { "fontSize": "44rpx", "color": "#ffffff" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "reconnect": { "": { "fontSize": "24rpx", "color": "#009de9" } }, "score-overlay": { "": { "position": "absolute", "top": "550rpx", "left": "380rpx", "width": "800rpx", "height": "80rpx" } }, "score-bg": { "": { "position": "absolute", "top": 0, "left": 0, "width": "800rpx", "height": "80rpx" } }, "s-logo": { "": { "position": "absolute", "width": "48rpx", "height": "48rpx", "borderRadius": "24rpx", "top": "14rpx" } }, "s-logo-left": { "": { "left": "13rpx" } }, "s-logo-right": { "": { "right": "13rpx" } }, "s-team": { "": { "position": "absolute", "top": "30rpx", "width": "240rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center", "lines": 1, "textOverflow": "ellipsis" } }, "s-host": { "": { "left": "32rpx" } }, "s-guest": { "": { "left": "528rpx" } }, "s-score": { "": { "position": "absolute", "top": "22rpx", "width": "128rpx", "fontSize": "40rpx", "color": "#ffffff", "fontWeight": "bold", "textAlign": "center" } }, "s-score-host": { "": { "left": "416rpx" } }, "s-score-guest": { "": { "left": "256rpx" } }, "s-section": { "": { "position": "absolute", "top": "32rpx", "left": "336rpx", "width": "128rpx", "fontSize": "22rpx", "color": "#ffffff", "textAlign": "center" } }, "bottom": { "": { "position": "absolute", "bottom": "0rpx", "paddingTop": 0, "paddingRight": "60rpx", "paddingBottom": 0, "paddingLeft": "60rpx", "left": 0, "right": 0, "flexDirection": "row", "justifyContent": "flex-start", "flexWrap": "wrap", "width": "700rpx" } }, "btn": { "": { "fontSize": "26rpx", "color": "#ffffff", "paddingTop": "16rpx", "paddingRight": "28rpx", "paddingBottom": "16rpx", "paddingLeft": "28rpx", "marginTop": "10rpx", "marginRight": "10rpx", "marginBottom": "10rpx", "marginLeft": "10rpx", "borderRadius": "30rpx", "backgroundColor": "rgba(0,0,0,0.5)" }, ".start": { "backgroundColor": "#29a871" }, ".stop": { "backgroundColor": "#ff2d2d" } }, "top-logo": { "": { "width": "420rpx", "height": "150rpx", "alignSelf": "flex-end", "position": "relative", "top": "20rpx", "right": "20rpx", "transform": "scale(0.5)" } }, "gray-btn": { "": { "width": "170rpx", "height": "90rpx", "backgroundColor": "rgba(0,0,0,0.3)", "borderRadius": "4rpx", "display": "flex", "alignItems": "center", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx", "textAlign": "center", "marginTop": "40rpx", "marginRight": "40rpx", "marginBottom": "40rpx", "marginLeft": "40rpx", "color": "#FFFFFF", "fontSize": "28rpx" } }, "top-btn": { "": { "position": "relative", "right": "300rpx" } } };
+  var _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "24rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "20rpx", "paddingRight": "20rpx", "paddingBottom": "20rpx", "paddingLeft": "20rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "12rpx" } }, "gray-btn": { "": { "paddingTop": "8rpx", "paddingRight": "20rpx", "paddingBottom": "8rpx", "paddingLeft": "20rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "24rpx", "lineHeight": "40rpx", "marginRight": "16rpx" } } };
   var _sfc_main = {
     __name: "push",
     setup(__props, { expose: __expose }) {
@@ -737,40 +469,38 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       const hostScore = (0, import_vue2.ref)(0);
       const guestScore = (0, import_vue2.ref)(0);
       const section = (0, import_vue2.ref)("");
+      const hostFoul = (0, import_vue2.ref)(0);
+      const guestFoul = (0, import_vue2.ref)(0);
+      const leagueName = (0, import_vue2.ref)("");
+      const leagueLogo = (0, import_vue2.ref)("");
+      const leagueStageName = (0, import_vue2.ref)("");
+      const msg = (0, import_vue2.ref)("");
       const showScore = (0, import_vue2.ref)(true);
       const pushing = (0, import_vue2.ref)(false);
       const statusText = (0, import_vue2.ref)("\u672A\u8FDE\u63A5");
-      let pusherCtx = null;
-      const instance = (0, import_vue2.getCurrentInstance)();
-      const overlayStyle = (() => {
-        let h = 1334;
+      const pusher = (0, import_vue2.ref)(null);
+      function logToFile(msg2) {
         try {
-          const info = uni.getSystemInfoSync();
-          if (info.windowWidth && info.windowHeight) {
-            h = Math.round(750 * info.windowHeight / info.windowWidth);
-          }
+          const ts = (/* @__PURE__ */ new Date()).toLocaleString();
+          const main = plus.android.runtimeMainActivity();
+          const File = plus.android.importClass("java.io.File");
+          const FileWriter = plus.android.importClass("java.io.FileWriter");
+          const dir = main.getExternalFilesDir(null);
+          const f = new File(dir, "push_debug.log");
+          const fw = new FileWriter(f, true);
+          fw.write(ts + " " + msg2 + "\n");
+          fw.close();
         } catch (e) {
+          formatAppLog("log", "at pages/live/push.nvue:79", "logToFile err: " + e);
         }
-        return {
-          width: h + "rpx",
-          height: "750rpx",
-          left: (750 - h) / 2 + "rpx",
-          top: (h - 750) / 2 + "rpx"
-        };
-      })();
-      function getPusherCtx() {
-        if (!pusherCtx) {
-          pusherCtx = uni.createLivePusherContext("pusher", instance && instance.proxy);
-        }
-        return pusherCtx;
       }
       onLoad((opt) => {
-        plus.screen.lockOrientation("portrait-primary");
+        plus.screen.lockOrientation("landscape-primary");
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:121", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
-        formatAppLog("log", "at pages/live/push.nvue:122", opt);
+        formatAppLog("log", "at pages/live/push.nvue:92", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
         loadGameDetail();
         connectScore();
       });
@@ -787,40 +517,52 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           }
         });
       }
-      function startPreview() {
-        const ctx = getPusherCtx();
-        if (!ctx) {
-          formatAppLog("log", "at pages/live/push.nvue:152", "[pusher] createLivePusherContext \u5931\u8D25\uFF0C\u7EC4\u4EF6\u672A\u6302\u8F7D");
-          return;
-        }
-        ctx.startPreview({
-          success: () => formatAppLog("log", "at pages/live/push.nvue:156", "[pusher] \u9884\u89C8\u5DF2\u5F00\u542F"),
-          fail: (err) => {
-            formatAppLog("log", "at pages/live/push.nvue:158", "[pusher] \u9884\u89C8\u5F00\u542F\u5931\u8D25", err);
-            uni.showToast({ title: "\u6444\u50CF\u5934\u5F00\u542F\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u6743\u9650", icon: "none" });
-          }
-        });
-      }
       onReady(() => {
-        ensurePermissions().then(() => {
-          setTimeout(startPreview, 200);
+        ensurePermissions().then((granted) => {
+          formatAppLog("log", "at pages/live/push.nvue:120", "[push] permissions granted=", granted, "pusher=", pusher.value);
+          logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
+          if (!granted) {
+            uni.showToast({ title: "\u9700\u8981\u76F8\u673A/\u9EA6\u514B\u98CE\u6743\u9650", icon: "none" });
+            logToFile("[push] \u6743\u9650\u672A\u6388\u4E88\uFF0C\u65E0\u6CD5\u9884\u89C8");
+            return;
+          }
+          let tries = 0;
+          const tryPreview = () => {
+            if (pusher.value) {
+              formatAppLog("log", "at pages/live/push.nvue:131", "[push] startPreview \u8C03\u7528");
+              logToFile("[push] startPreview \u8C03\u7528\uFF0C\u7EC4\u4EF6\u5DF2\u6302\u8F7D");
+              pusher.value.startPreview();
+              logToFile("[push] startPreview \u8C03\u7528\u5B8C\u6210");
+              pushScore();
+              logToFile("[push] startPreview \u540E\u7ACB\u5373 pushScore \u4E00\u6B21");
+            } else if (tries++ < 20) {
+              setTimeout(tryPreview, 100);
+            } else {
+              formatAppLog("log", "at pages/live/push.nvue:141", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
+              logToFile("[push] \u2717 pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D\uFF08\u63D2\u4EF6\u672A\u6253\u8FDB\u57FA\u5EA7\uFF09");
+              uni.showToast({ title: "\u63A8\u6D41\u7EC4\u4EF6\u672A\u52A0\u8F7D\uFF0C\u8BF7\u786E\u8BA4\u63D2\u4EF6\u5DF2\u6253\u5305", icon: "none" });
+            }
+          };
+          setTimeout(tryPreview, 300);
         });
       });
-      (0, import_vue2.onUnmounted)(() => {
+      onUnload(() => {
         stopPush();
-        if (pusherCtx) {
+        if (pusher.value) {
           try {
-            pusherCtx.stopPreview();
+            pusher.value.stopPreview();
           } catch (e) {
           }
         }
         closeSocket();
-        plus.screen.unlockOrientation();
+        plus.screen.lockOrientation("portrait-primary");
       });
       function loadGameDetail() {
         getGameDetail(gameId.value, "basketball").then((res) => {
-          if (res.code !== 1)
+          if (res.code !== 1) {
+            logToFile("[push] loadGameDetail code=" + res.code);
             return;
+          }
           const page = res.data || {};
           const g = page.game || page;
           if (g.hostTeamName)
@@ -833,6 +575,18 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             guestLogo.value = g.guestTeamLogo;
           hostScore.value = g.hostTeamScore || 0;
           guestScore.value = g.guestTeamScore || 0;
+          if (g.leagueName)
+            leagueName.value = g.leagueName;
+          if (g.leagueLogo)
+            leagueLogo.value = g.leagueLogo;
+          if (g.leagueStageName)
+            leagueStageName.value = g.leagueStageName;
+          if (g.hostTeamFoul !== void 0)
+            hostFoul.value = g.hostTeamFoul;
+          if (g.guestTeamFoul !== void 0)
+            guestFoul.value = g.guestTeamFoul;
+          logToFile("[push] loadGameDetail OK host=" + homeName.value + " guest=" + guestName.value + " score=" + hostScore.value + ":" + guestScore.value);
+          pushScore();
         });
       }
       function connectScore() {
@@ -846,11 +600,21 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
               guestScore.value = data.guestTeamScore;
             if (data.section !== void 0)
               section.value = data.section;
+            if (data.hostTeamFoul !== void 0)
+              hostFoul.value = data.hostTeamFoul;
+            if (data.guestTeamFoul !== void 0)
+              guestFoul.value = data.guestTeamFoul;
+            if (data.msg !== void 0)
+              msg.value = data.msg;
+            if (data.leagueStageName !== void 0)
+              leagueStageName.value = data.leagueStageName;
+            pushScore();
           },
           (event) => {
-            if (event === "open")
+            if (event === "open") {
               statusText.value = "\u6BD4\u5206\u63A5\u53E3\u5DF2\u8FDE\u63A5";
-            else if (event === "close")
+              logToFile("[push] ws open");
+            } else if (event === "close")
               statusText.value = "\u6BD4\u5206\u63A5\u53E3\u5DF2\u65AD\u5F00\uFF0C\u91CD\u8FDE\u4E2D\u2026";
             else if (event === "error")
               statusText.value = "\u6BD4\u5206\u63A5\u53E3\u8FDE\u63A5\u5931\u8D25";
@@ -861,46 +625,72 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         closeSocket();
         connectScore();
       }
+      function pushScore() {
+        if (!pusher.value || !showScore.value) {
+          logToFile("[push] pushScore skip: pusher=" + (pusher.value ? "yes" : "null") + " show=" + showScore.value);
+          return;
+        }
+        logToFile("[push] updateScore host=" + hostScore.value + " guest=" + guestScore.value);
+        pusher.value.updateScore({
+          hostName: homeName.value,
+          guestName: guestName.value,
+          hostScore: String(hostScore.value),
+          guestScore: String(guestScore.value),
+          section: section.value,
+          hostFoul: hostFoul.value,
+          guestFoul: guestFoul.value,
+          hostLogo: homeLogo.value,
+          guestLogo: guestLogo.value,
+          leagueName: leagueName.value,
+          leagueLogo: leagueLogo.value,
+          leagueStageName: leagueStageName.value,
+          msg: msg.value
+        });
+      }
       function startPush() {
         if (!publishUrl.value) {
           uni.showToast({ title: "\u63A8\u6D41\u5730\u5740\u4E3A\u7A7A\uFF0C\u65E0\u6CD5\u76F4\u64AD", icon: "none" });
           return;
         }
-        const ctx = getPusherCtx();
-        if (!ctx) {
+        if (!pusher.value) {
           uni.showToast({ title: "\u63A8\u6D41\u7EC4\u4EF6\u672A\u5C31\u7EEA", icon: "none" });
+          logToFile("[push] startPush \u5931\u8D25\uFF1Apusher ref null");
           return;
         }
-        ctx.start({
-          success: () => {
-            pushing.value = true;
-            statusText.value = "\u76F4\u64AD\u4E2D";
-          },
-          fail: () => {
-            uni.showToast({ title: "\u63A8\u6D41\u5931\u8D25", icon: "none" });
-          }
-        });
+        logToFile("[push] startPush url=" + publishUrl.value);
+        pusher.value.startPush(publishUrl.value);
+        statusText.value = "\u63A8\u6D41\u8FDE\u63A5\u4E2D\u2026";
       }
       function stopPush() {
-        if (pusherCtx) {
-          pusherCtx.stop();
+        if (pusher.value) {
+          pusher.value.stopPush();
           pushing.value = false;
           statusText.value = "\u5DF2\u7ED3\u675F";
+          logToFile("[push] stopPush");
         }
       }
       function switchCamera() {
-        if (pusherCtx)
-          pusherCtx.switchCamera();
+        if (pusher.value)
+          pusher.value.switchCamera();
       }
       function toggleScore() {
         showScore.value = !showScore.value;
+        if (showScore.value) {
+          pushScore();
+        } else if (pusher.value) {
+          pusher.value.hideScore();
+        }
       }
       function onState(e) {
-        formatAppLog("log", "at pages/live/push.nvue:260", "[pusher] state", e.detail);
-      }
-      function onError(e) {
-        formatAppLog("log", "at pages/live/push.nvue:264", "[pusher] error", e.detail);
-        uni.showToast({ title: "\u63A8\u6D41\u9519\u8BEF", icon: "none" });
+        const d = e.detail || {};
+        formatAppLog("log", "at pages/live/push.nvue:278", "[pusher] state", d);
+        logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
+        if (d.msg)
+          statusText.value = d.msg;
+        if (d.code === 1005)
+          pushing.value = true;
+        else if (d.code === -1305)
+          pushing.value = false;
       }
       function onCompose() {
         compose({ gameId: gameId.value }).then((res) => {
@@ -908,16 +698,49 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         });
       }
       function back() {
+        try {
+          stopPush();
+        } catch (e) {
+        }
+        if (pusher.value) {
+          try {
+            pusher.value.stopPreview();
+          } catch (e) {
+          }
+        }
+        try {
+          closeSocket();
+        } catch (e) {
+        }
+        plus.screen.lockOrientation("portrait-primary");
         uni.navigateBack();
       }
-      const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, showScore, pushing, statusText, get pusherCtx() {
-        return pusherCtx;
-      }, set pusherCtx(v) {
-        pusherCtx = v;
-      }, instance, overlayStyle, getPusherCtx, ensurePermissions, startPreview, loadGameDetail, connectScore, reconnectScore, startPush, stopPush, switchCamera, toggleScore, onState, onError, onCompose, back, ref: import_vue2.ref, onUnmounted: import_vue2.onUnmounted, getCurrentInstance: import_vue2.getCurrentInstance, get onLoad() {
+      onBackPress(() => {
+        try {
+          stopPush();
+        } catch (e) {
+        }
+        if (pusher.value) {
+          try {
+            pusher.value.stopPreview();
+          } catch (e) {
+          }
+        }
+        try {
+          closeSocket();
+        } catch (e) {
+        }
+        plus.screen.lockOrientation("portrait-primary");
+        return false;
+      });
+      const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, showScore, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, switchCamera, toggleScore, onState, onCompose, back, ref: import_vue2.ref, get onLoad() {
         return onLoad;
       }, get onReady() {
         return onReady;
+      }, get onUnload() {
+        return onUnload;
+      }, get onBackPress() {
+        return onBackPress;
       }, get connectSocket() {
         return connectSocket;
       }, get closeSocket() {
@@ -932,6 +755,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     }
   };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_livepusherview = (0, import_vue2.resolveComponent)("livepusherview");
     return (0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("scroll-view", {
       scrollY: true,
       showScrollbar: true,
@@ -940,132 +764,57 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       style: { flexDirection: "column" }
     }, [
       (0, import_vue2.createElementVNode)("view", { class: "live-push" }, [
-        (0, import_vue2.createElementVNode)("live-pusher", {
-          id: "pusher",
+        (0, import_vue2.createVNode)(_component_livepusherview, {
+          ref: "pusher",
           class: "pusher",
           url: $setup.publishUrl,
-          mode: "FHD",
-          enableCamera: true,
-          autoFocus: true,
-          beauty: 0,
-          muted: false,
-          devicePosition: "back",
-          onStatechange: $setup.onState,
-          onError: $setup.onError
-        }, null, 40, ["url"]),
-        (0, import_vue2.createElementVNode)(
-          "view",
-          {
-            class: "overlay",
-            style: (0, import_vue2.normalizeStyle)($setup.overlayStyle)
-          },
-          [
-            (0, import_vue2.createElementVNode)("view", { class: "top" }, [
-              (0, import_vue2.createElementVNode)("view", { onClick: $setup.back }, [
-                (0, import_vue2.createElementVNode)("u-text", { class: "gray-btn" }, "\u8FD4\u56DE")
-              ]),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "status" },
-                (0, import_vue2.toDisplayString)($setup.statusText),
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                {
-                  class: "gray-btn top-btn",
-                  onClick: $setup.toggleScore
-                },
-                (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)("u-text", {
-                class: "reconnect",
-                onClick: $setup.reconnectScore
-              }, "\u6BD4\u5206\u91CD\u8FDE")
-            ]),
-            $setup.showScore ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
-              key: 0,
-              class: "score-overlay"
-            }, [
-              (0, import_vue2.createElementVNode)("u-image", {
-                class: "score-bg",
-                src: _imports_0
-              }),
-              $setup.homeLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
-                key: 0,
-                class: "s-logo s-logo-left",
-                mode: "aspectFill",
-                src: $setup.homeLogo
-              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
-              $setup.guestLogo ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-image", {
-                key: 1,
-                class: "s-logo s-logo-right",
-                mode: "aspectFill",
-                src: $setup.guestLogo
-              }, null, 8, ["src"])) : (0, import_vue2.createCommentVNode)("v-if", true),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "s-team s-host" },
-                (0, import_vue2.toDisplayString)($setup.homeName),
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "s-score s-score-host" },
-                (0, import_vue2.toDisplayString)($setup.hostScore),
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "s-section" },
-                (0, import_vue2.toDisplayString)($setup.section),
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "s-score s-score-guest" },
-                (0, import_vue2.toDisplayString)($setup.guestScore),
-                1
-                /* TEXT */
-              ),
-              (0, import_vue2.createElementVNode)(
-                "u-text",
-                { class: "s-team s-guest" },
-                (0, import_vue2.toDisplayString)($setup.guestName),
-                1
-                /* TEXT */
-              )
-            ])) : (0, import_vue2.createCommentVNode)("v-if", true),
-            (0, import_vue2.createElementVNode)("u-image", {
-              class: "top-logo",
-              mode: "left",
-              src: _imports_1
-            }),
-            (0, import_vue2.createElementVNode)("view", { class: "bottom" }, [
-              !$setup.pushing ? ((0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("u-text", {
-                key: 0,
-                class: "gray-btn start",
-                onClick: $setup.startPush
-              }, "\u5F00\u59CB\u76F4\u64AD")) : (0, import_vue2.createCommentVNode)("v-if", true),
-              (0, import_vue2.createElementVNode)("u-text", {
-                class: "gray-btn stop",
-                onClick: $setup.stopPush
-              }, "\u7ED3\u675F\u76F4\u64AD"),
+          onStatechange: $setup.onState
+        }, null, 8, ["url"]),
+        (0, import_vue2.createElementVNode)("view", { class: "overlay" }, [
+          (0, import_vue2.createElementVNode)("view", { class: "top" }, [
+            (0, import_vue2.createElementVNode)("u-text", {
+              class: "gray-btn",
+              onClick: $setup.back
+            }, "\u8FD4\u56DE"),
+            (0, import_vue2.createElementVNode)(
+              "u-text",
+              { class: "status" },
+              (0, import_vue2.toDisplayString)($setup.statusText),
+              1
+              /* TEXT */
+            ),
+            (0, import_vue2.createElementVNode)(
+              "u-text",
+              {
+                class: "gray-btn",
+                onClick: $setup.toggleScore
+              },
+              (0, import_vue2.toDisplayString)($setup.showScore ? "\u9690\u85CF" : "\u663E\u793A") + "\u6BD4\u5206",
+              1
+              /* TEXT */
+            ),
+            (0, import_vue2.createElementVNode)("u-text", {
+              class: "gray-btn",
+              onClick: $setup.reconnectScore
+            }, "\u6BD4\u5206\u91CD\u8FDE")
+          ]),
+          (0, import_vue2.createElementVNode)("view", { class: "bottom" }, [
+            (0, import_vue2.createElementVNode)("view", { class: "bottom-row" }, [
               (0, import_vue2.createElementVNode)("u-text", {
                 class: "gray-btn",
-                onClick: $setup.onCompose
-              }, "\u751F\u6210\u56DE\u653E")
-            ])
-          ],
-          4
-          /* STYLE */
-        )
+                onClick: $setup.startPush
+              }, "\u5F00\u59CB\u76F4\u64AD"),
+              (0, import_vue2.createElementVNode)("u-text", {
+                class: "gray-btn",
+                onClick: $setup.stopPush
+              }, "\u7ED3\u675F\u76F4\u64AD")
+            ]),
+            (0, import_vue2.createElementVNode)("u-text", {
+              class: "gray-btn",
+              onClick: $setup.onCompose
+            }, "\u751F\u6210\u56DE\u653E")
+          ])
+        ])
       ])
     ]);
   }

@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance, onUnmounted, openBlock, createElementBlock, createElementVNode, createCommentVNode } from "vue";
-import { _ as _export_sfc, o as onLoad, b as onShow, c as onHide } from "../../_plugin-vue_export-helper.js";
+import { _ as _export_sfc, o as onLoad, d as onShow, e as onHide } from "../../_plugin-vue_export-helper.js";
 const _imports_0 = "/static/mipmap-xxhdpi/black_back.png";
 const _style_0 = { "live-play": { "": { "flex": 1, "backgroundColor": "#000000" } }, "player": { "": { "flex": 1 } }, "no-live": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "alignItems": "center", "justifyContent": "center" } }, "no-live-text": { "": { "fontSize": "15rpx", "color": "#999999" } }, "back": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "width": "64rpx", "height": "64rpx", "borderRadius": "32rpx", "backgroundColor": "rgba(0,0,0,0.4)", "alignItems": "center", "justifyContent": "center", "transform": "rotate(90deg)", "transformOrigin": "50% 50%" } }, "back-icon": { "": { "width": "100rpx", "height": "100rpx" } } };
 const _sfc_main = {
