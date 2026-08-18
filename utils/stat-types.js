@@ -60,26 +60,35 @@ export const FootTypeDesc = {
 }
 
 /* ========== 动作分组（底部 sheet 用） ========== */
-/** 篮球动作（绿=命中/正项，红=不中/犯规，蓝=暂停/换人） */
+/**
+ * 篮球动作（底部栏 20 个，4×5 布局，对应 a.txt 顺序）
+ * - 命中行：一分命中/罚球命中 → 8（+1 分），二分命中 → 6（+2 分），三分命中 → 7（+3 分）
+ * - 不中行：一分不中/罚球不中 → 12，二分不中 → 10，三分不中 → 11
+ * - 犯规行：犯规/进攻犯规 → 9，技术犯规 → 119，违体 → 120，夺权 → 121（服务端均计犯规 +1）
+ * - 换人：type 占位 13，前端 onQuickAction 识别 desc 走换人弹窗，不直接上传
+ * - 颜色：前 8 个 + 最后 2 个 green，其余 red
+ */
 export const BasketActions = [
-  { type: 1, desc: '篮板', color: 'green' },
   { type: 117, desc: '前场篮板', color: 'green' },
-  { type: 118, desc: '后场篮板', color: 'green' },
   { type: 2, desc: '助攻', color: 'green' },
   { type: 3, desc: '盖帽', color: 'green' },
   { type: 4, desc: '抢断', color: 'green' },
+  { type: 8, desc: '一分命中', color: 'green' },
   { type: 6, desc: '二分命中', color: 'green' },
   { type: 7, desc: '三分命中', color: 'green' },
   { type: 8, desc: '罚球命中', color: 'green' },
-  { type: 10, desc: '两分不中', color: 'red' },
+  { type: 12, desc: '一分不中', color: 'red' },
+  { type: 10, desc: '二分不中', color: 'red' },
   { type: 11, desc: '三分不中', color: 'red' },
   { type: 12, desc: '罚球不中', color: 'red' },
   { type: 9, desc: '犯规', color: 'red' },
   { type: 119, desc: '技术犯规', color: 'red' },
   { type: 120, desc: '违体', color: 'red' },
   { type: 121, desc: '夺权', color: 'red' },
+  { type: 9, desc: '进攻犯规', color: 'red' },
   { type: 17, desc: '失误', color: 'red' },
-  { type: 5, desc: '暂停', color: 'blue' }
+  { type: 118, desc: '后场篮板', color: 'green' },
+  { type: 13, desc: '换人', color: 'green' }
 ]
 
 /** 足球动作 */

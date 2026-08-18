@@ -511,23 +511,59 @@
   color: #999999;
 }
 
+/* 标题栏：篮球技术台 */
+.title-bar[data-v-ef0dfe21] {
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 0.75rem 0;
+}
+.tb-back[data-v-ef0dfe21] {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tb-back-icon[data-v-ef0dfe21] {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+.title-text[data-v-ef0dfe21] {
+  display: block;
+  font-size: 1.0625rem;
+  font-weight: bold;
+  color: #000000;
+}
+
 /* 顶栏：左红 | 中白比分 | 右蓝，三栏 flex，白块在文档流里居中、天然隔开队名不遮盖 */
 .top-bar2[data-v-ef0dfe21] {
   width: 100vw;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 .tb-half[data-v-ef0dfe21] {
-  flex: 1;
   padding: 0.9375rem 0.625rem;
   box-sizing: border-box;
 }
 .tb-half.red[data-v-ef0dfe21] {
+  width: 9.0625rem;
   background-color: #F3584E;
 }
 .tb-half.blue[data-v-ef0dfe21] {
+  width: 9.0625rem;
   background-color: #009DE9;
   text-align: right;
+}
+.tb-stuff[data-v-ef0dfe21] {
+  flex: 1;
+  height: 100%;
 }
 .tb-name[data-v-ef0dfe21] {
   color: #ffffff;
@@ -538,6 +574,9 @@
   padding: 0.46875rem 1.5625rem;
   display: flex;
   align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* 副顶栏：主队暂停犯规 | 比赛阶段居中 | 客队犯规暂停 */
@@ -611,6 +650,36 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.person-foul[data-v-ef0dfe21] {
+  padding: 0.6875rem;
+  background-color: #787878;
+  position: absolute;
+  border-radius: 50%;
+  left: 0;
+  top: 0;
+  transform: translateX(-40%) translateY(-40%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+.person-foul.red[data-v-ef0dfe21] {
+  background-color: #ff2d2d;
+}
+.person-foul.yellow[data-v-ef0dfe21] {
+  background-color: #f5a623;
+}
+.foul-times[data-v-ef0dfe21] {
+  position: absolute;
+  color: white;
+  font-size: 0.625rem;
+  top: 1%;
+  left: 4%;
 }
 .person-ball[data-v-ef0dfe21] {
   width: 0.375rem;
@@ -681,11 +750,12 @@
   flex-direction: column;
   position: absolute;
   bottom: 0.3125rem;
+  z-index: 10;
 }
 .action-scroll[data-v-ef0dfe21] {
   flex: 1;
   min-height: 0;
-  margin-bottom: 0.3125rem;
+  margin-bottom: 0.625rem;
 }
 .action-grid[data-v-ef0dfe21] {
   display: flex;
@@ -693,7 +763,7 @@
   gap: 0.3125rem;
 }
 .action-btn[data-v-ef0dfe21] {
-  flex: 0 0 calc((100% - 0.625rem) / 3);
+  flex: 0 0 calc((100% - 0.9375rem) / 4);
   height: 2.5rem;
   line-height: 1.625rem;
   display: flex;
@@ -712,124 +782,139 @@
 .action-btn.blue[data-v-ef0dfe21] {
   background-color: #009de9;
 }
-.bottom-btns[data-v-ef0dfe21] {
-  display: flex;
-  gap: 0.375rem;
-}
-.r-btn[data-v-ef0dfe21] {
-  flex: 1;
-  height: 2.5rem;
-  line-height: 1.5625rem;
-  text-align: center;
-  border-radius: 0.1875rem;
-  font-size: 0.9375rem;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.r-btn.orange[data-v-ef0dfe21] {
-  background-color: #ff6f21;
-}
-.r-btn.gray[data-v-ef0dfe21] {
+
+/* 页面底部固定「记录」按钮（底栏弹出时被覆盖） */
+.record-float[data-v-ef0dfe21] {
+  position: absolute;
+  bottom: 0.3125rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.375rem 2.5rem;
   background-color: #888888;
+  color: #ffffff;
+  font-size: 0.875rem;
+  border-radius: 0.1875rem;
+  z-index: 5;
 }
 
-/* 记录列表弹层 */
-.record-mask[data-v-ef0dfe21] {
+/* 底栏从底部滑入/滑出 */
+.slide-up-enter-active[data-v-ef0dfe21],
+.slide-up-leave-active[data-v-ef0dfe21] {
+  transition: transform 0.25s ease;
+}
+.slide-up-enter-from[data-v-ef0dfe21],
+.slide-up-leave-to[data-v-ef0dfe21] {
+  transform: translateY(100%);
+}
+
+/* 记录页面（样式参考原生 OperationRecordActivity + item_recordnew） */
+.record-page[data-v-ef0dfe21] {
   position: fixed;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+}
+.rp-status[data-v-ef0dfe21] {
+  background-color: #ffffff;
+}
+.rp-top[data-v-ef0dfe21] {
+  height: 3rem;
+  /* 原生 48dp */
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0.1875rem 0.1875rem rgba(0, 0, 0, 0.18);
+}
+.rp-back[data-v-ef0dfe21] {
+  width: 3rem;
+  /* 原生 48dp */
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
 }
-.record-panel[data-v-ef0dfe21] {
-  width: 70%;
-  max-height: 70%;
-  background-color: #ffffff;
-  border-radius: 0.375rem;
-  display: flex;
-  flex-direction: column;
+.rp-back-icon[data-v-ef0dfe21] {
+  width: 3.75rem;
+  height: 3.75rem;
 }
-.record-head[data-v-ef0dfe21] {
-  padding: 0.625rem;
-  text-align: center;
-  font-size: 0.875rem;
-  border-bottom: 0.03125rem solid #eeeeee;
-}
-.record-scroll[data-v-ef0dfe21] {
+.rp-title[data-v-ef0dfe21] {
   flex: 1;
-  min-height: 0;
+  text-align: center;
+  color: #000000;
+  font-size: 1.125rem;
+  /* 原生 18dp */
 }
-.record-item[data-v-ef0dfe21] {
+.rp-list[data-v-ef0dfe21] {
+  flex: 1;
+}
+.rp-item[data-v-ef0dfe21] {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.625rem;
-  border-bottom: 0.03125rem solid #f2f2f2;
+  padding: 0.3125rem;
+  /* 原生 5dp */
+  border-bottom: 0.03125rem solid #d9d9d9;
+  /* cut_rule */
 }
-.r-team[data-v-ef0dfe21] {
-  font-size: 0.6875rem;
-  color: #29a871;
-  width: 3.125rem;
-}
-.r-desc[data-v-ef0dfe21] {
+.rp-info[data-v-ef0dfe21] {
   flex: 1;
-  font-size: 0.6875rem;
-  color: #333333;
+  display: flex;
+  flex-direction: column;
+  padding: 0.625rem;
+  /* 原生 10dp */
 }
-.r-del[data-v-ef0dfe21] {
-  font-size: 0.6875rem;
-  color: #ff2d2d;
+.rp-row[data-v-ef0dfe21] {
+  display: flex;
+  align-items: center;
 }
-.record-empty[data-v-ef0dfe21] {
+.rp-row2[data-v-ef0dfe21] {
+  margin-top: 0.625rem;
+  /* 原生 10dp */
+}
+.rp-text[data-v-ef0dfe21] {
+  font-size: 0.875rem;
+  /* 原生 14dp */
+  color: #2F7ED8;
+  /* Record */
+}
+.rp-team[data-v-ef0dfe21] {
+  max-width: 6.25rem;
+  /* 原生 maxLength 5 */
+  overflow: hidden;
+  white-space: nowrap;
+}
+.rp-time[data-v-ef0dfe21] {
+  margin-left: 0.625rem;
+  /* 原生 10dp */
+}
+.rp-section[data-v-ef0dfe21] {
+  margin-right: 0.625rem;
+  /* 原生 10dp */
+}
+.rp-side[data-v-ef0dfe21] {
+  display: flex;
+  align-items: center;
+}
+.rp-type[data-v-ef0dfe21] {
+  width: 5rem;
+  /* 原生 80dp */
+  text-align: right;
+  font-size: 0.875rem;
+  color: #2F7ED8;
+}
+.rp-del[data-v-ef0dfe21] {
+  width: 1.5rem;
+  /* 原生 padding 20dp 包裹图标，宽高缩至 3/5 */
+  height: 1.5rem;
+  padding: 0.625rem;
+}
+.rp-empty[data-v-ef0dfe21] {
   padding: 1.25rem;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: #999999;
-}
-.record-close[data-v-ef0dfe21] {
-  padding: 0.625rem;
-  text-align: center;
-  font-size: 0.8125rem;
-  color: #009de9;
-  border-top: 0.03125rem solid #eeeeee;
-}
-
-/* 开场球权遮罩 */
-.kickoff-mask[data-v-ef0dfe21] {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-.kickoff-tip[data-v-ef0dfe21] {
-  color: #ffffff;
-  font-size: 1rem;
-  margin-bottom: 1.25rem;
-}
-.kickoff-teams[data-v-ef0dfe21] {
-  display: flex;
-  gap: 2.5rem;
-}
-.kickoff-ball[data-v-ef0dfe21] {
-  width: 6.25rem;
-  height: 6.25rem;
-  border-radius: 3.125rem;
-  background-color: #29a871;
-  color: #ffffff;
-  font-size: 0.9375rem;
-  line-height: 6.25rem;
-  text-align: center;
 }

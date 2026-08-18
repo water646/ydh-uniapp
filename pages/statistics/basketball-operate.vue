@@ -1,5 +1,5 @@
 <template>
-  <view class="basket-operate">
+  <view class="basket-operate" @click="clearSelection">
     <!-- 顶栏：比分 + 球队名 -->
 <!--    <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
@@ -18,6 +18,17 @@
         </view>
       </view>
     </view> -->
+	<!-- 状态栏占位：为手机时间/电量栏留出位置 -->
+	<view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
+
+	<!-- 标题栏：篮球技术台 -->
+	<view class="title-bar">
+		<view class="tb-back" @click="back">
+			<image class="tb-back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
+		</view>
+		<text class="title-text">篮球技术台</text>
+	</view>
+
 	<!-- 顶栏：左红(主队名) | 中白(比分) | 右蓝(客队名)，白块在文档流居中，不遮盖队名 -->
 	<view class="top-bar2">
 		<view class="tb-half red">
@@ -59,9 +70,11 @@
             :key="m.team_member_id"
 			class="person-card"
 			:class="{ sel: selectedId === m.team_member_id && selectedTeam === 'host'}"
-            @click="selectPlayer('host', m)"
+            @click.stop="selectPlayer('host', m)"
           >
-            <view class="person-ball" style="background-color:#1D9DE8">
+			<view class="person-foul" :class="{ red: m.foul > 4, yellow: m.foul === 4 }"></view>
+			<p class="foul-times">{{ m.foul }}</p>
+            <view class="person-ball" style="background-color:#F05A4E">
             	<text class="num">{{ m.number }}</text>
             </view>
             <text class="name">{{ m.name }}</text>
@@ -79,9 +92,11 @@
             :key="m.team_member_id"
 			class="person-card"
 			:class="{ sel: selectedId === m.team_member_id && selectedTeam === 'guest'}"
-            @click="selectPlayer('guest', m)"
+            @click.stop="selectPlayer('guest', m)"
           >
-			<view class="person-ball">
+			<view class="person-foul" :class="{ red: m.foul > 4, yellow: m.foul === 4 }"></view>
+			<p class="foul-times">{{ m.foul }}</p>
+			<view class="person-ball" style="background-color:#1D9DE8">
 				<text class="num">{{ m.number }}</text>
 			</view>
             
@@ -93,13 +108,19 @@
       </view>
     </view>
 
-    <!-- 底栏：选择具体操作（选中球员后才整栏出现，平时不显示） -->
-    <view v-if="selectedId" class="bottom-bar">
+    <!-- 页面底部固定「记录」按钮：选中球员弹出底栏时被其覆盖 -->
+    <view class="record-float" @click="showRecord = true">
+      <text>记录</text>
+    </view>
+
+    <!-- 底栏：选择具体操作（选中球员后从底部平移上来，点其它部位收回） -->
+    <transition name="slide-up">
+      <view v-if="selectedId" class="bottom-bar" @click.stop>
       <scroll-view scroll-y class="action-scroll">
         <view class="action-grid">
           <view
             v-for="a in quickActions"
-            :key="a.type"
+            :key="a.desc"
             class="action-btn"
             :class="a.color"
             @click="onQuickAction(a)"
@@ -108,49 +129,54 @@
           </view>
         </view>
       </scroll-view>
-      <view class="bottom-btns">
-        <view class="r-btn orange" @click="showChange = true">	<p>换人</p>	</view>
-        <view class="r-btn gray" @click="showRecord = true"> <p>记录</p> </view>
       </view>
-    </view>
+    </transition>
 
     <change-member-dialog :show="showChange" :members="currentMembers" @confirm="onChange" @close="showChange = false" />
     <section-dialog :show="showSection" sport="basketball" @select="onSection" @close="showSection = false" />
 
-    <!-- 记录列表弹层（点底栏「记录」展开，可删除） -->
-    <view v-if="showRecord" class="record-mask" @click="showRecord = false">
-      <view class="record-panel" @click.stop>
-        <view class="record-head">比赛记录</view>
-        <scroll-view scroll-y class="record-scroll">
-          <view v-for="r in records" :key="r.record_number" class="record-item">
-            <text class="r-team">{{ r.team_name }}</text>
-            <text class="r-desc">{{ r.description }}</text>
-            <text class="r-del" @click="onDelete(r)">删除</text>
-          </view>
-          <view v-if="!records.length" class="record-empty">暂无记录</view>
-        </scroll-view>
-        <view class="record-close" @click="showRecord = false">关闭</view>
+    <!-- 记录页面（点「记录」弹出，样式参考原生 OperationRecordActivity：深灰标题栏 + 白底蓝字列表） -->
+    <view v-if="showRecord" class="record-page">
+      <view class="rp-status" :style="{ height: statusBarHeight + 'px' }"></view>
+      <view class="rp-top">
+        <view class="rp-back" @click="showRecord = false">
+          <image class="rp-back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
+        </view>
+        <text class="rp-title">操作记录</text>
+        <view class="rp-back rp-back-holder"></view>
       </view>
+      <scroll-view scroll-y class="rp-list">
+        <view v-for="r in records" :key="r.recordNumber || r.id" class="rp-item">
+          <view class="rp-info">
+            <view class="rp-row">
+              <text class="rp-text rp-team">{{ r.teamName }}</text>
+              <text class="rp-text rp-time">{{ recordTime(r) }}</text>
+            </view>
+            <view class="rp-row rp-row2">
+              <text class="rp-text rp-section">{{ r.sectionName }}</text>
+              <text class="rp-text rp-member">{{ r.memberName }}</text>
+            </view>
+          </view>
+          <view class="rp-side">
+            <text class="rp-text rp-type">{{ recordType(r) }}</text>
+            <image class="rp-del" src="/static/mipmap-xxhdpi/delete_record.png" mode="aspectFit" @click="onDelete(r)" />
+          </view>
+        </view>
+        <view v-if="!records.length" class="rp-empty">暂无记录</view>
+      </scroll-view>
     </view>
 
-    <!-- 开场球权遮罩（对应 qiuquan_layout） -->
-    <view v-if="showKickoff" class="kickoff-mask">
-      <view class="kickoff-tip">选择开场球权</view>
-      <view class="kickoff-teams">
-        <view class="kickoff-ball" @click="onKickoff(1)">{{ homeName }}</view>
-        <view class="kickoff-ball" @click="onKickoff(0)">{{ guestName }}</view>
-      </view>
-    </view>
   </view>
 </template>
 
 <script setup>
 /**
- * 篮球技术统计（对应 Statidtics1Activity，横屏，离线优先）
- * - 球员/小节从本地 db 读取
- * - 点动作写 technical_record(is_need_upload=0)，2s 队列上传 statistics/add
- * - 比分/犯规/暂停从已有记录聚合
- * - 换人(13/14)、小节开始/结束(16/15)、删除(cancel + 本地标记)
+ * 篮球技术统计（横屏操作页，直连服务器）
+ * - 进页 getGameBasketballDetail 一次拉全量（game/球员/小节/比分/犯规/暂停）
+ * - 点动作 uploadData(statistics/add)，成功后 loadData/loadRecords 刷新
+ * - 换人(13/14)：先传下场成功后传上场；小节开始/结束(16/15)、上一/下一节 sectionRunning
+ * - 删除 cancelData(statistics/cancel)；记录列表 statisticsPage(statistics/page)
+ * - 不使用本地 db，比分/犯规/暂停以服务端返回为准
  * - 布局：上下四栏（顶栏比分球队名 / 副顶栏阶段暂停犯规 / 中部球员 / 底栏动作）
  */
 import { ref, computed, onUnmounted } from 'vue'
@@ -158,10 +184,10 @@ import { onLoad } from '@dcloudio/uni-app'
 import batteryView from '@/components/battery-view/battery-view.vue'
 import changeMemberDialog from '@/components/change-member-dialog/change-member-dialog.vue'
 import sectionDialog from '@/components/section-dialog/section-dialog.vue'
-import { queryList, insertOrReplace, executeSQL, selectSQL } from '@/utils/db'
-import { startUploadQueue, stopUploadQueue, pendingCount } from '@/utils/upload-queue'
-import { cancelData } from '@/api/statistics'
-import { BasketActions, BasketType, scoreOf, isFoul } from '@/utils/stat-types'
+import { getGameBasketballDetail } from '@/api/game'
+import { uploadData, sectionRunning, cancelData, statisticsPage } from '@/api/statistics'
+import { BasketActions, BasketType } from '@/utils/stat-types'
+import { on, off, EventBus } from '@/utils/eventBus'
 
 // 状态栏高度（custom 导航页需自行留出状态栏空间，避免与系统状态栏重叠）
 const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
@@ -180,16 +206,15 @@ const selectedId = ref('')
 const selectedMember = ref(null)
 const hostScore = ref(0)
 const guestScore = ref(0)
-const hostFoul = ref(0)
-const guestFoul = ref(0)
+// 副顶栏「犯规」= 该队球员个人犯规之和（与球员角标同源，保证总和一致，不再用服务端 hostTeamFoul）
+const hostFoul = computed(() => hostMembers.value.reduce((s, m) => s + (m.foul || 0), 0))
+const guestFoul = computed(() => guestMembers.value.reduce((s, m) => s + (m.foul || 0), 0))
 const hostPause = ref(0)
 const guestPause = ref(0)
 const records = ref([])
 const battery = ref(100)
-const syncNum = ref(0)
 const showChange = ref(false)
 const showSection = ref(false)
-const showKickoff = ref(false)
 const showRecord = ref(false)
 
 const quickActions = BasketActions
@@ -199,95 +224,91 @@ onLoad((opt) => {
   gameId.value = opt.gameId || ''
   homeName.value = opt.homeName || '主队'
   guestName.value = opt.guestName || '客队'
-  // 球员 + 小节就绪后再算统计（全队犯规依赖当前节）
-  Promise.all([loadMembers(), loadSections()]).then(() => {
-    loadStats()
-    checkKickoff()
-  })
+  loadData()
   loadRecords()
-  startUploadQueue(gameId.value, () => {
-    loadRecords()
-    updateSyncNum()
-  })
-  updateSyncNum()
+  on(EventBus.RECORD_REFRESH, onRecordRefresh)
 })
 
-onUnmounted(() => stopUploadQueue())
+onUnmounted(() => off(EventBus.RECORD_REFRESH, onRecordRefresh))
+
+function onRecordRefresh() {
+  loadData()
+  loadRecords()
+}
+
+/** 服务端 MemberData -> 本地 snake_case 形状（模板/换人弹窗依赖 team_member_id + playing 数字） */
+function adaptMember(m) {
+  return {
+    team_member_id: m.teamMemberId,
+    number: m.number,
+    name: m.name,
+    playing: m.playing?.boolean ? 1 : 0,
+    startingLineup: m.startingLineup?.boolean ? 1 : 0,
+    foul: m.foul || 0
+  }
+}
 
 /** 在场靠前，号码升序（对应 Playing desc, Number asc） */
 function sortMembers(list) {
   return list.sort((a, b) => (Number(b.playing) || 0) - (Number(a.playing) || 0) || (a.number - b.number))
 }
-function loadMembers() {
-  return queryList('member', `game_id='${gameId.value}'`).then((list) => {
-    const init = list.map((m) => {
-      const hasVal = m.playing !== null && m.playing !== undefined && m.playing !== ''
-      const playing = hasVal ? Number(m.playing) : (Number(m.startingLineup) ? 1 : 0)
-      if (!hasVal) {
-        executeSQL(`UPDATE member SET playing=${playing} WHERE team_member_id='${m.team_member_id}'`)
-      }
-      return { ...m, foul: 0, playing }
-    })
-    hostMembers.value = sortMembers(init.filter((m) => m.type === 1))
-    guestMembers.value = sortMembers(init.filter((m) => m.type === 0))
-  })
-}
 
-function loadSections() {
-  return queryList('game_section', `game_id='${gameId.value}'`, 'sort ASC').then((list) => {
-    sections.value = list
-    if (list.length) {
+/** 拉取全量状态（对应 statistics/game-detail-basketball） */
+function loadData() {
+  if (!gameId.value) return
+  getGameBasketballDetail(gameId.value).then((res) => {
+    if (res.code !== 1) return
+    const d = res.data || {}
+    const g = d.game || {}
+    homeName.value = g.hostTeamName || homeName.value
+    guestName.value = g.guestTeamName || guestName.value
+    hostScore.value = g.hostTeamScore || 0
+    guestScore.value = g.guestTeamScore || 0
+    hostPause.value = d.hostTeamStop || 0
+    guestPause.value = d.guestTeamStop || 0
+    hostMembers.value = sortMembers((d.hostMembers || []).map(adaptMember))
+    guestMembers.value = sortMembers((d.guestMembers || []).map(adaptMember))
+    sections.value = d.sections || []
+    // 定位当前运行中的小节
+    const running = sections.value.find((s) => s.running && s.running.boolean)
+    if (running) {
+      currentSection.value = running.gameSectionId
+      currentSectionName.value = running.name
+      currentSectionIdx.value = sections.value.findIndex((s) => s.gameSectionId === running.gameSectionId)
+    } else if (sections.value.length) {
+      currentSection.value = sections.value[0].gameSectionId
+      currentSectionName.value = sections.value[0].name
       currentSectionIdx.value = 0
-      currentSection.value = list[0].section_id
-      currentSectionName.value = list[0].name
     }
   })
 }
 
+/** 记录列表（对应 statistics/page 第一页，最新优先） */
 function loadRecords() {
-  selectSQL(
-    `SELECT * FROM technical_record WHERE game_id='${gameId.value}' AND disable=0 AND "delete"=1 ORDER BY record_number DESC LIMIT 30`
-  ).then((list) => {
-    records.value = list
+  statisticsPage(gameId.value, 1, 1).then((res) => {
+    if (res.code === 1) {
+      const d = res.data || {}
+      const list = d.list || []
+      // 最新在前：recordNumber(时间戳)降序；mock 字符串 fallback 字典序降序
+      records.value = list.slice().sort((a, b) => {
+        const na = Number(a.recordNumber)
+        const nb = Number(b.recordNumber)
+        if (!isNaN(na) && !isNaN(nb)) return nb - na
+        return String(b.recordNumber).localeCompare(String(a.recordNumber))
+      })
+    }
   })
 }
 
-/** 比分/暂停/球员个人犯规按全场，全队犯规按当前节（对应 getCurrentFoulAndStop 按 statisticsSectionId 过滤） */
-function loadStats() {
-  selectSQL(
-    `SELECT * FROM technical_record WHERE game_id='${gameId.value}' AND disable=0 AND "delete"=1`
-  ).then((list) => {
-    let hs = 0, gs = 0, hf = 0, gf = 0, hp = 0, gp = 0
-    const foulMap = {}
-    const sec = currentSection.value
-    list.forEach((r) => {
-      const sc = scoreOf(r.type, 'basketball')
-      const fl = isFoul(r.type, 'basketball')
-      const inSec = r.statistics_section_id === sec
-      if (r.team_type === 1) {
-        hs += sc
-        if (fl && inSec) hf++
-        if (r.type === 5) hp++
-      } else {
-        gs += sc
-        if (fl && inSec) gf++
-        if (r.type === 5) gp++
-      }
-      if (fl && r.statistics_member_id) foulMap[r.statistics_member_id] = (foulMap[r.statistics_member_id] || 0) + 1
-    })
-    hostScore.value = hs
-    guestScore.value = gs
-    hostFoul.value = hf
-    guestFoul.value = gf
-    hostPause.value = hp
-    guestPause.value = gp
-    hostMembers.value.forEach((m) => (m.foul = foulMap[m.team_member_id] || 0))
-    guestMembers.value.forEach((m) => (m.foul = foulMap[m.team_member_id] || 0))
-  })
+/** 记录时间：原生取 occurrenceTime.substring(11)（跳过日期），兼容已是 HH:mm:ss 的字符串 */
+function recordTime(r) {
+  const t = r.occurrenceTime || ''
+  return t.length > 8 ? t.slice(-8) : t
 }
 
-function updateSyncNum() {
-  pendingCount(gameId.value).then((n) => (syncNum.value = n))
+/** 记录类型描述：type.desc（服务端 statistics/page 返回 type 对象） */
+function recordType(r) {
+  return (r.type && r.type.desc) || ''
 }
 
 function selectPlayer(team, m) {
@@ -296,7 +317,19 @@ function selectPlayer(team, m) {
   selectedMember.value = m
 }
 
+/** 点其它部位收回底栏 */
+function clearSelection() {
+  selectedId.value = ''
+  selectedTeam.value = ''
+  selectedMember.value = null
+}
+
 function onQuickAction(a) {
+  // 换人：打开换人弹窗（先下后上，type 13/14），不直接上传
+  if (a.desc === '换人') {
+    showChange.value = true
+    return
+  }
   doAction(a)
 }
 
@@ -307,134 +340,103 @@ function doAction(a) {
   }
   const team = selectedTeam.value
   const member = selectedMember.value
-  const teamName = team === 'host' ? homeName.value : guestName.value
   const teamType = team === 'host' ? 1 : 0
-  const recordNumber = Date.now()
-  const description = `${member.name} ${a.desc}`
-
-  insertOrReplace('technical_record', {
-    record_number: recordNumber,
-    elapsed_time: 0,
-    statistics_section_id: currentSection.value,
+  uploadData({
+    description: `${member.name} ${a.desc}`,
+    recordNumber: Date.now(),
+    statisticsMemberId: member.team_member_id,
+    statisticsSectionId: currentSection.value,
     type: a.type,
-    statistics_member_id: member.team_member_id,
-    description,
-    game_id: gameId.value,
-    team_type: teamType,
-    team_name: teamName,
-    add: 0,
-    delete: 1,
-    is_need_upload: 0,
-    disable: 0
-  })
-
-  // 即时更新比分/犯规/暂停
-  const sc = scoreOf(a.type, 'basketball')
-  if (sc > 0) {
-    if (team === 'host') hostScore.value += sc
-    else guestScore.value += sc
-  }
-  if (isFoul(a.type, 'basketball')) {
-    if (team === 'host') hostFoul.value++
-    else guestFoul.value++
-    member.foul = (member.foul || 0) + 1
-    if (member.foul >= 5) {
-      uni.showToast({ title: '该队员犯规已达5次或以上', icon: 'none' })
+    index: 0,
+    host_guest: teamType
+  }).then((res) => {
+    if (res.code === 1) {
+      loadData()
+      loadRecords()
     }
-  }
-  if (a.type === BasketType.PAUSE) {
-    if (team === 'host') hostPause.value++
-    else guestPause.value++
-  }
-  loadRecords()
-  updateSyncNum()
+  })
 }
 
 function onDelete(r) {
-  cancelData({
-    gameId: gameId.value,
-    recordNumber: r.record_number,
-    statisticsMemberId: r.statistics_member_id
-  }).then((res) => {
-    if (res.code === 1) {
-      executeSQL(`UPDATE technical_record SET disable=1, is_need_upload=1 WHERE record_number=${r.record_number}`)
-      loadRecords()
-      loadStats()
-      updateSyncNum()
+  const v = r.type && r.type.value
+  // 小节开始/结束(15/16)不支持删除（对应原生 OnItemClickLitener）
+  if (v === 15 || v === 16) {
+    uni.showToast({ title: '该操作不支持删除', icon: 'none' })
+    return
+  }
+  uni.showModal({
+    title: '提示',
+    content: '是否删除此条数据..',
+    success: (res) => {
+      if (!res.confirm) return
+      cancelData({
+        gameId: gameId.value,
+        recordNumber: r.recordNumber,
+        statisticsMemberId: r.statisticsMemberId
+      }).then((res2) => {
+        if (res2.code === 1) {
+          loadData()
+          loadRecords()
+        }
+      })
     }
   })
 }
 
 function onChange({ offId, onId }) {
   const team = selectedTeam.value || 'host'
-  const teamName = team === 'host' ? homeName.value : guestName.value
   const teamType = team === 'host' ? 1 : 0
-  const members = team === 'host' ? hostMembers.value : guestMembers.value
-  const offMember = members.find((m) => m.team_member_id === offId)
-  const onMember = members.find((m) => m.team_member_id === onId)
   const base = Date.now()
-  insertOrReplace('technical_record', {
-    record_number: base, elapsed_time: 0, statistics_section_id: currentSection.value, type: 13,
-    statistics_member_id: offId, description: `${offMember ? offMember.name : ''} 换下`,
-    game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0
+  uploadData({
+    description: '换下', recordNumber: base, statisticsMemberId: offId,
+    statisticsSectionId: currentSection.value, type: 13, index: 0, host_guest: teamType
+  }).then((res) => {
+    if (res.code === 1) {
+      return uploadData({
+        description: '换上', recordNumber: base + 1, statisticsMemberId: onId,
+        statisticsSectionId: currentSection.value, type: 14, index: 0, host_guest: teamType
+      })
+    }
+  }).then((res) => {
+    if (res && res.code === 1) {
+      loadData()
+      loadRecords()
+    }
   })
-  insertOrReplace('technical_record', {
-    record_number: base + 1, elapsed_time: 0, statistics_section_id: currentSection.value, type: 14,
-    statistics_member_id: onId, description: `${onMember ? onMember.name : ''} 换上`,
-    game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0
-  })
-  // 回写 playing 状态并重排（对应 Member.playing 落库 + Playing desc 排序）
-  executeSQL(`UPDATE member SET playing=0 WHERE team_member_id='${offId}'`)
-  executeSQL(`UPDATE member SET playing=1 WHERE team_member_id='${onId}'`)
-  if (offMember) offMember.playing = 0
-  if (onMember) onMember.playing = 1
-  if (team === 'host') hostMembers.value = sortMembers([...hostMembers.value])
-  else guestMembers.value = sortMembers([...guestMembers.value])
-  loadRecords()
-  updateSyncNum()
 }
 
 function onSection(t) {
+  // 小节开始/结束：uploadData type 16/15（对应 StaticNewDownActivity section_begin/finish）
+  if (t === 'start') { insertSectionRecord(BasketType.SECTION_START); return }
+  if (t === 'end') { insertSectionRecord(BasketType.SECTION_END); return }
+  // 上一/下一节：本地切 index 后 sectionRunning(目标小节)
   if (t === 'prev' && currentSectionIdx.value > 0) currentSectionIdx.value--
   if (t === 'next' && currentSectionIdx.value < sections.value.length - 1) currentSectionIdx.value++
   const sec = sections.value[currentSectionIdx.value]
   if (sec) {
-    currentSection.value = sec.section_id
+    currentSection.value = sec.gameSectionId
     currentSectionName.value = sec.name
   }
-  if (t === 'start') insertSectionRecord(BasketType.SECTION_START)
-  if (t === 'end') insertSectionRecord(BasketType.SECTION_END)
-  // 全队犯规按当前节，切换后重算
-  loadStats()
+  sectionRunning(currentSection.value).then((res) => {
+    if (res.code === 1) loadData()
+  })
 }
 
 function insertSectionRecord(type) {
-  insertOrReplace('technical_record', {
-    record_number: Date.now(), elapsed_time: 0, statistics_section_id: currentSection.value, type,
-    statistics_member_id: '', description: type === 16 ? '小节开始' : '小节结束',
-    game_id: gameId.value, team_type: 0, team_name: '', add: 0, delete: 1, is_need_upload: 0, disable: 0
+  uploadData({
+    description: type === 16 ? '小节开始' : '小节结束',
+    recordNumber: Date.now(),
+    statisticsMemberId: -1,
+    statisticsSectionId: currentSection.value,
+    type,
+    index: 0,
+    host_guest: 0
+  }).then((res) => {
+    if (res.code === 1) {
+      loadData()
+      loadRecords()
+    }
   })
-  loadRecords()
-  updateSyncNum()
-}
-
-/** 开场球权选择（对应 qiuquan_layout：未开赛时强制选球权，选后插 type16 + 标记 isStart） */
-function checkKickoff() {
-  const sec = sections.value[currentSectionIdx.value]
-  showKickoff.value = !!(sec && !Number(sec.isStart))
-}
-function onKickoff(teamType) {
-  const teamName = teamType === 1 ? homeName.value : guestName.value
-  insertOrReplace('technical_record', {
-    record_number: Date.now(), elapsed_time: 0, statistics_section_id: currentSection.value, type: 16,
-    statistics_member_id: '', description: `${teamName}球权`,
-    game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0
-  })
-  executeSQL(`UPDATE game_section SET isStart=1 WHERE section_id='${currentSection.value}'`)
-  if (sections.value[currentSectionIdx.value]) sections.value[currentSectionIdx.value].isStart = 1
-  showKickoff.value = false
-  loadRecords()
-  updateSyncNum()
 }
 
 function back() {
@@ -505,6 +507,37 @@ function back() {
 .colon {
   font-size: 36rpx;
   color: #999999;
+}
+
+/* 标题栏：篮球技术台 */
+.title-bar {
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 24rpx 0;
+}
+.tb-back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tb-back-icon {
+  width: 120rpx;
+  height: 120rpx;
+}
+.title-text {
+  display: block;
+  // margin-top: 12rpx;
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #000000;
 }
 
 /* 顶栏：左红 | 中白比分 | 右蓝，三栏 flex，白块在文档流里居中、天然隔开队名不遮盖 */
@@ -619,6 +652,38 @@ function back() {
 	flex-direction: column;
 	justify-content: center; 
 	align-items: center;
+	position: relative;
+	overflow: hidden;
+}
+
+.person-foul{
+	padding: 22rpx; 
+	background-color: #787878; 
+	position: absolute; 
+	border-radius: 50%; 
+	left: 0; 
+	top:0; 
+	transform: translateX(-40%) translateY(-40%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	font-size: 20rpx;
+	line-height: 1;
+}
+.person-foul.red{
+	background-color: #ff2d2d;
+}
+.person-foul.yellow{
+	background-color: #f5a623;
+}
+
+.foul-times{
+	position: absolute; 
+	color: white; 
+	font-size: 20rpx; 
+	top:1%; 
+	left:4%
 }
 
 .person-ball{
@@ -703,11 +768,12 @@ function back() {
   flex-direction: column;
   position: absolute;
   bottom:10rpx;
+  z-index: 10;
 }
 .action-scroll {
   flex: 1;
   min-height: 0;
-  margin-bottom: 10rpx;
+  margin-bottom: 20rpx;
 }
 .action-grid {
   display: flex;
@@ -715,7 +781,7 @@ function back() {
   gap: 10rpx;
 }
 .action-btn {
-  flex: 0 0 calc((100% - 20rpx) / 3);
+  flex: 0 0 calc((100% - 30rpx) / 4);
   height: 80rpx;
   line-height: 52rpx;
   display: flex;
@@ -734,125 +800,126 @@ function back() {
 .action-btn.blue {
   background-color: #009de9;
 }
-.bottom-btns {
-  display: flex;
-  gap: 12rpx;
-}
-.r-btn {
-  flex: 1;
-  height: 80rpx;
-  line-height: 50rpx;
-  text-align: center;
-  border-radius: 6rpx;
-  font-size: 30rpx;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.r-btn.orange {
-  background-color: #ff6f21;
-}
-.r-btn.gray {
+/* 页面底部固定「记录」按钮（底栏弹出时被覆盖） */
+.record-float {
+  position: absolute;
+  bottom: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12rpx 80rpx;
   background-color: #888888;
+  color: #ffffff;
+  font-size: 28rpx;
+  border-radius: 6rpx;
+  z-index: 5;
 }
 
-/* 记录列表弹层 */
-.record-mask {
+/* 底栏从底部滑入/滑出 */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: transform 0.25s ease;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+}
+
+/* 记录页面（样式参考原生 OperationRecordActivity + item_recordnew） */
+.record-page {
   position: fixed;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+}
+.rp-status {
+  background-color: #ffffff;
+}
+.rp-top {
+  height: 96rpx; /* 原生 48dp */
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6rpx 6rpx rgba(0, 0, 0, 0.18);
+}
+.rp-back {
+  width: 96rpx; /* 原生 48dp */
+  height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
 }
-.record-panel {
-  width: 70%;
-  max-height: 70%;
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  display: flex;
-  flex-direction: column;
+.rp-back-icon {
+  width: 120rpx;
+  height: 120rpx;
 }
-.record-head {
-  padding: 20rpx;
-  text-align: center;
-  font-size: 28rpx;
-  border-bottom: 1rpx solid #eeeeee;
-}
-.record-scroll {
+.rp-title {
   flex: 1;
-  min-height: 0;
+  text-align: center;
+  color: #000000;
+  font-size: 36rpx; /* 原生 18dp */
 }
-.record-item {
+.rp-list {
+  flex: 1;
+}
+.rp-item {
   display: flex;
   align-items: center;
-  padding: 16rpx 20rpx;
-  border-bottom: 1rpx solid #f2f2f2;
+  padding: 10rpx; /* 原生 5dp */
+  border-bottom: 1rpx solid #d9d9d9; /* cut_rule */
 }
-.r-team {
-  font-size: 22rpx;
-  color: #29a871;
-  width: 100rpx;
-}
-.r-desc {
+.rp-info {
   flex: 1;
-  font-size: 22rpx;
-  color: #333333;
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx; /* 原生 10dp */
 }
-.r-del {
-  font-size: 22rpx;
-  color: #ff2d2d;
+.rp-row {
+  display: flex;
+  align-items: center;
 }
-.record-empty {
+.rp-row2 {
+  margin-top: 20rpx; /* 原生 10dp */
+}
+.rp-text {
+  font-size: 28rpx; /* 原生 14dp */
+  color: #2F7ED8; /* Record */
+}
+.rp-team {
+  max-width: 200rpx; /* 原生 maxLength 5 */
+  overflow: hidden;
+  white-space: nowrap;
+}
+.rp-time {
+  margin-left: 20rpx; /* 原生 10dp */
+}
+.rp-section {
+  margin-right: 20rpx; /* 原生 10dp */
+}
+.rp-side {
+  display: flex;
+  align-items: center;
+}
+.rp-type {
+  width: 160rpx; /* 原生 80dp */
+  text-align: right;
+  font-size: 28rpx;
+  color: #2F7ED8;
+}
+.rp-del {
+  width: 48rpx; /* 原生 padding 20dp 包裹图标，宽高缩至 3/5 */
+  height: 48rpx;
+  padding: 20rpx;
+}
+.rp-empty {
   padding: 40rpx;
   text-align: center;
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #999999;
 }
-.record-close {
-  padding: 20rpx;
-  text-align: center;
-  font-size: 26rpx;
-  color: #009de9;
-  border-top: 1rpx solid #eeeeee;
-}
 
-/* 开场球权遮罩 */
-.kickoff-mask {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-.kickoff-tip {
-  color: #ffffff;
-  font-size: 32rpx;
-  margin-bottom: 40rpx;
-}
-.kickoff-teams {
-  display: flex;
-  gap: 80rpx;
-}
-.kickoff-ball {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 100rpx;
-  background-color: #29a871;
-  color: #ffffff;
-  font-size: 30rpx;
-  line-height: 200rpx;
-  text-align: center;
-}
 </style>
