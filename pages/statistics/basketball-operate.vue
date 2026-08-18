@@ -1,7 +1,7 @@
 <template>
   <view class="basket-operate">
     <!-- 顶栏：比分 + 球队名 -->
-    <view class="top-bar">
+<!--    <view class="top-bar">
       <view class="nav-status" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="top-bar-inner">
         <view class="back" @click="back"><image class="back-icon" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" /></view>
@@ -17,10 +17,26 @@
           <battery-view :power="battery" />
         </view>
       </view>
-    </view>
+    </view> -->
+	<!-- 顶栏：左红(主队名) | 中白(比分) | 右蓝(客队名)，白块在文档流居中，不遮盖队名 -->
+	<view class="top-bar2">
+		<view class="tb-half red">
+			<text class="tb-name">{{ homeName }}</text>
+		</view>
+		<view class="tb-score">
+			<text class="score">{{ hostScore }}</text>
+			<text class="score">:</text>
+			<text class="score">{{ guestScore }}</text>
+		</view>
+		<view class="tb-half red tb-stuff"/>
+		<view class="tb-half blue tb-stuff"/>
+		<view class="tb-half blue">
+			<text class="tb-name">{{ guestName }}</text>
+		</view>
+	</view>
 
     <!-- 副顶栏：比赛阶段 + 暂停 + 犯规 -->
-    <view class="sub-bar">
+   <view class="sub-bar">
       <view class="sub-side">
         <text class="sub-tag pause">暂停{{ hostPause }}</text>
         <text class="sub-tag foul" :class="{ danger: hostFoul > 4 }">犯规{{ hostFoul }}</text>
@@ -31,6 +47,7 @@
         <text class="sub-tag pause">暂停{{ guestPause }}</text>
       </view>
     </view>
+	
 
     <!-- 中部栏：球员选择（主客并排，各自滚动） -->
     <view class="mid">
@@ -54,7 +71,7 @@
         </view>
       </view>
 	  
-      <view class="team-col" style="border-left: 1rpx solid black;">
+      <view class="team-col" style="border-left: 1rpx solid rgba(0,0,0,0.1);">
         <view class="col-head">{{ guestName }}</view>
         <view class="player-list">  <!-- class="player-list" -->
           <view
@@ -76,8 +93,8 @@
       </view>
     </view>
 
-    <!-- 底栏：选择具体操作 -->
-    <view class="bottom-bar">
+    <!-- 底栏：选择具体操作（选中球员后才整栏出现，平时不显示） -->
+    <view v-if="selectedId" class="bottom-bar">
       <scroll-view scroll-y class="action-scroll">
         <view class="action-grid">
           <view
@@ -481,13 +498,53 @@ function back() {
   font-weight: bold;
 }
 .score {
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #2f7ed8;
+  font-size: 40rpx;
+  // font-weight: bold;
+  color: black;
 }
 .colon {
   font-size: 36rpx;
   color: #999999;
+}
+
+/* 顶栏：左红 | 中白比分 | 右蓝，三栏 flex，白块在文档流里居中、天然隔开队名不遮盖 */
+.top-bar2 {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tb-half {
+  padding: 30rpx 20rpx;
+  box-sizing: border-box;
+}
+.tb-half.red {
+  width:290rpx;
+  background-color: #F3584E;
+}
+.tb-half.blue {
+  width:290rpx;
+  background-color: #009DE9;
+  text-align: right;
+}
+.tb-stuff{
+  flex:1;  
+  height: 100%;
+}
+
+
+.tb-name {
+  color: #ffffff;
+  font-size: 27rpx;
+}
+.tb-score {
+  background-color: #ffffff;
+  padding: 15rpx 50rpx;
+  display: flex;
+  align-items: center;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%)
 }
 
 /* 副顶栏：主队暂停犯规 | 比赛阶段居中 | 客队犯规暂停 */
@@ -672,7 +729,7 @@ function back() {
   background-color: #48ADB3;
 }
 .action-btn.red {
-  background-color: #ff2d2d;
+  background-color: #F3584E;
 }
 .action-btn.blue {
   background-color: #009de9;

@@ -503,13 +503,41 @@
   font-weight: bold;
 }
 .score[data-v-ef0dfe21] {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2f7ed8;
+  font-size: 1.25rem;
+  color: black;
 }
 .colon[data-v-ef0dfe21] {
   font-size: 1.125rem;
   color: #999999;
+}
+
+/* 顶栏：左红 | 中白比分 | 右蓝，三栏 flex，白块在文档流里居中、天然隔开队名不遮盖 */
+.top-bar2[data-v-ef0dfe21] {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+}
+.tb-half[data-v-ef0dfe21] {
+  flex: 1;
+  padding: 0.9375rem 0.625rem;
+  box-sizing: border-box;
+}
+.tb-half.red[data-v-ef0dfe21] {
+  background-color: #F3584E;
+}
+.tb-half.blue[data-v-ef0dfe21] {
+  background-color: #009DE9;
+  text-align: right;
+}
+.tb-name[data-v-ef0dfe21] {
+  color: #ffffff;
+  font-size: 0.84375rem;
+}
+.tb-score[data-v-ef0dfe21] {
+  background-color: #ffffff;
+  padding: 0.46875rem 1.5625rem;
+  display: flex;
+  align-items: center;
 }
 
 /* 副顶栏：主队暂停犯规 | 比赛阶段居中 | 客队犯规暂停 */
@@ -679,7 +707,7 @@
   background-color: #48ADB3;
 }
 .action-btn.red[data-v-ef0dfe21] {
-  background-color: #ff2d2d;
+  background-color: #F3584E;
 }
 .action-btn.blue[data-v-ef0dfe21] {
   background-color: #009de9;

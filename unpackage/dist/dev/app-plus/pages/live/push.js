@@ -145,7 +145,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: false,
+    useMock: true,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -264,6 +264,24 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     leagueId: "mock-league-001",
     token: "mock-token-test-001"
   };
+  var userInfo = {
+    id: "mock-user-001",
+    avatar: "",
+    nickName: "\u6D4B\u8BD5\u7BA1\u7406\u5458",
+    sex: E(1, "\u7537"),
+    sketch: "\u3010MOCK\u3011\u6D4B\u8BD5\u8D26\u53F7",
+    birthday: "1990-01-01",
+    position: E(1, "\u63A7\u7403\u540E\u536B"),
+    number: 23,
+    weight: "75",
+    height: "180",
+    city: "\u5317\u4EAC",
+    province: "\u5317\u4EAC",
+    phone: "13800000000",
+    isBindWx: EB(0, "\u672A\u7ED1\u5B9A", false),
+    follows: 12,
+    fans: 36
+  };
   var basketGame1 = {
     id: IDS.gameId,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
@@ -294,7 +312,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     venueName: "1\u53F7\u573A\u5730",
     isMedia: EB(1, "\u662F", true)
   };
-  __spreadProps(__spreadValues({}, basketGame1), {
+  var basketGame2 = __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.game2,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EFF\u9EC4\u4E4B\u6218",
     status: E(1, "\u672A\u5F00\u59CB"),
@@ -307,7 +325,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-host-team-002",
     guestGameTeamId: "mock-guest-team-002"
   });
-  __spreadProps(__spreadValues({}, basketGame1), {
+  var basketGame3 = __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.game3,
     name: "\u6D4B\u8BD5\u8054\u8D5B-\u9752\u7D2B\u4E4B\u6218",
     status: E(3, "\u5DF2\u7ED3\u675F"),
@@ -321,7 +339,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-host-team-003",
     guestGameTeamId: "mock-guest-team-003"
   });
-  __spreadProps(__spreadValues({}, basketGame1), {
+  var footGame1 = __spreadProps(__spreadValues({}, basketGame1), {
     id: IDS.footGame,
     name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B",
     type: E(2, "\u8DB3\u7403"),
@@ -333,6 +351,90 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     hostGameTeamId: "mock-foot-host-001",
     guestGameTeamId: "mock-foot-guest-001",
     leagueName: "\u6D4B\u8BD5\u676F"
+  });
+  function matchList(sport, status) {
+    const isFoot = sport === "football";
+    const ongoing = isFoot ? footGame1 : basketGame1;
+    const notStart = isFoot ? __spreadProps(__spreadValues({}, footGame1), { id: "mock-foot-002", status: E(1, "\u672A\u5F00\u59CB"), runStatus: E(1, "\u672A\u5F00\u59CB"), hostTeamScore: 0, guestTeamScore: 0 }) : basketGame2;
+    const ended = isFoot ? __spreadProps(__spreadValues({}, footGame1), { id: "mock-foot-003", status: E(3, "\u5DF2\u7ED3\u675F"), runStatus: E(3, "\u5DF2\u7ED3\u675F"), hostTeamScore: 3, guestTeamScore: 0 }) : basketGame3;
+    if (status === "end") {
+      return ok([{ date: "2026-07-30", games: [ended] }]);
+    }
+    return ok([{ date: "2026-07-31", games: [ongoing, notStart] }]);
+  }
+  function buildMembers(teamName, teamId) {
+    const names = teamName === "\u7EA2\u961F" ? ["\u8D75\u4E00", "\u94B1\u4E8C", "\u5B59\u4E09", "\u674E\u56DB", "\u5468\u4E94", "\u5434\u516D", "\u90D1\u4E03", "\u738B\u516B"] : ["\u51AF\u4E00", "\u9648\u4E8C", "\u891A\u4E09", "\u536B\u56DB", "\u848B\u4E94", "\u6C88\u516D", "\u97E9\u4E03", "\u6768\u516B"];
+    const pos = ["\u63A7\u7403\u540E\u536B", "\u5F97\u5206\u540E\u536B", "\u5C0F\u524D\u950B", "\u5927\u524D\u950B", "\u4E2D\u950B", "\u66FF\u8865\u540E\u536B", "\u66FF\u8865\u524D\u950B", "\u66FF\u8865\u4E2D\u950B"];
+    return names.map((name, i) => ({
+      id: `mock-${teamId}-m${i + 1}`,
+      teamMemberId: `mock-${teamId}-member-${i + 1}`,
+      startingLineup: EB(i < 5 ? 1 : 0, i < 5 ? "\u9996\u53D1" : "\u66FF\u8865", i < 5),
+      playing: EB(i < 5 ? 1 : 0, i < 5 ? "\u5728\u573A" : "\u573A\u4E0B", i < 5),
+      number: i + 1,
+      name,
+      temporary: 0,
+      position: E(i < 5 ? i + 1 : 0, i < 5 ? pos[i] : "\u66FF\u8865"),
+      teamName,
+      avatar: "",
+      foul: i === 1 ? 2 : i === 3 ? 1 : 0
+    }));
+  }
+  var hostMembers = buildMembers("\u7EA2\u961F", "host");
+  var guestMembers = buildMembers("\u84DD\u961F", "guest");
+  var sections = [
+    { id: "mock-sec-1", gameSectionId: "mock-sec-1", name: "\u7B2C1\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 1, groups: "", running: EB(1, "\u8FDB\u884C\u4E2D", true) },
+    { id: "mock-sec-2", gameSectionId: "mock-sec-2", name: "\u7B2C2\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 2, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) },
+    { id: "mock-sec-3", gameSectionId: "mock-sec-3", name: "\u7B2C3\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 3, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) },
+    { id: "mock-sec-4", gameSectionId: "mock-sec-4", name: "\u7B2C4\u8282", gameId: IDS.gameId, type: E(1, "\u5C0F\u8282"), sort: 4, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
+  ];
+  var footSections = [
+    { id: "mock-foot-sec-1", gameSectionId: "mock-foot-sec-1", name: "\u4E0A\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 1, groups: "", running: EB(1, "\u8FDB\u884C\u4E2D", true) },
+    { id: "mock-foot-sec-2", gameSectionId: "mock-foot-sec-2", name: "\u4E0B\u534A\u573A", gameId: IDS.footGame, type: E(2, "\u534A\u573A"), sort: 2, groups: "", running: EB(0, "\u672A\u5F00\u59CB", false) }
+  ];
+  var basketDetail = ok({
+    game: {
+      id: IDS.gameId,
+      name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
+      status: E(2, "\u8FDB\u884C\u4E2D"),
+      runStatus: E(2, "\u8FDB\u884C\u4E2D"),
+      type: E(1, "\u7BEE\u7403"),
+      event: E(1, "\u8054\u8D5B"),
+      time: "2026-07-31 15:00",
+      isMedia: EB(1, "\u662F", true),
+      venueId: "mock-venue-1",
+      venueName: "1\u53F7\u573A\u5730",
+      venueAddress: "\u6D4B\u8BD5\u4F53\u80B2\u99861\u53F7\u573A",
+      leagueGroupId: "mock-lg-1",
+      leagueGroupName: "A\u7EC4",
+      leagueGroupSort: 1,
+      leagueStageId: "mock-ls-1",
+      leagueStageName: "\u5C0F\u7EC4\u8D5B",
+      leagueStageSort: 1,
+      leagueId: IDS.leagueId,
+      leagueName: "\u6D4B\u8BD5\u8054\u8D5B",
+      leagueLogo: "",
+      leagueStartTime: "2026-07-01",
+      hostGameTeamId: IDS.hostTeamId,
+      hostTeamId: "ht1",
+      hostTeamLogo: "",
+      hostTeamName: "\u7EA2\u961F",
+      hostTeamScore: 28,
+      guestGameTeamId: IDS.guestTeamId,
+      guestTeamId: "gt2",
+      guestTeamLogo: "",
+      guestTeamName: "\u84DD\u961F",
+      guestTeamScore: 24,
+      gameResult: E(0, "\u672A\u7ED3\u675F"),
+      videoStatus: E(0, "\u672A\u76F4\u64AD"),
+      section: "1"
+    },
+    hostTeamFoul: 3,
+    guestTeamFoul: 2,
+    hostTeamStop: 1,
+    guestTeamStop: 0,
+    hostMembers,
+    guestMembers,
+    sections
   });
   var gameDetail = ok({
     id: IDS.gameId,
@@ -371,8 +473,184 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
     assists: 8,
     number: 8
   });
-  ok(__spreadProps(__spreadValues({}, gameDetail.data), { type: E(2, "\u8DB3\u7403"), hostTeamName: "\u98DE\u864E\u961F", guestTeamName: "\u96C4\u9E70\u961F", hostTeamScore: 1, guestTeamScore: 1, name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B", leagueName: "\u6D4B\u8BD5\u676F" }));
+  var footDetail = ok(__spreadProps(__spreadValues({}, gameDetail.data), { type: E(2, "\u8DB3\u7403"), hostTeamName: "\u98DE\u864E\u961F", guestTeamName: "\u96C4\u9E70\u961F", hostTeamScore: 1, guestTeamScore: 1, name: "\u6D4B\u8BD5\u676F-\u8DB3\u7403\u534A\u51B3\u8D5B", leagueName: "\u6D4B\u8BD5\u676F" }));
+  var connectInfo = ok({
+    id: IDS.gameId,
+    event: E(1, "\u8054\u8D5B"),
+    name: "\u6D4B\u8BD5\u8054\u8D5B-\u7EA2\u84DD\u5927\u6218",
+    status: E(2, "\u8FDB\u884C\u4E2D"),
+    runStatus: E(2, "\u8FDB\u884C\u4E2D"),
+    time: "2026-07-31 15:00",
+    type: E(1, "\u7BEE\u7403"),
+    isMedia: EB(1, "\u662F", true),
+    venueId: "mock-venue-1",
+    venueName: "1\u53F7\u573A\u5730",
+    venueAddress: "\u6D4B\u8BD5\u4F53\u80B2\u99861\u53F7\u573A",
+    leagueGroupId: "mock-lg-1",
+    leagueGroupName: "A\u7EC4",
+    leagueGroupSort: 1,
+    leagueStageId: "mock-ls-1",
+    leagueStageName: "\u5C0F\u7EC4\u8D5B",
+    leagueStageSort: 1,
+    leagueId: IDS.leagueId,
+    leagueName: "\u6D4B\u8BD5\u8054\u8D5B",
+    leagueLogo: "",
+    leagueStartTime: "2026-07-01",
+    hostGameTeamId: IDS.hostTeamId,
+    hostTeamId: "ht1",
+    hostTeamLogo: "",
+    hostTeamName: "\u7EA2\u961F",
+    hostTeamScore: 28,
+    guestGameTeamId: IDS.guestTeamId,
+    guestTeamId: "gt2",
+    guestTeamLogo: "",
+    guestTeamName: "\u84DD\u961F",
+    guestTeamScore: 24,
+    gameResult: E(0, "\u672A\u7ED3\u675F"),
+    videoStatus: E(0, "\u672A\u76F4\u64AD"),
+    section: "1"
+  });
+  function sectionList(query) {
+    const isFoot = query && query.gameId && String(query.gameId).indexOf("foot") >= 0;
+    const list = isFoot ? footSections : sections;
+    return ok(list.map((s) => ({
+      id: s.id,
+      name: s.name,
+      gameId: s.gameId,
+      type: s.type,
+      sort: s.sort,
+      groups: s.groups
+    })));
+  }
+  function memberList(query) {
+    const isGuest = query && query.gameTeamId && String(query.gameTeamId).indexOf("guest") >= 0;
+    return ok(isGuest ? guestMembers : hostMembers);
+  }
+  var recordList = ok({
+    totalCount: 6,
+    pageSize: 10,
+    totalPage: 1,
+    pageNo: 1,
+    nextPage: false,
+    list: [
+      { id: "mock-rec-1", recordNumber: "mock-rec-1", statisticsSectionId: "mock-sec-1", type: E(7, "\u4E09\u5206\u547D\u4E2D"), occurrenceTime: "15:02:10", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "\u8D75\u4E00 \u4E09\u5206\u547D\u4E2D", sectionName: "\u7B2C1\u8282", memberName: "\u8D75\u4E00", teamName: "\u7EA2\u961F" },
+      { id: "mock-rec-2", recordNumber: "mock-rec-2", statisticsSectionId: "mock-sec-1", type: E(1, "\u7BEE\u677F"), occurrenceTime: "15:03:25", statisticsMemberId: "mock-guest-member-5", statisticsTeamId: IDS.guestTeamId, description: "\u51AF\u4E94 \u7BEE\u677F", sectionName: "\u7B2C1\u8282", memberName: "\u848B\u4E94", teamName: "\u84DD\u961F" },
+      { id: "mock-rec-3", recordNumber: "mock-rec-3", statisticsSectionId: "mock-sec-1", type: E(6, "\u4E24\u5206\u547D\u4E2D"), occurrenceTime: "15:04:40", statisticsMemberId: "mock-host-member-2", statisticsTeamId: IDS.hostTeamId, description: "\u94B1\u4E8C \u4E24\u5206\u547D\u4E2D", sectionName: "\u7B2C1\u8282", memberName: "\u94B1\u4E8C", teamName: "\u7EA2\u961F" },
+      { id: "mock-rec-4", recordNumber: "mock-rec-4", statisticsSectionId: "mock-sec-1", type: E(9, "\u72AF\u89C4"), occurrenceTime: "15:05:55", statisticsMemberId: "mock-guest-member-2", statisticsTeamId: IDS.guestTeamId, description: "\u9648\u4E8C \u72AF\u89C4", sectionName: "\u7B2C1\u8282", memberName: "\u9648\u4E8C", teamName: "\u84DD\u961F" },
+      { id: "mock-rec-5", recordNumber: "mock-rec-5", statisticsSectionId: "mock-sec-1", type: E(2, "\u52A9\u653B"), occurrenceTime: "15:07:12", statisticsMemberId: "mock-host-member-1", statisticsTeamId: IDS.hostTeamId, description: "\u8D75\u4E00 \u52A9\u653B", sectionName: "\u7B2C1\u8282", memberName: "\u8D75\u4E00", teamName: "\u7EA2\u961F" },
+      { id: "mock-rec-6", recordNumber: "mock-rec-6", statisticsSectionId: "mock-sec-1", type: E(17, "\u5931\u8BEF"), occurrenceTime: "15:08:30", statisticsMemberId: "mock-guest-member-3", statisticsTeamId: IDS.guestTeamId, description: "\u891A\u4E09 \u5931\u8BEF", sectionName: "\u7B2C1\u8282", memberName: "\u891A\u4E09", teamName: "\u84DD\u961F" }
+    ]
+  });
+  var weekList = ok([
+    {
+      groupName: "A\u7EC4",
+      games: [basketGame1, basketGame3],
+      optimals: [
+        { name: "\u8D75\u4E00", avatar: "", count: 18, type: E(6, "\u5F97\u5206\u738B") },
+        { name: "\u848B\u4E94", avatar: "", count: 11, type: E(1, "\u7BEE\u677F\u738B") }
+      ]
+    },
+    {
+      groupName: "B\u7EC4",
+      games: [basketGame2],
+      optimals: [{ name: "\u5434\u516D", avatar: "", count: 7, type: E(2, "\u52A9\u653B\u738B") }]
+    }
+  ]);
+  var photoActivityList = ok({
+    totalCount: 2,
+    pageSize: 10,
+    totalPage: 1,
+    pageNo: 1,
+    nextPage: false,
+    list: [
+      { id: "mock-photo-act-1", type: E(1, "\u6BD4\u8D5B"), title: "\u7EA2\u84DD\u5927\u6218\u62CD\u7167\u76F4\u64AD", description: "\u3010MOCK\u3011\u6D4B\u8BD5\u6D3B\u52A8", status: E(1, "\u8FDB\u884C\u4E2D"), startTime: "2026-07-31 15:00", endTime: "2026-07-31 17:00", address: "1\u53F7\u573A\u5730", visitors: 128, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "\u663E\u793A") },
+      { id: "mock-photo-act-2", type: E(2, "\u8054\u8D5B"), title: "\u6D4B\u8BD5\u676F\u62CD\u7167\u76F4\u64AD", description: "\u3010MOCK\u3011\u6D4B\u8BD5\u6D3B\u52A82", status: E(2, "\u5DF2\u7ED3\u675F"), startTime: "2026-07-30 15:00", endTime: "2026-07-30 17:00", address: "2\u53F7\u573A\u5730", visitors: 56, logo: "", banner: "", poster: "", timeInterval: 0, showStatus: E(1, "\u663E\u793A") }
+    ]
+  });
+  var uploadPhotoList = ok([
+    { id: "mock-pic-1", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-1.jpg", fileSize: 102400, fileTime: "2026-07-31 15:01:00", showStatus: E(1, "\u663E\u793A"), likeCount: 3 },
+    { id: "mock-pic-2", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-2.jpg", fileSize: 204800, fileTime: "2026-07-31 15:02:00", showStatus: E(1, "\u663E\u793A"), likeCount: 5 },
+    { id: "mock-pic-3", photoActivityId: "mock-photo-act-1", userId: "mock-user-001", url: "", width: 1080, height: 1920, fileName: "mock-3.jpg", fileSize: 153600, fileTime: "2026-07-31 15:03:00", showStatus: E(1, "\u663E\u793A"), likeCount: 0 }
+  ]);
+  var liveGameList = ok([
+    { id: "mock-live-1", recordId: "mock-rec-live-1", type: E(1, "\u76F4\u64AD"), appName: "mock", streamName: "mock-stream-1", name: "1\u53F7\u673A\u4F4D", status: E(1, "\u76F4\u64AD\u4E2D"), cover: "", publish: "rtmp://mock/live/mock-stream-1", liveRtmp: "rtmp://mock/live/mock-stream-1", liveFlv: "http://mock/live/mock-stream-1.flv", liveM3u8: "http://mock/live/mock-stream-1.m3u8" }
+  ]);
+  var versionCheckResult = ok({
+    id: "mock-ver-1",
+    deviceType: E(1, "android"),
+    url: "",
+    upgradeType: E(0, "\u53EF\u9009"),
+    remark: "\u3010MOCK\u3011\u5F53\u524D\u5DF2\u662F\u6700\u65B0\u7248\u672C\uFF08\u6D4B\u8BD5\u6570\u636E\uFF09",
+    packageSize: "0",
+    versionCode: 0,
+    versionName: "2.8.4",
+    notice: E(0, "\u4E0D\u63D0\u9192")
+  });
+  var RULES = [
+    /* ----- 登录 ----- */
+    { method: "POST", url: "sms/login", handler: () => ok(null, "\u3010MOCK\u3011\u9A8C\u8BC1\u7801\u5DF2\u53D1\u9001(\u6D4B\u8BD5\u7801:1234)") },
+    { method: "POST", url: "user/login", handler: () => ok(IDS.token, "\u3010MOCK\u3011\u767B\u5F55\u6210\u529F") },
+    { method: "GET", url: "user/info", handler: () => ok(userInfo) },
+    /* ----- 比赛列表（篮球 / 足球，按 query.status 区分未结束/已结束）----- */
+    { method: "GET", url: "game/list-my-manage", handler: (o) => matchList("basketball", o.query && o.query.status) },
+    { method: "GET", url: "soccer/game/list-my-manage", handler: (o) => matchList("football", o.query && o.query.status) },
+    /* ----- 比赛详情 / 连接信息 ----- */
+    { method: "GET", url: "ts/game/info", handler: () => connectInfo },
+    { method: "GET", url: "game//info", handler: () => connectInfo },
+    { method: "GET", url: "soccer/game//info", handler: () => connectInfo },
+    { method: "GET", url: "game/{gameId}/detail", handler: () => gameDetail },
+    { method: "GET", url: "soccer/game/{gameId}/detail", handler: () => gameDetail },
+    { method: "GET", url: "game/{gameId}/foot-detail", handler: () => footDetail },
+    { method: "GET", url: "statistics/game-detail-basketball", handler: () => basketDetail },
+    /* ----- 小节 / 球员 ----- */
+    { method: "GET", url: "statistics/section/list", handler: (o) => sectionList(o.query) },
+    { method: "GET", url: "statistics/member/list", handler: (o) => memberList(o.query) },
+    /* ----- 统计记录 ----- */
+    { method: "GET", url: "statistics/page", handler: () => recordList },
+    /* ----- 优肯周赛况 ----- */
+    { method: "GET", url: "game/list-week", handler: () => weekList },
+    /* ----- 拍照 / 相册 ----- */
+    { method: "GET", url: "photo/activity/list-my-manage", handler: () => photoActivityList },
+    { method: "GET", url: "photo/activity/create-game", handler: () => ok("mock-photo-act-new", "\u3010MOCK\u3011\u6D3B\u52A8\u521B\u5EFA\u6210\u529F") },
+    { method: "GET", url: "photo/picture/upload-list", handler: () => uploadPhotoList },
+    /* ----- 直播 ----- */
+    { method: "GET", url: "live/stream/game-list", handler: () => liveGameList },
+    { method: "POST", url: "live/stream/game", handler: () => ok(liveGameList.data[0], "\u3010MOCK\u3011\u83B7\u53D6\u76F4\u64AD\u5730\u5740\u6210\u529F") },
+    { method: "POST", url: "live/stream/game-add", handler: () => ok("mock-live-new", "\u3010MOCK\u3011\u76F4\u64AD\u6DFB\u52A0\u6210\u529F") },
+    { method: "POST", url: "live/stream/compose", handler: () => ok(null, "\u3010MOCK\u3011\u5408\u6210\u56DE\u653E\u8BF7\u6C42\u5DF2\u63D0\u4EA4") },
+    /* ----- 版本检查 ----- */
+    { method: "GET", url: "sys/app-version/check", handler: () => versionCheckResult },
+    /* ----- 写操作：统一返回成功（mock 不真实落库）----- */
+    { method: "POST", url: "ts/game/update-info", handler: () => ok(null, "\u3010MOCK\u3011\u4FDD\u5B58\u6210\u529F") },
+    { method: "POST", url: "game/status", handler: () => ok(null, "\u3010MOCK\u3011\u72B6\u6001\u4FEE\u6539\u6210\u529F") },
+    { method: "POST", url: "soccer/game/status", handler: () => ok(null, "\u3010MOCK\u3011\u72B6\u6001\u4FEE\u6539\u6210\u529F") },
+    { method: "POST", url: "statistics/member/sign", handler: () => ok(null, "\u3010MOCK\u3011\u7B7E\u5230\u6210\u529F") },
+    { method: "POST", url: "statistics/member/sign-cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u7B7E\u5230\u6210\u529F") },
+    { method: "POST", url: "statistics/member/starting-lineup", handler: () => ok(null, "\u3010MOCK\u3011\u8BBE\u7F6E\u9996\u53D1\u6210\u529F") },
+    { method: "POST", url: "statistics/member/starting-lineup-cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u9996\u53D1\u6210\u529F") },
+    { method: "POST", url: "statistics/member/temporary", handler: () => ok("mock-member-new", "\u3010MOCK\u3011\u6DFB\u52A0\u4E34\u65F6\u7403\u5458\u6210\u529F") },
+    { method: "POST", url: "statistics/member/edit-position", handler: () => ok(null, "\u3010MOCK\u3011\u4F4D\u7F6E\u4FEE\u6539\u6210\u529F") },
+    { method: "GET", url: "statistics/member/delete-temporary", handler: () => ok(null, "\u3010MOCK\u3011\u5220\u9664\u7403\u5458\u6210\u529F") },
+    { method: "POST", url: "statistics/add", handler: () => ok(null, "\u3010MOCK\u3011\u7EDF\u8BA1\u63D0\u4EA4\u6210\u529F") },
+    { method: "POST", url: "statistics/add-all", handler: () => ok(null, "\u3010MOCK\u3011\u6279\u91CF\u7EDF\u8BA1\u63D0\u4EA4\u6210\u529F") },
+    { method: "POST", url: "statistics/cancel", handler: () => ok(null, "\u3010MOCK\u3011\u53D6\u6D88\u8BB0\u5F55\u6210\u529F") },
+    { method: "POST", url: "statistics/section/running", handler: () => ok(null, "\u3010MOCK\u3011\u5C0F\u8282\u72B6\u6001\u5207\u6362\u6210\u529F") }
+  ];
+  function matchUrl(template, realUrl) {
+    const re = new RegExp("^" + template.replace(/\{[^}]+\}/g, "([^/]+)") + "$");
+    return re.test(realUrl);
+  }
   function mockResolve(options) {
+    const { url, method = "GET" } = options;
+    const m = method.toUpperCase();
+    for (const rule of RULES) {
+      if (rule.method !== m)
+        continue;
+      if (!matchUrl(rule.url, url))
+        continue;
+      return rule.handler(options);
+    }
+    formatAppLog("warn", "at mock/mock-data.js:536", `%c\u3010MOCK\u3011\u672A\u5339\u914D\u5230\u9759\u6001\u6570\u636E\uFF0C\u8D70\u771F\u5B9E\u8BF7\u6C42\uFF1A${m} ${url}`, "color:#f56c6c");
     return null;
   }
   function request(options) {
@@ -387,7 +665,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       loading = false
     } = options;
     let finalUrl = config.baseUrl + url;
-    const mocked = mockResolve();
+    const mocked = mockResolve(options);
     if (mocked !== null) {
       if (loading)
         uni.showLoading({ title: typeof loading === "string" ? loading : "\u52A0\u8F7D\u4E2D", mask: true });

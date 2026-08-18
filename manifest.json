@@ -11,7 +11,8 @@
             "ignoreVersion" : true
         },
         "modules" : {
-            "LivePusher" : {}
+            "LivePusher" : {},
+            "SQLite" : {}
         },
         "distribute" : {
             "nativePlugins" : [

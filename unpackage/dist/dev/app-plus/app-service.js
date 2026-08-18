@@ -2121,7 +2121,7 @@ This will fail in production.`);
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: false,
+    useMock: true,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -11129,69 +11129,41 @@ This will fail in production.`);
   };
   function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-operate" }, [
-      vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode(
-          "view",
-          {
-            class: "nav-status",
-            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
-          },
-          null,
-          4
-          /* STYLE */
-        ),
-        vue.createElementVNode("view", { class: "top-bar-inner" }, [
-          vue.createElementVNode("view", {
-            class: "back",
-            onClick: $setup.back
-          }, [
-            vue.createElementVNode("image", {
-              class: "back-icon",
-              src: _imports_0$2,
-              mode: "aspectFit"
-            })
-          ]),
-          vue.createElementVNode("view", { class: "score-area" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "team-name" },
-              vue.toDisplayString($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "score" },
-              vue.toDisplayString($setup.hostScore),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode("text", { class: "colon" }, ":"),
-            vue.createElementVNode(
-              "text",
-              { class: "score" },
-              vue.toDisplayString($setup.guestScore),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "team-name" },
-              vue.toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ]),
-          vue.createElementVNode("view", { class: "top-right" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "sync" },
-              "待同步 " + vue.toDisplayString($setup.syncNum),
-              1
-              /* TEXT */
-            ),
-            vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
-          ])
+      vue.createElementVNode("view", { class: "top-bar2" }, [
+        vue.createElementVNode("view", { class: "tb-half red" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "tb-name" },
+            vue.toDisplayString($setup.homeName),
+            1
+            /* TEXT */
+          )
+        ]),
+        vue.createElementVNode("view", { class: "tb-score" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "score" },
+            vue.toDisplayString($setup.hostScore),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("text", { class: "colon" }, ":"),
+          vue.createElementVNode(
+            "text",
+            { class: "score" },
+            vue.toDisplayString($setup.guestScore),
+            1
+            /* TEXT */
+          )
+        ]),
+        vue.createElementVNode("view", { class: "tb-half blue" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "tb-name" },
+            vue.toDisplayString($setup.guestName),
+            1
+            /* TEXT */
+          )
         ])
       ]),
       vue.createElementVNode("view", { class: "sub-bar" }, [

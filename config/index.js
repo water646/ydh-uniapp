@@ -9,7 +9,7 @@ export const config = {
    * false => 走真实后端接口（baseUrl）
    * 测试完毕请改回 false。
    */
-  useMock: false,
+  useMock: true,
   /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
   baseUrl: 'http://app.ydh123.com/ydh-service/',
   /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
