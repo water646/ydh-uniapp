@@ -8,48 +8,6 @@
 /* ========== uView 主题覆盖 ========== */
 /* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
 /* ========== 通用尺寸 ========== */
-.battery[data-v-646cc3ef] {
-  display: flex;
-  align-items: center;
-}
-.battery-body[data-v-646cc3ef] {
-  width: 1.375rem;
-  height: 0.6875rem;
-  border: 0.0625rem solid #333333;
-  border-radius: 0.125rem;
-  padding: 0.0625rem;
-  box-sizing: border-box;
-}
-.battery-level[data-v-646cc3ef] {
-  height: 100%;
-  border-radius: 0.0625rem;
-  transition: width 0.3s;
-}
-.battery-level.high[data-v-646cc3ef] {
-  background-color: #29a871;
-}
-.battery-level.mid[data-v-646cc3ef] {
-  background-color: #ff6f21;
-}
-.battery-level.low[data-v-646cc3ef] {
-  background-color: #ff2d2d;
-}
-.battery-tip[data-v-646cc3ef] {
-  width: 0.125rem;
-  height: 0.375rem;
-  background-color: #333333;
-  border-radius: 0 0.0625rem 0.0625rem 0;
-}
-/**
- * uView Plus 主题变量 + 项目品牌色/字号体系
- * 对应 Android colors.xml / dimens.xml / styles.xml
- */
-/* ========== 品牌色（colors.xml） ========== */
-/* ========== 文字层级 ========== */
-/* ========== 背景与分割线 ========== */
-/* ========== uView 主题覆盖 ========== */
-/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
-/* ========== 通用尺寸 ========== */
 /**
  * vue版本动画内置的动画模式有如下：
  * fade：淡入
@@ -456,60 +414,79 @@
   background-color: #f8f8f8;
 }
 
-/* 顶栏：比分 + 球队名 */
-.top-bar[data-v-6d1135d0] {
+/* 标题栏：足球技术台 */
+.title-bar[data-v-6d1135d0] {
+  position: relative;
+  width: 100%;
   background-color: #ffffff;
+  text-align: center;
+  padding: 0.75rem 0;
+}
+.tb-back[data-v-6d1135d0] {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tb-back-icon[data-v-6d1135d0] {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+.title-text[data-v-6d1135d0] {
+  display: block;
+  font-size: 1.0625rem;
+  font-weight: bold;
+  color: #000000;
+}
+
+/* 顶栏：左红 | 中白比分 | 右蓝，三栏 flex，白块在文档流里居中、天然隔开队名不遮盖 */
+.top-bar2[data-v-6d1135d0] {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tb-half[data-v-6d1135d0] {
+  padding: 0.9375rem 0.625rem;
+  box-sizing: border-box;
+}
+.tb-half.red[data-v-6d1135d0] {
+  width: 9.0625rem;
+  background-color: #F3584E;
+}
+.tb-half.blue[data-v-6d1135d0] {
+  width: 9.0625rem;
+  background-color: #009DE9;
+  text-align: right;
+}
+.tb-stuff[data-v-6d1135d0] {
+  flex: 1;
+  height: 100%;
 }
 .nav-status[data-v-6d1135d0] {
   background-color: #ffffff;
 }
-.top-bar-inner[data-v-6d1135d0] {
-  position: relative;
-  height: 2.5rem;
+.tb-name[data-v-6d1135d0] {
+  color: #ffffff;
+  font-size: 0.84375rem;
+}
+.tb-score[data-v-6d1135d0] {
+  background-color: #ffffff;
+  padding: 0.46875rem 1.5625rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 0.625rem;
-}
-.top-right[data-v-6d1135d0] {
-  display: flex;
-  align-items: center;
-  gap: 0.3125rem;
-}
-.back[data-v-6d1135d0] {
-  width: 1.875rem;
-  display: flex;
-  align-items: center;
-}
-.back-icon[data-v-6d1135d0] {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.score-area[data-v-6d1135d0] {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
-  pointer-events: none;
-}
-.team-name[data-v-6d1135d0] {
-  font-size: 0.875rem;
-  color: #141a66;
-  font-weight: bold;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .score[data-v-6d1135d0] {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2f7ed8;
-}
-.colon[data-v-6d1135d0] {
-  font-size: 1.125rem;
-  color: #999999;
+  font-size: 1.25rem;
+  color: black;
 }
 
 /* 副顶栏：主队犯规 | 比赛阶段+计时器居中 | 客队犯规 */
@@ -602,6 +579,36 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.person-foul[data-v-6d1135d0] {
+  padding: 0.6875rem;
+  background-color: #787878;
+  position: absolute;
+  border-radius: 50%;
+  left: 0;
+  top: 0;
+  transform: translateX(-40%) translateY(-40%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+.person-foul.red[data-v-6d1135d0] {
+  background-color: #ff2d2d;
+}
+.person-foul.yellow[data-v-6d1135d0] {
+  background-color: #f5a623;
+}
+.foul-times[data-v-6d1135d0] {
+  position: absolute;
+  color: white;
+  font-size: 0.625rem;
+  top: 1%;
+  left: 4%;
 }
 .person-ball[data-v-6d1135d0] {
   width: 0.375rem;
@@ -714,67 +721,105 @@
   background-color: #888888;
 }
 
-/* 记录列表弹层 */
-.record-mask[data-v-6d1135d0] {
+/* 记录页面（全屏，参考原生 OperationRecordActivity） */
+.record-page[data-v-6d1135d0] {
   position: fixed;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+}
+.rp-status[data-v-6d1135d0] {
+  background-color: #ffffff;
+}
+.rp-top[data-v-6d1135d0] {
+  position: relative;
+  height: 3rem;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  box-shadow: 0 0.1875rem 0.1875rem rgba(0, 0, 0, 0.18);
 }
-.record-panel[data-v-6d1135d0] {
-  width: 70%;
-  max-height: 70%;
-  background-color: #ffffff;
-  border-radius: 0.375rem;
+.rp-back[data-v-6d1135d0] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3rem;
+  height: 3rem;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.record-head[data-v-6d1135d0] {
-  padding: 0.625rem;
-  text-align: center;
-  font-size: 0.875rem;
-  border-bottom: 0.03125rem solid #eeeeee;
+.rp-back-holder[data-v-6d1135d0] {
+  left: auto;
+  right: 0;
 }
-.record-scroll[data-v-6d1135d0] {
+.rp-back-icon[data-v-6d1135d0] {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+.rp-title[data-v-6d1135d0] {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #000000;
+}
+.rp-list[data-v-6d1135d0] {
   flex: 1;
   min-height: 0;
 }
-.record-item[data-v-6d1135d0] {
+.rp-item[data-v-6d1135d0] {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.625rem;
-  border-bottom: 0.03125rem solid #f2f2f2;
+  padding: 0.625rem 0.625rem;
+  border-bottom: 0.03125rem solid #d9d9d9;
 }
-.r-team[data-v-6d1135d0] {
-  font-size: 0.6875rem;
-  color: #29a871;
-  width: 3.125rem;
-}
-.r-desc[data-v-6d1135d0] {
+.rp-info[data-v-6d1135d0] {
   flex: 1;
-  font-size: 0.6875rem;
-  color: #333333;
+  min-width: 0;
 }
-.r-del[data-v-6d1135d0] {
-  font-size: 0.6875rem;
-  color: #ff2d2d;
+.rp-row[data-v-6d1135d0] {
+  display: flex;
+  align-items: center;
 }
-.record-empty[data-v-6d1135d0] {
-  padding: 1.25rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #999999;
+.rp-row2[data-v-6d1135d0] {
+  margin-top: 0.25rem;
 }
-.record-close[data-v-6d1135d0] {
+.rp-text[data-v-6d1135d0] {
+  font-size: 0.875rem;
+  color: #2f7ed8;
+}
+.rp-team[data-v-6d1135d0] {
+  max-width: 7.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rp-member[data-v-6d1135d0] {
+  color: #666666;
+}
+.rp-side[data-v-6d1135d0] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+.rp-type[data-v-6d1135d0] {
+  width: 5rem;
+  text-align: right;
+}
+.rp-del[data-v-6d1135d0] {
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0.625rem;
+}
+.rp-empty[data-v-6d1135d0] {
+  padding: 2.5rem 0;
   text-align: center;
   font-size: 0.8125rem;
-  color: #009de9;
-  border-top: 0.03125rem solid #eeeeee;
+  color: #999999;
 }

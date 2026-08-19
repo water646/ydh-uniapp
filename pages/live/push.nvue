@@ -18,26 +18,80 @@
       <view class="pv-watermark-clip">
         <image class="pv-watermark-img" src="/static/mipmap-xxhdpi/watermark.png" mode="aspectFit" />
       </view>
-      <!-- 底部比分条（随"隐藏比分"隐藏，水印保留） -->
+      <!-- 底部比分条（随"隐藏比分"隐藏，水印保留）：仿原生 new_bifen 背景 + 队名/比分/小节/犯规条 -->
       <view v-if="showScore" class="pv-scorebar-wrap">
         <view class="pv-scorebar">
-          <image v-if="homeLogo" class="pv-team-logo" :src="homeLogo" mode="aspectFill" />
-          <view class="pv-name-box">
+          <image class="pv-bifen-bg" src="/static/mipmap-xxhdpi/new_bifen.png" mode="scaleToFill" />
+          <image v-if="homeLogo" class="pv-team-logo pv-logo-home" :src="homeLogo" mode="aspectFill" />
+          <view class="pv-cell pv-name-cell">
             <text class="pv-team-name">{{ homeName }}</text>
           </view>
-          <view class="pv-score-box">
+          <view class="pv-cell pv-score-cell">
             <text class="pv-score">{{ hostScore }}</text>
-            <text class="pv-colon">:</text>
-            <text class="pv-score">{{ guestScore }}</text>
+            <image class="pv-foul" :src="foulHostImg" mode="scaleToFill" />
           </view>
-          <view class="pv-name-box">
+          <view class="pv-cell pv-sec-cell">
+            <text class="pv-section-text" v-if="section">{{ section }}</text>
+          </view>
+          <view class="pv-cell pv-score-cell">
+            <text class="pv-score">{{ guestScore }}</text>
+            <image class="pv-foul" :src="foulGuestImg" mode="scaleToFill" />
+          </view>
+          <view class="pv-cell pv-name-cell">
             <text class="pv-team-name">{{ guestName }}</text>
           </view>
-          <image v-if="guestLogo" class="pv-team-logo" :src="guestLogo" mode="aspectFill" />
+          <image v-if="guestLogo" class="pv-team-logo pv-logo-guest" :src="guestLogo" mode="aspectFill" />
         </view>
         <view class="pv-sub-row">
           <text class="pv-sub-text">{{ leagueStageName }}</text>
-          <text class="pv-sub-text" v-if="section">{{ section }}</text>
+        </view>
+      </view>
+      <!-- 小节结束报幕（顶部横幅：联赛名 + 主客队名/比分/第X节 + 下方球员统计表），10 秒后自动消失 -->
+      <view v-if="sectionEnd" class="pv-section-end">
+        <view class="pv-se-banner">
+          <image class="pv-se-bg" src="/static/mipmap-xxhdpi/sectionbackground.png" mode="scaleToFill" />
+          <view class="pv-se-content">
+            <text class="pv-se-league">{{ leagueName }}</text>
+            <view class="pv-se-row">
+              <text class="pv-se-name pv-se-name-left">{{ homeName }}</text>
+              <text class="pv-se-score pv-se-score-left">{{ hostScore }}</text>
+              <text v-if="section" class="pv-se-section">{{ section }}</text>
+              <text class="pv-se-score pv-se-score-right">{{ guestScore }}</text>
+              <text class="pv-se-name pv-se-name-right">{{ guestName }}</text>
+            </view>
+          </view>
+        </view>
+        <!-- 球员统计表（主队左/客队右，最多 6 行） -->
+        <view class="pv-se-stats">
+          <image class="pv-se-stats-bg" src="/static/mipmap-xxhdpi/bottom.png" mode="scaleToFill" />
+          <view class="pv-se-col">
+            <view class="pv-se-tr pv-se-th">
+              <text class="pv-se-td pv-se-td-name">球号/姓名</text>
+              <text class="pv-se-td">得分</text>
+              <text class="pv-se-td">助攻</text>
+              <text class="pv-se-td">篮板</text>
+            </view>
+            <view v-for="(m, i) in hostMembers.slice(0, 6)" :key="'h' + i" class="pv-se-tr">
+              <text class="pv-se-td pv-se-td-name">{{ m.number }} {{ m.name }}</text>
+              <text class="pv-se-td">{{ m.score || 0 }}</text>
+              <text class="pv-se-td">{{ m.assists || 0 }}</text>
+              <text class="pv-se-td">{{ m.backboard || 0 }}</text>
+            </view>
+          </view>
+          <view class="pv-se-col">
+            <view class="pv-se-tr pv-se-th">
+              <text class="pv-se-td pv-se-td-name">球号/姓名</text>
+              <text class="pv-se-td">得分</text>
+              <text class="pv-se-td">助攻</text>
+              <text class="pv-se-td">篮板</text>
+            </view>
+            <view v-for="(m, i) in guestMembers.slice(0, 6)" :key="'g' + i" class="pv-se-tr">
+              <text class="pv-se-td pv-se-td-name">{{ m.number }} {{ m.name }}</text>
+              <text class="pv-se-td">{{ m.score || 0 }}</text>
+              <text class="pv-se-td">{{ m.assists || 0 }}</text>
+              <text class="pv-se-td">{{ m.backboard || 0 }}</text>
+            </view>
+          </view>
         </view>
       </view>
       <!-- 底部消息条 -->
@@ -74,7 +128,7 @@
  * - 荣耀机 logcat 加密，诊断日志写 /sdcard/push_debug.log 供 adb pull 读取
  * - 原生插件不支持标准基座，须自定义调试基座或正式云打包勾选 TencentLivePusher
  */
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onLoad, onReady, onUnload, onBackPress } from '@dcloudio/uni-app'
 import { connectSocket, closeSocket } from '@/utils/websocket'
 import { getGameDetail } from '@/api/game'
@@ -95,8 +149,36 @@ const leagueName = ref('')
 const leagueLogo = ref('')
 const leagueStageName = ref('')
 const msg = ref('')
+const hostMembers = ref([])
+const guestMembers = ref([])
+
+/** 底部消息条定时器：显示 5 秒后自动消失 */
+let msgTimer = null
+function setMsg(text) {
+  msg.value = text
+  if (msgTimer) clearTimeout(msgTimer)
+  if (text) {
+    msgTimer = setTimeout(() => {
+      msg.value = ''
+      // 重新烧一次流，把烧进画面的 msg 条也一并清掉（原生是 1.8s 后 addWaterMark(null) 清）
+      // 报幕展示期间不刷，避免提前顶掉报幕画面
+      if (!sectionEnd.value) pushScore()
+    }, 5000)
+  }
+}
+
+/** 犯规指示条图片：原生用 fangui0~5（犯规次数 0-5，超过 5 封顶） */
+function foulImg(n) {
+  const c = Math.max(0, Math.min(5, Number(n) || 0))
+  return `/static/mipmap-xxhdpi/fangui${c}.png`
+}
+const foulHostImg = computed(() => foulImg(hostFoul.value))
+const foulGuestImg = computed(() => foulImg(guestFoul.value))
 
 const showScore = ref(true)
+/** 小节结束「报幕」：显示整屏小节比分画面，2 秒后自动切回比分条 */
+const sectionEnd = ref(false)
+let sectionEndTimer = null
 const pushing = ref(false)
 const statusText = ref('未连接')
 const pusher = ref(null)
@@ -218,28 +300,41 @@ function loadGameDetail() {
     if (g.leagueStageName) leagueStageName.value = g.leagueStageName
     if (g.hostTeamFoul !== undefined) hostFoul.value = g.hostTeamFoul
     if (g.guestTeamFoul !== undefined) guestFoul.value = g.guestTeamFoul
-    logToFile('[push] loadGameDetail OK host=' + homeName.value + ' guest=' + guestName.value + ' score=' + hostScore.value + ':' + guestScore.value)
+    // 报幕球员统计表数据源：game/{id}/detail 的 data.hostMembers/guestMembers(每个含 number/name/score/assists/backboard)
+    hostMembers.value = page.hostMembers || []
+    guestMembers.value = page.guestMembers || []
+    logToFile('[push] loadGameDetail OK host=' + homeName.value + ' guest=' + guestName.value + ' score=' + hostScore.value + ':' + guestScore.value + ' members=' + hostMembers.value.length + '/' + guestMembers.value.length)
     pushScore()
   })
 }
 
-/** 连接 WebSocket 接收实时比分（对应 group=push） */
+/** 连接 WebSocket 接收实时比分（对应原生 group=push<gameId>，不是写死的 push） */
 function connectScore() {
   statusText.value = '比分接口连接中…'
   connectSocket(
-    'push',
+    'push' + gameId.value,
     (data) => {
-      if (data.hostTeamScore !== undefined) hostScore.value = data.hostTeamScore
-      if (data.guestTeamScore !== undefined) guestScore.value = data.guestTeamScore
-      if (data.section !== undefined) section.value = data.section
-      if (data.hostTeamFoul !== undefined) hostFoul.value = data.hostTeamFoul
-      if (data.guestTeamFoul !== undefined) guestFoul.value = data.guestTeamFoul
-      if (data.msg !== undefined) msg.value = data.msg
-      if (data.leagueStageName !== undefined) leagueStageName.value = data.leagueStageName
-      pushScore()
+      logToFile('[push] ws msg ' + JSON.stringify(data))
+      // 用 != null 同时挡掉 null 和 undefined：后端「违体/犯规」类消息会把比分/犯规字段置 null，
+      // 若用 !== undefined 会让 null 覆盖掉已有比分，导致比分条被清空
+      if (data.hostTeamScore != null) hostScore.value = data.hostTeamScore
+      if (data.guestTeamScore != null) guestScore.value = data.guestTeamScore
+      if (data.section != null) section.value = data.section
+      if (data.hostTeamFoul != null) hostFoul.value = data.hostTeamFoul
+      if (data.guestTeamFoul != null) guestFoul.value = data.guestTeamFoul
+      // 「小节结束」不作底部消息条，改触发整屏报幕
+      if (data.msg != null && data.msg !== '小节结束') setMsg(data.msg)
+      if (data.leagueStageName != null) leagueStageName.value = data.leagueStageName
+      // 小节结束 -> 报幕；否则正常刷新比分条
+      if (data.runStatus === 'SECTION_END' || data.msg === '小节结束') {
+        showSectionEnd()
+      } else if (!sectionEnd.value) {
+        // 报幕展示的 10 秒内不刷比分条：心跳(每20s)或普通消息触发的 pushScore 会提前顶掉报幕画面
+        pushScore()
+      }
     },
     (event) => {
-      if (event === 'open') { statusText.value = '比分接口已连接'; logToFile('[push] ws open') }
+      if (event === 'open') { statusText.value = '比分接口已连接'; logToFile('[push] ws open group=push' + gameId.value) }
       else if (event === 'close') statusText.value = '比分接口已断开，重连中…'
       else if (event === 'error') statusText.value = '比分接口连接失败'
     }
@@ -311,6 +406,44 @@ function toggleScore() {
   pushScore()
 }
 
+/** 小节结束报幕：烧整屏小节比分画面 + 球员统计表，10 秒后自动恢复比分条（原生 2s 太短看不清，加长） */
+function showSectionEnd() {
+  sectionEnd.value = true
+  if (sectionEndTimer) clearTimeout(sectionEndTimer)
+  burnSectionEnd()
+  // 原生在小节结束时会重新拉 game/{id}/detail 刷新球员统计，这里同步刷新一次，若窗口内返回则重烧更准的统计
+  getGameDetail(gameId.value, 'basketball').then((res) => {
+    if (res.code !== 1 || !sectionEnd.value) return
+    const page = res.data || {}
+    hostMembers.value = page.hostMembers || []
+    guestMembers.value = page.guestMembers || []
+    logToFile('[push] 报幕刷新球员统计 members=' + hostMembers.value.length + '/' + guestMembers.value.length)
+    burnSectionEnd()
+  })
+  sectionEndTimer = setTimeout(() => {
+    sectionEnd.value = false
+    pushScore()   // 恢复比分条
+  }, 10000)
+}
+
+/** 把当前报幕(小节比分 + 球员统计)烧进推流画面 */
+function burnSectionEnd() {
+  if (!pusher.value) return
+  logToFile('[push] 小节结束 报幕 section=' + section.value + ' ' + hostScore.value + ':' + guestScore.value + ' members=' + hostMembers.value.length + '/' + guestMembers.value.length)
+  pusher.value.showSectionEnd({
+    leagueName: leagueName.value,
+    hostName: homeName.value,
+    guestName: guestName.value,
+    hostScore: String(hostScore.value),
+    guestScore: String(guestScore.value),
+    section: section.value,
+    hostLogo: homeLogo.value,
+    guestLogo: guestLogo.value,
+    hostMembers: hostMembers.value,
+    guestMembers: guestMembers.value
+  })
+}
+
 function onState(e) {
   const d = e.detail || {}
   console.log('[pusher] state', d)
@@ -328,6 +461,8 @@ function onCompose() {
 }
 
 function back() {
+  if (msgTimer) clearTimeout(msgTimer)
+  if (sectionEndTimer) clearTimeout(sectionEndTimer)
   try { stopPush() } catch (e) {}
   if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
   try { closeSocket() } catch (e) {}
@@ -339,6 +474,8 @@ function back() {
 
 // 系统手势/物理返回兜底：onUnload 在 nvue 不触发，用 onBackPress 保证锁回竖屏
 onBackPress(() => {
+  if (msgTimer) clearTimeout(msgTimer)
+  if (sectionEndTimer) clearTimeout(sectionEndTimer)
   try { stopPush() } catch (e) {}
   if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
   try { closeSocket() } catch (e) {}
@@ -393,7 +530,8 @@ onBackPress(() => {
 }
 .bottom-row {
   flex-direction: row;
-  margin-bottom: 24rpx;
+  /* 上移开始/结束直播按钮，避开底部比分条（比分条 bottom:56rpx 高约 44rpx+sub 行） */
+  margin-bottom: 56rpx;
 }
 /* 对齐老项目：wrap_content + 背景 #10000000(近透明) + 白字，无圆角无填色 */
 /* 按钮等比缩小为原值 2/3：原 padding 8/20, font 24, line-height 40, margin 16 */
@@ -455,46 +593,59 @@ onBackPress(() => {
   align-items: center;
 }
 .pv-scorebar {
+  position: relative;
+  width: 600rpx;
+  height: 44rpx;
   flex-direction: row;
   align-items: center;
-  padding: 5rpx 12rpx;
-  background-color: rgba(0, 0, 0, 0.55);
-  border-radius: 6rpx;
+  justify-content: center;
+}
+.pv-bifen-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 600rpx;
+  height: 44rpx;
 }
 .pv-team-logo {
-  width: 30rpx;
-  height: 30rpx;
-  border-radius: 15rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  margin: 0 4rpx;
 }
-.pv-name-box {
-  width: 90rpx;
+.pv-cell {
+  flex: 1;
   align-items: center;
-  margin: 0 8rpx;
+  justify-content: center;
+}
+.pv-name-cell {
+  min-width: 0;
 }
 .pv-team-name {
-  font-size: 16rpx;
+  font-size: 15rpx;
   color: #ffffff;
   lines: 1;
   text-overflow: ellipsis;
 }
-.pv-score-box {
-  flex-direction: row;
-  align-items: center;
-  margin: 0 12rpx;
-}
 .pv-score {
-  font-size: 26rpx;
+  font-size: 22rpx;
   color: #ffffff;
   font-weight: bold;
 }
-.pv-colon {
-  font-size: 20rpx;
+.pv-section-text {
+  font-size: 14rpx;
   color: #ffffff;
-  margin: 0 6rpx;
+}
+.pv-foul {
+  width: 60rpx;
+  height: 8rpx;
+  margin-top: 4rpx;
 }
 .pv-sub-row {
   flex-direction: row;
-  margin-top: 6rpx;
+  margin-top: 4rpx;
 }
 .pv-sub-text {
   font-size: 14rpx;
@@ -514,5 +665,109 @@ onBackPress(() => {
   padding: 4rpx 24rpx;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 4rpx;
+}
+
+/* 小节结束报幕（本地预览，对应原生 newBgBitmap 顶部横幅） */
+.pv-section-end {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  align-items: center;
+  padding-top: 30rpx;
+}
+.pv-se-banner {
+  position: relative;
+  /* 8:1 比例，与 sectionbackground.png(1489x191) 及烧录端 640x80 横幅一致，避免 scaleToFill 拉伸变形 */
+  width: 480rpx;
+  height: 60rpx;
+}
+.pv-se-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 480rpx;
+  height: 60rpx;
+}
+.pv-se-content {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pv-se-league {
+  font-size: 11rpx;
+  color: #ffffff;
+}
+.pv-se-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3rpx;
+}
+.pv-se-name {
+  font-size: 10rpx;
+  color: #000000;
+  lines: 1;
+}
+.pv-se-name-left {
+  margin-right: 12rpx;
+}
+.pv-se-name-right {
+  margin-left: 12rpx;
+}
+.pv-se-score {
+  font-size: 14rpx;
+  color: #ffffff;
+  font-weight: bold;
+}
+.pv-se-score-left {
+  margin-right: 12rpx;
+}
+.pv-se-score-right {
+  margin-left: 12rpx;
+}
+.pv-se-section {
+  font-size: 10rpx;
+  color: #ffffff;
+}
+/* 报幕球员统计表（主队左/客队右，随报幕整体缩小） */
+.pv-se-stats {
+  position: relative;
+  width: 480rpx;
+  flex-direction: row;
+  margin-top: 4rpx;
+  padding: 4rpx 0;
+}
+.pv-se-stats-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.pv-se-col {
+  flex: 1;
+  flex-direction: column;
+}
+.pv-se-tr {
+  flex-direction: row;
+  height: 32rpx;
+  align-items: center;
+}
+.pv-se-td {
+  flex: 1;
+  text-align: center;
+  font-size: 11rpx;
+  color: #ffffff;
+}
+.pv-se-td-name {
+  flex: 1.6;
+  text-align: left;
+  padding-left: 10rpx;
+  lines: 1;
+  text-overflow: ellipsis;
 }
 </style>

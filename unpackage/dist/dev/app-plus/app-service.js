@@ -2121,7 +2121,7 @@ This will fail in production.`);
      * false => 走真实后端接口（baseUrl）
      * 测试完毕请改回 false。
      */
-    useMock: true,
+    useMock: false,
     /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
     baseUrl: "http://app.ydh123.com/ydh-service/",
     /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */
@@ -2456,6 +2456,16 @@ This will fail in production.`);
   }
   const hostMembers = buildMembers("红队", "host");
   const guestMembers = buildMembers("蓝队", "guest");
+  function buildStatsMembers(teamName) {
+    const base = teamName === "红队" ? hostMembers : guestMembers;
+    return base.slice(0, 6).map((m, i) => ({
+      number: m.number,
+      name: m.name,
+      score: 8 + i * 2,
+      assists: i % 2 === 0 ? 2 : 1,
+      backboard: 3 + i
+    }));
+  }
   const sections = [
     { id: "mock-sec-1", gameSectionId: "mock-sec-1", name: "第1节", gameId: IDS.gameId, type: E(1, "小节"), sort: 1, groups: "", running: EB(1, "进行中", true) },
     { id: "mock-sec-2", gameSectionId: "mock-sec-2", name: "第2节", gameId: IDS.gameId, type: E(1, "小节"), sort: 2, groups: "", running: EB(0, "未开始", false) },
@@ -2546,7 +2556,9 @@ This will fail in production.`);
     score: 28,
     backboard: 12,
     assists: 8,
-    number: 8
+    number: 8,
+    hostMembers: buildStatsMembers("红队"),
+    guestMembers: buildStatsMembers("蓝队")
   });
   const footDetail = ok({ ...gameDetail.data, type: E(2, "足球"), hostTeamName: "飞虎队", guestTeamName: "雄鹰队", hostTeamScore: 1, guestTeamScore: 1, name: "测试杯-足球半决赛", leagueName: "测试杯" });
   const connectInfo = ok({
@@ -2727,7 +2739,7 @@ This will fail in production.`);
         continue;
       return rule.handler(options);
     }
-    formatAppLog("warn", "at mock/mock-data.js:536", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url2}`, "color:#f56c6c");
+    formatAppLog("warn", "at mock/mock-data.js:553", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url2}`, "color:#f56c6c");
     return null;
   }
   function request(options) {
@@ -2785,7 +2797,8 @@ This will fail in production.`);
           const body = res.data;
           if (res.statusCode < 200 || res.statusCode >= 300) {
             if (!hideError) {
-              uni.showToast({ title: `请求失败(${res.statusCode})`, icon: "none" });
+              const errMsg = body && (body.msg || body.message) || `请求失败(${res.statusCode})`;
+              uni.showToast({ title: errMsg, icon: "none" });
             }
             reject(body || res);
             return;
@@ -6966,6 +6979,7 @@ This will fail in production.`);
   const getMember = (gameTeamId) => request({ url: "statistics/member/list", query: { gameTeamId } });
   const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
   const getGameBasketballDetail = (gameId) => request({ url: "statistics/game-detail-basketball", query: { gameId } });
+  const getGameFootDetail = (gameId) => request({ url: "game/{gameId}/foot-detail", path: { gameId } });
   const getSectionList = (gameId) => request({ url: "statistics/section/list", query: { gameId } });
   const gameStatus = (params2, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/status`, method: "POST", data: params2 });
   const memberSign = (params2) => request({ url: "statistics/member/sign", method: "POST", data: params2 });
@@ -11410,57 +11424,6 @@ This will fail in production.`);
     ]);
   }
   const PagesStatisticsBasketballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-ef0dfe21"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate.vue"]]);
-  let timer = null;
-  let uploading = false;
-  function startUploadQueue(gameId, onUploaded) {
-    stopUploadQueue();
-    timer = setInterval(() => {
-      doUpload(gameId, onUploaded);
-    }, 2e3);
-  }
-  function stopUploadQueue() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-  }
-  async function doUpload(gameId, onUploaded) {
-    if (uploading)
-      return;
-    uploading = true;
-    try {
-      const list = await selectSQL(
-        `SELECT * FROM technical_record WHERE game_id='${gameId}' AND is_need_upload=0 AND disable=0 LIMIT 10`
-      );
-      for (const r of list) {
-        try {
-          const res = await uploadData({
-            description: r.description || "",
-            recordNumber: r.record_number,
-            statisticsMemberId: r.statistics_member_id || "",
-            statisticsSectionId: r.statistics_section_id || "",
-            type: r.type,
-            elapsedTime: r.elapsed_time || 0
-          });
-          if (res.code === 1) {
-            await executeSQL(
-              `UPDATE technical_record SET is_need_upload=1 WHERE record_number=${r.record_number}`
-            );
-            onUploaded && onUploaded(r);
-          }
-        } catch (e) {
-        }
-      }
-    } finally {
-      uploading = false;
-    }
-  }
-  async function pendingCount(gameId) {
-    const res = await selectSQL(
-      `SELECT COUNT(*) as c FROM technical_record WHERE game_id='${gameId}' AND is_need_upload=0 AND disable=0`
-    );
-    return res[0] ? res[0].c : 0;
-  }
   const _sfc_main$i = {
     __name: "football-operate",
     setup(__props, { expose: __expose }) {
@@ -11469,6 +11432,8 @@ This will fail in production.`);
       const gameId = vue.ref("");
       const homeName = vue.ref("主队");
       const guestName = vue.ref("客队");
+      const hostGameTeamId = vue.ref("");
+      const guestGameTeamId = vue.ref("");
       const hostMembers2 = vue.ref([]);
       const guestMembers2 = vue.ref([]);
       const sections2 = vue.ref([]);
@@ -11480,11 +11445,9 @@ This will fail in production.`);
       const selectedMember = vue.ref(null);
       const hostScore = vue.ref(0);
       const guestScore = vue.ref(0);
-      const hostFoul = vue.ref(0);
-      const guestFoul = vue.ref(0);
+      const hostFoul = vue.computed(() => hostMembers2.value.reduce((s, m) => s + (m.foul || 0), 0));
+      const guestFoul = vue.computed(() => guestMembers2.value.reduce((s, m) => s + (m.foul || 0), 0));
       const records = vue.ref([]);
-      const battery = vue.ref(100);
-      const syncNum = vue.ref(0);
       const showChange = vue.ref(false);
       const showSection = vue.ref(false);
       const showRecord = vue.ref(false);
@@ -11496,72 +11459,114 @@ This will fail in production.`);
       let timerInterval = null;
       onLoad((opt) => {
         gameId.value = opt.gameId || "";
-        homeName.value = opt.homeName || "主队";
-        guestName.value = opt.guestName || "客队";
-        loadMembers();
-        loadSections();
+        loadData();
         loadRecords();
         loadTimer();
-        startUploadQueue(gameId.value, () => {
-          loadRecords();
-          updateSyncNum();
-        });
-        updateSyncNum();
       });
       vue.onUnmounted(() => {
-        stopUploadQueue();
         stopTimer();
       });
-      function loadMembers() {
-        queryList("member", `game_id='${gameId.value}'`).then((list) => {
-          hostMembers2.value = list.filter((m) => m.type === 1).map((m) => ({ ...m, foul: 0 }));
-          guestMembers2.value = list.filter((m) => m.type === 0).map((m) => ({ ...m, foul: 0 }));
-          loadStats();
+      function adaptMember(m) {
+        return {
+          team_member_id: m.teamMemberId,
+          number: m.number,
+          name: m.name,
+          playing: m.playing && m.playing.boolean ? 1 : 0,
+          startingLineup: m.startingLineup && m.startingLineup.boolean ? 1 : 0,
+          foul: 0
+        };
+      }
+      function sortMembers(list) {
+        return list.sort((a, b) => (Number(b.playing) || 0) - (Number(a.playing) || 0) || a.number - b.number);
+      }
+      function loadData() {
+        if (!gameId.value)
+          return;
+        getGameFootDetail(gameId.value).then((res) => {
+          if (res.code !== 1)
+            return;
+          const d = res.data || {};
+          homeName.value = d.hostTeamName || homeName.value;
+          guestName.value = d.guestTeamName || guestName.value;
+          hostScore.value = d.hostTeamScore || 0;
+          guestScore.value = d.guestTeamScore || 0;
+          hostGameTeamId.value = d.hostGameTeamId || "";
+          guestGameTeamId.value = d.guestGameTeamId || "";
+          loadMembers();
+          loadSections();
         });
       }
+      function refreshDetail() {
+        if (!gameId.value)
+          return;
+        getGameFootDetail(gameId.value).then((res) => {
+          if (res.code !== 1)
+            return;
+          const d = res.data || {};
+          homeName.value = d.hostTeamName || homeName.value;
+          guestName.value = d.guestTeamName || guestName.value;
+          hostScore.value = d.hostTeamScore || 0;
+          guestScore.value = d.guestTeamScore || 0;
+        });
+      }
+      function loadMembers() {
+        const jobs = [];
+        if (hostGameTeamId.value) {
+          jobs.push(getMember(hostGameTeamId.value).then((res) => {
+            if (res.code === 1)
+              hostMembers2.value = sortMembers((res.data || []).map(adaptMember));
+          }));
+        }
+        if (guestGameTeamId.value) {
+          jobs.push(getMember(guestGameTeamId.value).then((res) => {
+            if (res.code === 1)
+              guestMembers2.value = sortMembers((res.data || []).map(adaptMember));
+          }));
+        }
+        Promise.all(jobs).then(() => computeFouls());
+      }
       function loadSections() {
-        queryList("game_section", `game_id='${gameId.value}'`, "sort ASC").then((list) => {
+        getSectionList(gameId.value).then((res) => {
+          if (res.code !== 1)
+            return;
+          const list = res.data || [];
           sections2.value = list;
           if (list.length) {
-            currentSection.value = list[0].section_id;
+            currentSection.value = list[0].id;
             currentSectionName.value = list[0].name;
+            currentSectionIdx.value = 0;
           }
         });
       }
       function loadRecords() {
-        selectSQL(
-          `SELECT * FROM technical_record WHERE game_id='${gameId.value}' AND disable=0 AND "delete"=1 ORDER BY record_number DESC LIMIT 30`
-        ).then((list) => records.value = list);
-      }
-      function loadStats() {
-        selectSQL(`SELECT * FROM technical_record WHERE game_id='${gameId.value}' AND disable=0 AND "delete"=1`).then((list) => {
-          let hs = 0, gs = 0, hf = 0, gf = 0;
-          const foulMap = {};
-          list.forEach((r) => {
-            const sc = scoreOf(r.type, "football");
-            const fl = isFoul(r.type, "football");
-            if (r.team_type === 1) {
-              hs += sc;
-              if (fl)
-                hf++;
-            } else {
-              gs += sc;
-              if (fl)
-                gf++;
-            }
-            if (fl && r.statistics_member_id)
-              foulMap[r.statistics_member_id] = (foulMap[r.statistics_member_id] || 0) + 1;
-          });
-          hostScore.value = hs;
-          guestScore.value = gs;
-          hostFoul.value = hf;
-          guestFoul.value = gf;
-          hostMembers2.value.forEach((m) => m.foul = foulMap[m.team_member_id] || 0);
-          guestMembers2.value.forEach((m) => m.foul = foulMap[m.team_member_id] || 0);
+        statisticsPage(gameId.value, 1, 1).then((res) => {
+          if (res.code === 1) {
+            const d = res.data || {};
+            records.value = (d.list || []).slice().sort((a, b) => {
+              const na = Number(a.recordNumber);
+              const nb = Number(b.recordNumber);
+              if (!isNaN(na) && !isNaN(nb))
+                return nb - na;
+              return String(b.recordNumber).localeCompare(String(a.recordNumber));
+            });
+            computeFouls();
+          }
         });
       }
-      function updateSyncNum() {
-        pendingCount(gameId.value).then((n) => syncNum.value = n);
+      function computeFouls() {
+        hostMembers2.value.forEach((m) => m.foul = 0);
+        guestMembers2.value.forEach((m) => m.foul = 0);
+        records.value.forEach((r) => {
+          const t2 = r.type && r.type.value;
+          if (!isFoul(t2, "football"))
+            return;
+          const id = r.statisticsMemberId;
+          let m = hostMembers2.value.find((x) => x.team_member_id === id);
+          if (!m)
+            m = guestMembers2.value.find((x) => x.team_member_id === id);
+          if (m)
+            m.foul++;
+        });
       }
       function selectPlayer(team, m) {
         selectedTeam.value = team;
@@ -11575,73 +11580,110 @@ This will fail in production.`);
         }
         const team = selectedTeam.value;
         const member = selectedMember.value;
-        const teamName = team === "host" ? homeName.value : guestName.value;
-        const teamType = team === "host" ? 1 : 0;
-        insertOrReplace("technical_record", {
-          record_number: Date.now(),
-          elapsed_time: timerSeconds,
-          statistics_section_id: currentSection.value,
-          type: a.type,
-          statistics_member_id: member.team_member_id,
+        uploadData({
           description: `${member.name} ${a.desc}`,
-          game_id: gameId.value,
-          team_type: teamType,
-          team_name: teamName,
-          add: 0,
-          delete: 1,
-          is_need_upload: 0,
-          disable: 0
+          recordNumber: Date.now(),
+          statisticsMemberId: member.team_member_id,
+          statisticsSectionId: currentSection.value,
+          type: a.type,
+          elapsedTime: timerSeconds
+        }).then((res) => {
+          if (res.code === 1) {
+            const sc = scoreOf(a.type, "football");
+            if (sc > 0) {
+              if (team === "host")
+                hostScore.value += sc;
+              else
+                guestScore.value += sc;
+            }
+            if (isFoul(a.type, "football")) {
+              member.foul = (member.foul || 0) + 1;
+            }
+            loadRecords();
+          }
         });
-        const sc = scoreOf(a.type, "football");
-        if (sc > 0) {
-          if (team === "host")
-            hostScore.value += sc;
-          else
-            guestScore.value += sc;
-        }
-        if (isFoul(a.type, "football")) {
-          if (team === "host")
-            hostFoul.value++;
-          else
-            guestFoul.value++;
-          member.foul = (member.foul || 0) + 1;
-        }
-        loadRecords();
-        updateSyncNum();
       }
       function onDelete(r) {
-        cancelData({ gameId: gameId.value, recordNumber: r.record_number, statisticsMemberId: r.statistics_member_id }).then((res) => {
-          if (res.code === 1) {
-            executeSQL(`UPDATE technical_record SET disable=1, is_need_upload=1 WHERE record_number=${r.record_number}`);
-            loadRecords();
-            loadStats();
-            updateSyncNum();
+        const v = r.type && r.type.value;
+        if (v === 13 || v === 14 || v === 15 || v === 16) {
+          uni.showToast({ title: "该操作不支持删除", icon: "none" });
+          return;
+        }
+        uni.showModal({
+          title: "提示",
+          content: "是否删除此条数据..",
+          success: (res) => {
+            if (!res.confirm)
+              return;
+            cancelData({ gameId: gameId.value, recordNumber: r.recordNumber, statisticsMemberId: r.statisticsMemberId }).then((res2) => {
+              if (res2.code === 1) {
+                refreshDetail();
+                loadRecords();
+              }
+            });
           }
         });
       }
       function onChange({ offId, onId }) {
-        const team = selectedTeam.value || "host";
-        const teamName = team === "host" ? homeName.value : guestName.value;
-        const teamType = team === "host" ? 1 : 0;
-        const members = team === "host" ? hostMembers2.value : guestMembers2.value;
-        const offMember = members.find((m) => m.team_member_id === offId);
-        const onMember = members.find((m) => m.team_member_id === onId);
         const base = Date.now();
-        insertOrReplace("technical_record", { record_number: base, elapsed_time: timerSeconds, statistics_section_id: currentSection.value, type: 13, statistics_member_id: offId, description: `${offMember ? offMember.name : ""} 换下`, game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0 });
-        insertOrReplace("technical_record", { record_number: base + 1, elapsed_time: timerSeconds, statistics_section_id: currentSection.value, type: 14, statistics_member_id: onId, description: `${onMember ? onMember.name : ""} 换上`, game_id: gameId.value, team_type: teamType, team_name: teamName, add: 0, delete: 1, is_need_upload: 0, disable: 0 });
-        loadRecords();
-        updateSyncNum();
+        uploadData({
+          description: "换下",
+          recordNumber: base,
+          statisticsMemberId: offId,
+          statisticsSectionId: currentSection.value,
+          type: 13,
+          elapsedTime: timerSeconds
+        }).then((res) => {
+          if (res.code === 1) {
+            return uploadData({
+              description: "换上",
+              recordNumber: base + 1,
+              statisticsMemberId: onId,
+              statisticsSectionId: currentSection.value,
+              type: 14,
+              elapsedTime: timerSeconds
+            });
+          }
+        }).then((res) => {
+          if (res && res.code === 1)
+            loadRecords();
+        });
       }
       function onSection(t2) {
+        if (t2 === "start") {
+          insertSectionRecord(16);
+          return;
+        }
+        if (t2 === "end") {
+          insertSectionRecord(15);
+          return;
+        }
         if (t2 === "prev" && currentSectionIdx.value > 0)
           currentSectionIdx.value--;
         if (t2 === "next" && currentSectionIdx.value < sections2.value.length - 1)
           currentSectionIdx.value++;
         const sec = sections2.value[currentSectionIdx.value];
         if (sec) {
-          currentSection.value = sec.section_id;
+          currentSection.value = sec.id;
           currentSectionName.value = sec.name;
         }
+        sectionRunning(currentSection.value).then((res) => {
+          if (res.code === 1)
+            loadRecords();
+        });
+      }
+      function insertSectionRecord(type) {
+        uploadData({
+          description: type === 16 ? "小节开始" : "小节结束",
+          recordNumber: Date.now(),
+          statisticsMemberId: -1,
+          statisticsSectionId: currentSection.value,
+          type,
+          elapsedTime: timerSeconds
+        }).then((res) => {
+          if (res.code === 1)
+            loadRecords();
+        });
       }
       function toggleTimer() {
         if (timerRunning.value)
@@ -11691,7 +11733,7 @@ This will fail in production.`);
       function back() {
         uni.navigateBack();
       }
-      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, battery, syncNum, showChange, showSection, showRecord, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
+      const __returned__ = { statusBarHeight, gameId, homeName, guestName, hostGameTeamId, guestGameTeamId, hostMembers: hostMembers2, guestMembers: guestMembers2, sections: sections2, currentSectionIdx, currentSection, currentSectionName, selectedTeam, selectedId, selectedMember, hostScore, guestScore, hostFoul, guestFoul, records, showChange, showSection, showRecord, footActions, currentMembers, timerStr, timerRunning, get timerSeconds() {
         return timerSeconds;
       }, set timerSeconds(v) {
         timerSeconds = v;
@@ -11699,24 +11741,22 @@ This will fail in production.`);
         return timerInterval;
       }, set timerInterval(v) {
         timerInterval = v;
-      }, loadMembers, loadSections, loadRecords, loadStats, updateSyncNum, selectPlayer, onAction, onDelete, onChange, onSection, toggleTimer, startTimer, stopTimer, loadTimer, saveTimer, editTimer, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
+      }, adaptMember, sortMembers, loadData, refreshDetail, loadMembers, loadSections, loadRecords, computeFouls, selectPlayer, onAction, onDelete, onChange, onSection, insertSectionRecord, toggleTimer, startTimer, stopTimer, loadTimer, saveTimer, editTimer, back, ref: vue.ref, computed: vue.computed, onUnmounted: vue.onUnmounted, get onLoad() {
         return onLoad;
-      }, batteryView, changeMemberDialog, sectionDialog, get queryList() {
-        return queryList;
-      }, get insertOrReplace() {
-        return insertOrReplace;
-      }, get executeSQL() {
-        return executeSQL;
-      }, get selectSQL() {
-        return selectSQL;
-      }, get startUploadQueue() {
-        return startUploadQueue;
-      }, get stopUploadQueue() {
-        return stopUploadQueue;
-      }, get pendingCount() {
-        return pendingCount;
+      }, changeMemberDialog, sectionDialog, get getGameFootDetail() {
+        return getGameFootDetail;
+      }, get getMember() {
+        return getMember;
+      }, get getSectionList() {
+        return getSectionList;
+      }, get uploadData() {
+        return uploadData;
+      }, get sectionRunning() {
+        return sectionRunning;
       }, get cancelData() {
         return cancelData;
+      }, get statisticsPage() {
+        return statisticsPage;
       }, get FootActions() {
         return FootActions;
       }, get scoreOf() {
@@ -11732,69 +11772,66 @@ This will fail in production.`);
   };
   function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "foot-operate" }, [
-      vue.createElementVNode("view", { class: "top-bar" }, [
-        vue.createElementVNode(
-          "view",
-          {
-            class: "nav-status",
-            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
-          },
-          null,
-          4
-          /* STYLE */
-        ),
-        vue.createElementVNode("view", { class: "top-bar-inner" }, [
-          vue.createElementVNode("view", {
-            class: "back",
-            onClick: $setup.back
-          }, [
-            vue.createElementVNode("image", {
-              class: "back-icon",
-              src: _imports_0$2,
-              mode: "aspectFit"
-            })
-          ]),
-          vue.createElementVNode("view", { class: "score-area" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "team-name" },
-              vue.toDisplayString($setup.homeName),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "score" },
-              vue.toDisplayString($setup.hostScore),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode("text", { class: "colon" }, ":"),
-            vue.createElementVNode(
-              "text",
-              { class: "score" },
-              vue.toDisplayString($setup.guestScore),
-              1
-              /* TEXT */
-            ),
-            vue.createElementVNode(
-              "text",
-              { class: "team-name" },
-              vue.toDisplayString($setup.guestName),
-              1
-              /* TEXT */
-            )
-          ]),
-          vue.createElementVNode("view", { class: "top-right" }, [
-            vue.createElementVNode(
-              "text",
-              { class: "sync" },
-              "待同步 " + vue.toDisplayString($setup.syncNum),
-              1
-              /* TEXT */
-            ),
-            vue.createVNode($setup["batteryView"], { power: $setup.battery }, null, 8, ["power"])
-          ])
+      vue.createElementVNode(
+        "view",
+        {
+          class: "nav-status",
+          style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+        },
+        null,
+        4
+        /* STYLE */
+      ),
+      vue.createElementVNode("view", { class: "title-bar" }, [
+        vue.createElementVNode("view", {
+          class: "tb-back",
+          onClick: $setup.back
+        }, [
+          vue.createElementVNode("image", {
+            class: "tb-back-icon",
+            src: _imports_0$2,
+            mode: "aspectFit"
+          })
+        ]),
+        vue.createElementVNode("text", { class: "title-text" }, "足球技术台")
+      ]),
+      vue.createElementVNode("view", { class: "top-bar2" }, [
+        vue.createElementVNode("view", { class: "tb-half red" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "tb-name" },
+            vue.toDisplayString($setup.homeName),
+            1
+            /* TEXT */
+          )
+        ]),
+        vue.createElementVNode("view", { class: "tb-score" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "score" },
+            vue.toDisplayString($setup.hostScore),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("text", { class: "score" }, ":"),
+          vue.createElementVNode(
+            "text",
+            { class: "score" },
+            vue.toDisplayString($setup.guestScore),
+            1
+            /* TEXT */
+          )
+        ]),
+        vue.createElementVNode("view", { class: "tb-half red tb-stuff" }),
+        vue.createElementVNode("view", { class: "tb-half blue tb-stuff" }),
+        vue.createElementVNode("view", { class: "tb-half blue" }, [
+          vue.createElementVNode(
+            "text",
+            { class: "tb-name" },
+            vue.toDisplayString($setup.guestName),
+            1
+            /* TEXT */
+          )
         ])
       ]),
       vue.createElementVNode("view", { class: "sub-bar" }, [
@@ -11875,6 +11912,22 @@ This will fail in production.`);
                   class: vue.normalizeClass(["person-card", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "host" }]),
                   onClick: ($event) => $setup.selectPlayer("host", m)
                 }, [
+                  vue.createElementVNode(
+                    "view",
+                    {
+                      class: vue.normalizeClass(["person-foul", { red: m.foul > 4, yellow: m.foul === 4 }])
+                    },
+                    null,
+                    2
+                    /* CLASS */
+                  ),
+                  vue.createElementVNode(
+                    "p",
+                    { class: "foul-times" },
+                    vue.toDisplayString(m.foul),
+                    1
+                    /* TEXT */
+                  ),
                   vue.createElementVNode("view", {
                     class: "person-ball",
                     style: { "background-color": "#1D9DE8" }
@@ -11922,6 +11975,22 @@ This will fail in production.`);
                   class: vue.normalizeClass(["person-card", { sel: $setup.selectedId === m.team_member_id && $setup.selectedTeam === "guest" }]),
                   onClick: ($event) => $setup.selectPlayer("guest", m)
                 }, [
+                  vue.createElementVNode(
+                    "view",
+                    {
+                      class: vue.normalizeClass(["person-foul", { red: m.foul > 4, yellow: m.foul === 4 }])
+                    },
+                    null,
+                    2
+                    /* CLASS */
+                  ),
+                  vue.createElementVNode(
+                    "p",
+                    { class: "foul-times" },
+                    vue.toDisplayString(m.foul),
+                    1
+                    /* TEXT */
+                  ),
                   vue.createElementVNode("view", { class: "person-ball" }, [
                     vue.createElementVNode(
                       "text",
@@ -12004,59 +12073,88 @@ This will fail in production.`);
       }, null, 8, ["show"]),
       $setup.showRecord ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
-        class: "record-mask",
-        onClick: _cache[7] || (_cache[7] = ($event) => $setup.showRecord = false)
+        class: "record-page"
       }, [
-        vue.createElementVNode("view", {
-          class: "record-panel",
-          onClick: _cache[6] || (_cache[6] = vue.withModifiers(() => {
-          }, ["stop"]))
-        }, [
-          vue.createElementVNode("view", { class: "record-head" }, "比赛记录"),
-          vue.createElementVNode("scroll-view", {
-            "scroll-y": "",
-            class: "record-scroll"
-          }, [
-            (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              null,
-              vue.renderList($setup.records, (r) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: r.record_number,
-                  class: "record-item"
-                }, [
-                  vue.createElementVNode(
-                    "text",
-                    { class: "r-team" },
-                    vue.toDisplayString(r.team_name),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode(
-                    "text",
-                    { class: "r-desc" },
-                    vue.toDisplayString(r.description),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode("text", {
-                    class: "r-del",
-                    onClick: ($event) => $setup.onDelete(r)
-                  }, "删除", 8, ["onClick"])
-                ]);
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            )),
-            !$setup.records.length ? (vue.openBlock(), vue.createElementBlock("view", {
-              key: 0,
-              class: "record-empty"
-            }, "暂无记录")) : vue.createCommentVNode("v-if", true)
-          ]),
+        vue.createElementVNode(
+          "view",
+          {
+            class: "rp-status",
+            style: vue.normalizeStyle({ height: $setup.statusBarHeight + "px" })
+          },
+          null,
+          4
+          /* STYLE */
+        ),
+        vue.createElementVNode("view", { class: "rp-top" }, [
           vue.createElementVNode("view", {
-            class: "record-close",
+            class: "rp-back",
             onClick: _cache[5] || (_cache[5] = ($event) => $setup.showRecord = false)
-          }, "关闭")
+          }, [
+            vue.createElementVNode("image", {
+              class: "rp-back-icon",
+              src: _imports_0$2,
+              mode: "aspectFit"
+            })
+          ]),
+          vue.createElementVNode("text", { class: "rp-title" }, "操作记录"),
+          vue.createElementVNode("view", { class: "rp-back rp-back-holder" })
+        ]),
+        vue.createElementVNode("scroll-view", {
+          "scroll-y": "",
+          class: "rp-list"
+        }, [
+          (vue.openBlock(true), vue.createElementBlock(
+            vue.Fragment,
+            null,
+            vue.renderList($setup.records, (r) => {
+              return vue.openBlock(), vue.createElementBlock("view", {
+                key: r.recordNumber,
+                class: "rp-item"
+              }, [
+                vue.createElementVNode("view", { class: "rp-info" }, [
+                  vue.createElementVNode("view", { class: "rp-row" }, [
+                    vue.createElementVNode(
+                      "text",
+                      { class: "rp-text rp-team" },
+                      vue.toDisplayString(r.teamName),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode("view", { class: "rp-row rp-row2" }, [
+                    vue.createElementVNode(
+                      "text",
+                      { class: "rp-text rp-member" },
+                      vue.toDisplayString(r.memberName),
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ]),
+                vue.createElementVNode("view", { class: "rp-side" }, [
+                  vue.createElementVNode(
+                    "text",
+                    { class: "rp-text rp-type" },
+                    vue.toDisplayString(r.type ? r.type.desc : ""),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode("image", {
+                    class: "rp-del",
+                    src: _imports_1$1,
+                    mode: "aspectFit",
+                    onClick: ($event) => $setup.onDelete(r)
+                  }, null, 8, ["onClick"])
+                ])
+              ]);
+            }),
+            128
+            /* KEYED_FRAGMENT */
+          )),
+          !$setup.records.length ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "rp-empty"
+          }, "暂无记录")) : vue.createCommentVNode("v-if", true)
         ])
       ])) : vue.createCommentVNode("v-if", true)
     ]);
@@ -12124,6 +12222,57 @@ This will fail in production.`);
     }, 8, ["show"]);
   }
   const actionSheet = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-d53be547"], ["__file", "F:/项目文件/uniapp版本/components/action-sheet/action-sheet.vue"]]);
+  let timer = null;
+  let uploading = false;
+  function startUploadQueue(gameId, onUploaded) {
+    stopUploadQueue();
+    timer = setInterval(() => {
+      doUpload(gameId, onUploaded);
+    }, 2e3);
+  }
+  function stopUploadQueue() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+  async function doUpload(gameId, onUploaded) {
+    if (uploading)
+      return;
+    uploading = true;
+    try {
+      const list = await selectSQL(
+        `SELECT * FROM technical_record WHERE game_id='${gameId}' AND is_need_upload=0 AND disable=0 LIMIT 10`
+      );
+      for (const r of list) {
+        try {
+          const res = await uploadData({
+            description: r.description || "",
+            recordNumber: r.record_number,
+            statisticsMemberId: r.statistics_member_id || "",
+            statisticsSectionId: r.statistics_section_id || "",
+            type: r.type,
+            elapsedTime: r.elapsed_time || 0
+          });
+          if (res.code === 1) {
+            await executeSQL(
+              `UPDATE technical_record SET is_need_upload=1 WHERE record_number=${r.record_number}`
+            );
+            onUploaded && onUploaded(r);
+          }
+        } catch (e) {
+        }
+      }
+    } finally {
+      uploading = false;
+    }
+  }
+  async function pendingCount(gameId) {
+    const res = await selectSQL(
+      `SELECT COUNT(*) as c FROM technical_record WHERE game_id='${gameId}' AND is_need_upload=0 AND disable=0`
+    );
+    return res[0] ? res[0].c : 0;
+  }
   const _sfc_main$g = {
     __name: "basketball-operate-new",
     setup(__props, { expose: __expose }) {

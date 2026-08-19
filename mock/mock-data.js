@@ -185,6 +185,21 @@ const hostMembers = buildMembers('红队', 'host')
 const guestMembers = buildMembers('蓝队', 'guest')
 
 /* ------------------------------------------------------------------ *
+ * 【MOCK】比赛详情里的球员统计成员（game/{gameId}/detail 的 data.hostMembers/
+ *   guestMembers，每个含 number/name/score/assists/backboard，报幕统计表用）
+ * ------------------------------------------------------------------ */
+function buildStatsMembers(teamName) {
+  const base = teamName === '红队' ? hostMembers : guestMembers
+  return base.slice(0, 6).map((m, i) => ({
+    number: m.number,
+    name: m.name,
+    score: 8 + i * 2,
+    assists: i % 2 === 0 ? 2 : 1,
+    backboard: 3 + i
+  }))
+}
+
+/* ------------------------------------------------------------------ *
  * 【MOCK】小节（StatisDownSection / SectionData 共用）
  *   4 节，第 1 节 running.boolean=true
  * ------------------------------------------------------------------ */
@@ -290,7 +305,9 @@ const gameDetail = ok({
   score: 28,
   backboard: 12,
   assists: 8,
-  number: 8
+  number: 8,
+  hostMembers: buildStatsMembers('红队'),
+  guestMembers: buildStatsMembers('蓝队')
 })
 
 /* 【MOCK】足球详情（GameDetail 足球版）—— game/{gameId}/foot-detail */

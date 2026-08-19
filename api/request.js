@@ -92,10 +92,11 @@ export function request(options) {
         if (loading) uni.hideLoading()
         const body = res.data
 
-        // HTTP 状态码异常
+        // HTTP 状态码异常（业务错误会用非 2xx + body.msg 返回，如「只有进行中的比赛才能直播」）
         if (res.statusCode < 200 || res.statusCode >= 300) {
           if (!hideError) {
-            uni.showToast({ title: `请求失败(${res.statusCode})`, icon: 'none' })
+            const errMsg = (body && (body.msg || body.message)) || `请求失败(${res.statusCode})`
+            uni.showToast({ title: errMsg, icon: 'none' })
           }
           reject(body || res)
           return
