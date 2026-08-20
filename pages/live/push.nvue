@@ -71,7 +71,7 @@
               <text class="pv-se-td">助攻</text>
               <text class="pv-se-td">篮板</text>
             </view>
-            <view v-for="(m, i) in hostMembers.slice(0, 6)" :key="'h' + i" class="pv-se-tr">
+            <view v-for="(m, i) in pvHostMembers" :key="'h' + i" class="pv-se-tr">
               <text class="pv-se-td pv-se-td-name">{{ m.number }} {{ m.name }}</text>
               <text class="pv-se-td">{{ m.score || 0 }}</text>
               <text class="pv-se-td">{{ m.assists || 0 }}</text>
@@ -85,7 +85,7 @@
               <text class="pv-se-td">助攻</text>
               <text class="pv-se-td">篮板</text>
             </view>
-            <view v-for="(m, i) in guestMembers.slice(0, 6)" :key="'g' + i" class="pv-se-tr">
+            <view v-for="(m, i) in pvGuestMembers" :key="'g' + i" class="pv-se-tr">
               <text class="pv-se-td pv-se-td-name">{{ m.number }} {{ m.name }}</text>
               <text class="pv-se-td">{{ m.score || 0 }}</text>
               <text class="pv-se-td">{{ m.assists || 0 }}</text>
@@ -182,6 +182,9 @@ const showScore = ref(true)
 /** 小节结束「报幕」：显示整屏小节比分画面，10 秒后自动切回比分条 */
 const sectionEnd = ref(false)
 let sectionEndTimer = null
+/** 报幕球员统计分页（对齐原生 setTextToImg2 的 a==1/a==2 + 2s Timer）：>6 人每 2 秒翻页轮播显示全部球员 */
+const sectionPage = ref(1)
+let sectionPageTimer = null
 /** WS 是否已成功连过一次：重连成功时补拉一次全量比分，找回断线期间错过的分数（#2） */
 let wsEverOpened = false
 /** 断网自动重推状态（#1）：wantPush=用户意图推流，手动「结束直播」置 false 防误重连 */
@@ -518,26 +521,51 @@ function toggleScore() {
 function showSectionEnd() {
   sectionEnd.value = true
   if (sectionEndTimer) clearTimeout(sectionEndTimer)
+  if (sectionPageTimer) { clearInterval(sectionPageTimer); sectionPageTimer = null }
+  sectionPage.value = 1
   burnSectionEnd()
+  // 任一队超过 6 人：每 2 秒翻页轮播(对齐原生 a==1/a==2 + 2s Timer)，10 秒窗口内交替显示全部球员
+  if (hostMembers.value.length > 6 || guestMembers.value.length > 6) {
+    logToFile('[push] 报幕分页轮播 members=' + hostMembers.value.length + '/' + guestMembers.value.length)
+    sectionPageTimer = setInterval(() => {
+      sectionPage.value = sectionPage.value === 1 ? 2 : 1
+      burnSectionEnd()
+    }, 2000)
+  }
   // 原生在小节结束时会重新拉 game/{id}/detail 刷新球员统计，这里同步刷新一次，若窗口内返回则重烧更准的统计
   getGameDetail(gameId.value, sport.value).then((res) => {
     if (res.code !== 1 || !sectionEnd.value) return
-    const page = res.data || {}
-    hostMembers.value = page.hostMembers || []
-    guestMembers.value = page.guestMembers || []
+    const detail = res.data || {}
+    hostMembers.value = detail.hostMembers || []
+    guestMembers.value = detail.guestMembers || []
     logToFile('[push] 报幕刷新球员统计 members=' + hostMembers.value.length + '/' + guestMembers.value.length)
     burnSectionEnd()
   })
   sectionEndTimer = setTimeout(() => {
     sectionEnd.value = false
+    if (sectionPageTimer) { clearInterval(sectionPageTimer); sectionPageTimer = null }
     pushScore()   // 恢复比分条
   }, 10000)
 }
 
-/** 把当前报幕(小节比分 + 球员统计)烧进推流画面 */
+/** 报幕当前页球员切片（对齐原生：>6 人的队第 1 页取前 6 人、第 2 页取第 7~12 人；≤6 人的队两页全量） */
+function pageMembers(list) {
+  if (list.length > 6) {
+    return sectionPage.value === 1 ? list.slice(0, 6) : list.slice(6, 12)
+  }
+  return list
+}
+
+/** 预览层同步当前页球员 */
+const pvHostMembers = computed(() => pageMembers(hostMembers.value))
+const pvGuestMembers = computed(() => pageMembers(guestMembers.value))
+
+/** 把当前报幕(小节比分 + 当前页球员统计)烧进推流画面 */
 function burnSectionEnd() {
   if (!pusher.value) return
-  logToFile('[push] 小节结束 报幕 section=' + section.value + ' ' + hostScore.value + ':' + guestScore.value + ' members=' + hostMembers.value.length + '/' + guestMembers.value.length)
+  const host = pageMembers(hostMembers.value)
+  const guest = pageMembers(guestMembers.value)
+  logToFile('[push] 小节结束 报幕(第' + sectionPage.value + '页) section=' + section.value + ' ' + hostScore.value + ':' + guestScore.value + ' members=' + host.length + '/' + guest.length)
   pusher.value.showSectionEnd({
     leagueName: leagueName.value,
     hostName: homeName.value,
@@ -547,8 +575,8 @@ function burnSectionEnd() {
     section: section.value,
     hostLogo: homeLogo.value,
     guestLogo: guestLogo.value,
-    hostMembers: hostMembers.value,
-    guestMembers: guestMembers.value
+    hostMembers: host,
+    guestMembers: guest
   })
 }
 
@@ -582,6 +610,7 @@ function onCompose() {
 function back() {
   if (msgTimer) clearTimeout(msgTimer)
   if (sectionEndTimer) clearTimeout(sectionEndTimer)
+  if (sectionPageTimer) clearInterval(sectionPageTimer)
   try { stopPush() } catch (e) {}
   if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
   try { closeSocket() } catch (e) {}
@@ -595,6 +624,7 @@ function back() {
 onBackPress(() => {
   if (msgTimer) clearTimeout(msgTimer)
   if (sectionEndTimer) clearTimeout(sectionEndTimer)
+  if (sectionPageTimer) clearInterval(sectionPageTimer)
   try { stopPush() } catch (e) {}
   if (pusher.value) { try { pusher.value.stopPreview() } catch (e) {} }
   try { closeSocket() } catch (e) {}

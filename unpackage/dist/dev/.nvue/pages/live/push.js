@@ -437,6 +437,8 @@ const _sfc_main = {
     const showScore = ref(true);
     const sectionEnd = ref(false);
     let sectionEndTimer = null;
+    const sectionPage = ref(1);
+    let sectionPageTimer = null;
     let wsEverOpened = false;
     let wantPush = false;
     let pushRetryTimer = null;
@@ -458,7 +460,7 @@ const _sfc_main = {
         fw.write(ts + " " + msg2 + "\n");
         fw.close();
       } catch (e) {
-        formatAppLog("log", "at pages/live/push.nvue:213", "logToFile err: " + e);
+        formatAppLog("log", "at pages/live/push.nvue:216", "logToFile err: " + e);
       }
     }
     onLoad((opt) => {
@@ -467,7 +469,7 @@ const _sfc_main = {
       gameId.value = opt.gameId || "";
       sport.value = opt.sport || "basketball";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:227", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:230", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
@@ -495,7 +497,7 @@ const _sfc_main = {
     }
     onReady(() => {
       ensurePermissions().then((granted) => {
-        formatAppLog("log", "at pages/live/push.nvue:264", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        formatAppLog("log", "at pages/live/push.nvue:267", "[push] permissions granted=", granted, "pusher=", pusher.value);
         logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
         if (!granted) {
           uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
@@ -505,7 +507,7 @@ const _sfc_main = {
         let tries = 0;
         const tryPreview = () => {
           if (pusher.value) {
-            formatAppLog("log", "at pages/live/push.nvue:275", "[push] startPreview 调用");
+            formatAppLog("log", "at pages/live/push.nvue:278", "[push] startPreview 调用");
             logToFile("[push] startPreview 调用，组件已挂载");
             pusher.value.startPreview();
             logToFile("[push] startPreview 调用完成");
@@ -514,7 +516,7 @@ const _sfc_main = {
           } else if (tries++ < 20) {
             setTimeout(tryPreview, 100);
           } else {
-            formatAppLog("log", "at pages/live/push.nvue:285", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            formatAppLog("log", "at pages/live/push.nvue:288", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
             logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
             uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
           }
@@ -752,25 +754,51 @@ const _sfc_main = {
       sectionEnd.value = true;
       if (sectionEndTimer)
         clearTimeout(sectionEndTimer);
+      if (sectionPageTimer) {
+        clearInterval(sectionPageTimer);
+        sectionPageTimer = null;
+      }
+      sectionPage.value = 1;
       burnSectionEnd();
+      if (hostMembers2.value.length > 6 || guestMembers2.value.length > 6) {
+        logToFile("[push] 报幕分页轮播 members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
+        sectionPageTimer = setInterval(() => {
+          sectionPage.value = sectionPage.value === 1 ? 2 : 1;
+          burnSectionEnd();
+        }, 2e3);
+      }
       getGameDetail(gameId.value, sport.value).then((res) => {
         if (res.code !== 1 || !sectionEnd.value)
           return;
-        const page = res.data || {};
-        hostMembers2.value = page.hostMembers || [];
-        guestMembers2.value = page.guestMembers || [];
+        const detail = res.data || {};
+        hostMembers2.value = detail.hostMembers || [];
+        guestMembers2.value = detail.guestMembers || [];
         logToFile("[push] 报幕刷新球员统计 members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
         burnSectionEnd();
       });
       sectionEndTimer = setTimeout(() => {
         sectionEnd.value = false;
+        if (sectionPageTimer) {
+          clearInterval(sectionPageTimer);
+          sectionPageTimer = null;
+        }
         pushScore();
       }, 1e4);
     }
+    function pageMembers(list) {
+      if (list.length > 6) {
+        return sectionPage.value === 1 ? list.slice(0, 6) : list.slice(6, 12);
+      }
+      return list;
+    }
+    const pvHostMembers = computed(() => pageMembers(hostMembers2.value));
+    const pvGuestMembers = computed(() => pageMembers(guestMembers2.value));
     function burnSectionEnd() {
       if (!pusher.value)
         return;
-      logToFile("[push] 小节结束 报幕 section=" + section.value + " " + hostScore.value + ":" + guestScore.value + " members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
+      const host = pageMembers(hostMembers2.value);
+      const guest = pageMembers(guestMembers2.value);
+      logToFile("[push] 小节结束 报幕(第" + sectionPage.value + "页) section=" + section.value + " " + hostScore.value + ":" + guestScore.value + " members=" + host.length + "/" + guest.length);
       pusher.value.showSectionEnd({
         leagueName: leagueName.value,
         hostName: homeName.value,
@@ -780,13 +808,13 @@ const _sfc_main = {
         section: section.value,
         hostLogo: homeLogo.value,
         guestLogo: guestLogo.value,
-        hostMembers: hostMembers2.value,
-        guestMembers: guestMembers2.value
+        hostMembers: host,
+        guestMembers: guest
       });
     }
     function onState(e) {
       const d = e.detail || {};
-      formatAppLog("log", "at pages/live/push.nvue:557", "[pusher] state", d);
+      formatAppLog("log", "at pages/live/push.nvue:585", "[pusher] state", d);
       logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
       if (d.msg)
         statusText.value = d.msg;
@@ -815,6 +843,8 @@ const _sfc_main = {
         clearTimeout(msgTimer);
       if (sectionEndTimer)
         clearTimeout(sectionEndTimer);
+      if (sectionPageTimer)
+        clearInterval(sectionPageTimer);
       try {
         stopPush();
       } catch (e) {
@@ -837,6 +867,8 @@ const _sfc_main = {
         clearTimeout(msgTimer);
       if (sectionEndTimer)
         clearTimeout(sectionEndTimer);
+      if (sectionPageTimer)
+        clearInterval(sectionPageTimer);
       try {
         stopPush();
       } catch (e) {
@@ -862,6 +894,10 @@ const _sfc_main = {
       return sectionEndTimer;
     }, set sectionEndTimer(v) {
       sectionEndTimer = v;
+    }, sectionPage, get sectionPageTimer() {
+      return sectionPageTimer;
+    }, set sectionPageTimer(v) {
+      sectionPageTimer = v;
     }, get wsEverOpened() {
       return wsEverOpened;
     }, set wsEverOpened(v) {
@@ -886,7 +922,7 @@ const _sfc_main = {
       return pushConnectingTimer;
     }, set pushConnectingTimer(v) {
       pushConnectingTimer = v;
-    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
+    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, pageMembers, pvHostMembers, pvGuestMembers, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
       return onLoad;
     }, get onReady() {
       return onReady;
@@ -1115,7 +1151,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               (openBlock(true), createElementBlock(
                 Fragment,
                 null,
-                renderList($setup.hostMembers.slice(0, 6), (m, i) => {
+                renderList($setup.pvHostMembers, (m, i) => {
                   return openBlock(), createElementBlock("view", {
                     key: "h" + i,
                     class: "pv-se-tr"
@@ -1164,7 +1200,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               (openBlock(true), createElementBlock(
                 Fragment,
                 null,
-                renderList($setup.guestMembers.slice(0, 6), (m, i) => {
+                renderList($setup.pvGuestMembers, (m, i) => {
                   return openBlock(), createElementBlock("view", {
                     key: "g" + i,
                     class: "pv-se-tr"

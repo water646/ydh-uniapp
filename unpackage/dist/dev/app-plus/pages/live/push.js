@@ -571,6 +571,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       const showScore = (0, import_vue2.ref)(true);
       const sectionEnd = (0, import_vue2.ref)(false);
       let sectionEndTimer = null;
+      const sectionPage = (0, import_vue2.ref)(1);
+      let sectionPageTimer = null;
       let wsEverOpened = false;
       let wantPush = false;
       let pushRetryTimer = null;
@@ -592,7 +594,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           fw.write(ts + " " + msg2 + "\n");
           fw.close();
         } catch (e) {
-          formatAppLog("log", "at pages/live/push.nvue:213", "logToFile err: " + e);
+          formatAppLog("log", "at pages/live/push.nvue:216", "logToFile err: " + e);
         }
       }
       onLoad((opt) => {
@@ -601,7 +603,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         gameId.value = opt.gameId || "";
         sport.value = opt.sport || "basketball";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:227", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:230", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
         logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
         loadGameDetail();
         connectScore();
@@ -629,7 +631,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       }
       onReady(() => {
         ensurePermissions().then((granted) => {
-          formatAppLog("log", "at pages/live/push.nvue:264", "[push] permissions granted=", granted, "pusher=", pusher.value);
+          formatAppLog("log", "at pages/live/push.nvue:267", "[push] permissions granted=", granted, "pusher=", pusher.value);
           logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
           if (!granted) {
             uni.showToast({ title: "\u9700\u8981\u76F8\u673A/\u9EA6\u514B\u98CE\u6743\u9650", icon: "none" });
@@ -639,7 +641,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           let tries = 0;
           const tryPreview = () => {
             if (pusher.value) {
-              formatAppLog("log", "at pages/live/push.nvue:275", "[push] startPreview \u8C03\u7528");
+              formatAppLog("log", "at pages/live/push.nvue:278", "[push] startPreview \u8C03\u7528");
               logToFile("[push] startPreview \u8C03\u7528\uFF0C\u7EC4\u4EF6\u5DF2\u6302\u8F7D");
               pusher.value.startPreview();
               logToFile("[push] startPreview \u8C03\u7528\u5B8C\u6210");
@@ -648,7 +650,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             } else if (tries++ < 20) {
               setTimeout(tryPreview, 100);
             } else {
-              formatAppLog("log", "at pages/live/push.nvue:285", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
+              formatAppLog("log", "at pages/live/push.nvue:288", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
               logToFile("[push] \u2717 pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D\uFF08\u63D2\u4EF6\u672A\u6253\u8FDB\u57FA\u5EA7\uFF09");
               uni.showToast({ title: "\u63A8\u6D41\u7EC4\u4EF6\u672A\u52A0\u8F7D\uFF0C\u8BF7\u786E\u8BA4\u63D2\u4EF6\u5DF2\u6253\u5305", icon: "none" });
             }
@@ -886,25 +888,51 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         sectionEnd.value = true;
         if (sectionEndTimer)
           clearTimeout(sectionEndTimer);
+        if (sectionPageTimer) {
+          clearInterval(sectionPageTimer);
+          sectionPageTimer = null;
+        }
+        sectionPage.value = 1;
         burnSectionEnd();
+        if (hostMembers2.value.length > 6 || guestMembers2.value.length > 6) {
+          logToFile("[push] \u62A5\u5E55\u5206\u9875\u8F6E\u64AD members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
+          sectionPageTimer = setInterval(() => {
+            sectionPage.value = sectionPage.value === 1 ? 2 : 1;
+            burnSectionEnd();
+          }, 2e3);
+        }
         getGameDetail(gameId.value, sport.value).then((res) => {
           if (res.code !== 1 || !sectionEnd.value)
             return;
-          const page = res.data || {};
-          hostMembers2.value = page.hostMembers || [];
-          guestMembers2.value = page.guestMembers || [];
+          const detail = res.data || {};
+          hostMembers2.value = detail.hostMembers || [];
+          guestMembers2.value = detail.guestMembers || [];
           logToFile("[push] \u62A5\u5E55\u5237\u65B0\u7403\u5458\u7EDF\u8BA1 members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
           burnSectionEnd();
         });
         sectionEndTimer = setTimeout(() => {
           sectionEnd.value = false;
+          if (sectionPageTimer) {
+            clearInterval(sectionPageTimer);
+            sectionPageTimer = null;
+          }
           pushScore();
         }, 1e4);
       }
+      function pageMembers(list) {
+        if (list.length > 6) {
+          return sectionPage.value === 1 ? list.slice(0, 6) : list.slice(6, 12);
+        }
+        return list;
+      }
+      const pvHostMembers = (0, import_vue2.computed)(() => pageMembers(hostMembers2.value));
+      const pvGuestMembers = (0, import_vue2.computed)(() => pageMembers(guestMembers2.value));
       function burnSectionEnd() {
         if (!pusher.value)
           return;
-        logToFile("[push] \u5C0F\u8282\u7ED3\u675F \u62A5\u5E55 section=" + section.value + " " + hostScore.value + ":" + guestScore.value + " members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
+        const host = pageMembers(hostMembers2.value);
+        const guest = pageMembers(guestMembers2.value);
+        logToFile("[push] \u5C0F\u8282\u7ED3\u675F \u62A5\u5E55(\u7B2C" + sectionPage.value + "\u9875) section=" + section.value + " " + hostScore.value + ":" + guestScore.value + " members=" + host.length + "/" + guest.length);
         pusher.value.showSectionEnd({
           leagueName: leagueName.value,
           hostName: homeName.value,
@@ -914,13 +942,13 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           section: section.value,
           hostLogo: homeLogo.value,
           guestLogo: guestLogo.value,
-          hostMembers: hostMembers2.value,
-          guestMembers: guestMembers2.value
+          hostMembers: host,
+          guestMembers: guest
         });
       }
       function onState(e) {
         const d = e.detail || {};
-        formatAppLog("log", "at pages/live/push.nvue:557", "[pusher] state", d);
+        formatAppLog("log", "at pages/live/push.nvue:585", "[pusher] state", d);
         logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
         if (d.msg)
           statusText.value = d.msg;
@@ -949,6 +977,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           clearTimeout(msgTimer);
         if (sectionEndTimer)
           clearTimeout(sectionEndTimer);
+        if (sectionPageTimer)
+          clearInterval(sectionPageTimer);
         try {
           stopPush();
         } catch (e) {
@@ -971,6 +1001,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           clearTimeout(msgTimer);
         if (sectionEndTimer)
           clearTimeout(sectionEndTimer);
+        if (sectionPageTimer)
+          clearInterval(sectionPageTimer);
         try {
           stopPush();
         } catch (e) {
@@ -996,6 +1028,10 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         return sectionEndTimer;
       }, set sectionEndTimer(v) {
         sectionEndTimer = v;
+      }, sectionPage, get sectionPageTimer() {
+        return sectionPageTimer;
+      }, set sectionPageTimer(v) {
+        sectionPageTimer = v;
       }, get wsEverOpened() {
         return wsEverOpened;
       }, set wsEverOpened(v) {
@@ -1020,7 +1056,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         return pushConnectingTimer;
       }, set pushConnectingTimer(v) {
         pushConnectingTimer = v;
-      }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref: import_vue2.ref, computed: import_vue2.computed, get onLoad() {
+      }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, pageMembers, pvHostMembers, pvGuestMembers, burnSectionEnd, onState, onCompose, back, ref: import_vue2.ref, computed: import_vue2.computed, get onLoad() {
         return onLoad;
       }, get onReady() {
         return onReady;
@@ -1249,7 +1285,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 ((0, import_vue2.openBlock)(true), (0, import_vue2.createElementBlock)(
                   import_vue2.Fragment,
                   null,
-                  (0, import_vue2.renderList)($setup.hostMembers.slice(0, 6), (m, i) => {
+                  (0, import_vue2.renderList)($setup.pvHostMembers, (m, i) => {
                     return (0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
                       key: "h" + i,
                       class: "pv-se-tr"
@@ -1298,7 +1334,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
                 ((0, import_vue2.openBlock)(true), (0, import_vue2.createElementBlock)(
                   import_vue2.Fragment,
                   null,
-                  (0, import_vue2.renderList)($setup.guestMembers.slice(0, 6), (m, i) => {
+                  (0, import_vue2.renderList)($setup.pvGuestMembers, (m, i) => {
                     return (0, import_vue2.openBlock)(), (0, import_vue2.createElementBlock)("view", {
                       key: "g" + i,
                       class: "pv-se-tr"
