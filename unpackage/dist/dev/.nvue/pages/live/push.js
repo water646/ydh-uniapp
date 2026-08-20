@@ -398,6 +398,8 @@ const _sfc_main = {
     __expose();
     const publishUrl = ref("");
     const gameId = ref("");
+    const sport = ref("basketball");
+    const streamId = ref("");
     const homeName = ref("主队");
     const guestName = ref("客队");
     const homeLogo = ref("");
@@ -456,18 +458,27 @@ const _sfc_main = {
         fw.write(ts + " " + msg2 + "\n");
         fw.close();
       } catch (e) {
-        formatAppLog("log", "at pages/live/push.nvue:210", "logToFile err: " + e);
+        formatAppLog("log", "at pages/live/push.nvue:213", "logToFile err: " + e);
       }
     }
     onLoad((opt) => {
       plus.screen.lockOrientation("landscape-primary");
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
+      sport.value = opt.sport || "basketball";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:223", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:227", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
+      findCurrentStream().then((it) => {
+        if (it && it.id) {
+          streamId.value = it.id;
+          logToFile("[push] streamId=" + streamId.value);
+        } else {
+          logToFile("[push] 未找到当前直播流记录");
+        }
+      });
     });
     function ensurePermissions() {
       return new Promise((resolve) => {
@@ -484,7 +495,7 @@ const _sfc_main = {
     }
     onReady(() => {
       ensurePermissions().then((granted) => {
-        formatAppLog("log", "at pages/live/push.nvue:251", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        formatAppLog("log", "at pages/live/push.nvue:264", "[push] permissions granted=", granted, "pusher=", pusher.value);
         logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
         if (!granted) {
           uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
@@ -494,7 +505,7 @@ const _sfc_main = {
         let tries = 0;
         const tryPreview = () => {
           if (pusher.value) {
-            formatAppLog("log", "at pages/live/push.nvue:262", "[push] startPreview 调用");
+            formatAppLog("log", "at pages/live/push.nvue:275", "[push] startPreview 调用");
             logToFile("[push] startPreview 调用，组件已挂载");
             pusher.value.startPreview();
             logToFile("[push] startPreview 调用完成");
@@ -503,7 +514,7 @@ const _sfc_main = {
           } else if (tries++ < 20) {
             setTimeout(tryPreview, 100);
           } else {
-            formatAppLog("log", "at pages/live/push.nvue:272", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            formatAppLog("log", "at pages/live/push.nvue:285", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
             logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
             uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
           }
@@ -523,7 +534,7 @@ const _sfc_main = {
       plus.screen.lockOrientation("portrait-primary");
     });
     function loadGameDetail() {
-      getGameDetail(gameId.value, "basketball").then((res) => {
+      getGameDetail(gameId.value, sport.value).then((res) => {
         if (res.code !== 1) {
           logToFile("[push] loadGameDetail code=" + res.code);
           return;
@@ -707,19 +718,26 @@ const _sfc_main = {
         pushConnectingTimer = null;
       }
     }
-    function refreshPublishUrl() {
+    function findCurrentStream() {
       return getLiveGameList(gameId.value).then((res) => {
         if (res.code !== 1 || !res.data || !res.data.length)
-          return;
+          return null;
         const m = publishUrl.value.match(/game\/([^?]+)/);
         if (!m)
+          return null;
+        return res.data.find((it) => (it.publish || "").indexOf("game/" + m[1]) !== -1) || null;
+      }).catch(() => null);
+    }
+    function refreshPublishUrl() {
+      return findCurrentStream().then((hit) => {
+        if (!hit)
           return;
-        const hit = res.data.find((it) => (it.publish || "").indexOf("game/" + m[1]) !== -1);
-        if (hit && hit.publish && hit.publish !== publishUrl.value) {
+        if (hit.id)
+          streamId.value = hit.id;
+        if (hit.publish && hit.publish !== publishUrl.value) {
           publishUrl.value = hit.publish;
           logToFile("[push] 重推前已刷新推流地址");
         }
-      }).catch(() => {
       });
     }
     function switchCamera() {
@@ -735,7 +753,7 @@ const _sfc_main = {
       if (sectionEndTimer)
         clearTimeout(sectionEndTimer);
       burnSectionEnd();
-      getGameDetail(gameId.value, "basketball").then((res) => {
+      getGameDetail(gameId.value, sport.value).then((res) => {
         if (res.code !== 1 || !sectionEnd.value)
           return;
         const page = res.data || {};
@@ -768,7 +786,7 @@ const _sfc_main = {
     }
     function onState(e) {
       const d = e.detail || {};
-      formatAppLog("log", "at pages/live/push.nvue:536", "[pusher] state", d);
+      formatAppLog("log", "at pages/live/push.nvue:557", "[pusher] state", d);
       logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
       if (d.msg)
         statusText.value = d.msg;
@@ -784,8 +802,12 @@ const _sfc_main = {
       }
     }
     function onCompose() {
-      compose({ gameId: gameId.value }).then((res) => {
-        uni.showToast({ title: res.code === 1 ? "已生成回放" : "生成失败", icon: "none" });
+      if (!streamId.value) {
+        uni.showToast({ title: "直播流信息未获取到，请稍后再试", icon: "none" });
+        return;
+      }
+      compose({ id: streamId.value }).then((res) => {
+        uni.showToast({ title: res.code === 1 ? "已生成回放" : res.msg || "生成失败", icon: "none" });
       });
     }
     function back() {
@@ -832,7 +854,7 @@ const _sfc_main = {
       plus.screen.lockOrientation("portrait-primary");
       return false;
     });
-    const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, hostMembers: hostMembers2, guestMembers: guestMembers2, get msgTimer() {
+    const __returned__ = { publishUrl, gameId, sport, streamId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, hostMembers: hostMembers2, guestMembers: guestMembers2, get msgTimer() {
       return msgTimer;
     }, set msgTimer(v) {
       msgTimer = v;
@@ -864,7 +886,7 @@ const _sfc_main = {
       return pushConnectingTimer;
     }, set pushConnectingTimer(v) {
       pushConnectingTimer = v;
-    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
+    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
       return onLoad;
     }, get onReady() {
       return onReady;

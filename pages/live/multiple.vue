@@ -121,7 +121,7 @@ function goPush(item) {
   // 推流地址（publish 或 liveRtmp），原项目 RTMP
   const publish = item.publish || item.liveRtmp || ''
   uni.navigateTo({
-    url: `/pages/live/push?livepublish=${encodeURIComponent(publish)}&gameId=${gameId.value}&liveType=${liveType.value}&name=${encodeURIComponent(item.name || '')}`
+    url: `/pages/live/push?livepublish=${encodeURIComponent(publish)}&gameId=${gameId.value}&liveType=${liveType.value}&sport=${sport.value}&name=${encodeURIComponent(item.name || '')}`
   })
 }
 

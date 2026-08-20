@@ -532,6 +532,8 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       __expose();
       const publishUrl = (0, import_vue2.ref)("");
       const gameId = (0, import_vue2.ref)("");
+      const sport = (0, import_vue2.ref)("basketball");
+      const streamId = (0, import_vue2.ref)("");
       const homeName = (0, import_vue2.ref)("\u4E3B\u961F");
       const guestName = (0, import_vue2.ref)("\u5BA2\u961F");
       const homeLogo = (0, import_vue2.ref)("");
@@ -590,18 +592,27 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           fw.write(ts + " " + msg2 + "\n");
           fw.close();
         } catch (e) {
-          formatAppLog("log", "at pages/live/push.nvue:210", "logToFile err: " + e);
+          formatAppLog("log", "at pages/live/push.nvue:213", "logToFile err: " + e);
         }
       }
       onLoad((opt) => {
         plus.screen.lockOrientation("landscape-primary");
         publishUrl.value = decodeURIComponent(opt.livepublish || "");
         gameId.value = opt.gameId || "";
+        sport.value = opt.sport || "basketball";
         homeName.value = opt.name || "\u76F4\u64AD";
-        formatAppLog("log", "at pages/live/push.nvue:223", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+        formatAppLog("log", "at pages/live/push.nvue:227", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
         logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
         loadGameDetail();
         connectScore();
+        findCurrentStream().then((it) => {
+          if (it && it.id) {
+            streamId.value = it.id;
+            logToFile("[push] streamId=" + streamId.value);
+          } else {
+            logToFile("[push] \u672A\u627E\u5230\u5F53\u524D\u76F4\u64AD\u6D41\u8BB0\u5F55");
+          }
+        });
       });
       function ensurePermissions() {
         return new Promise((resolve) => {
@@ -618,7 +629,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       }
       onReady(() => {
         ensurePermissions().then((granted) => {
-          formatAppLog("log", "at pages/live/push.nvue:251", "[push] permissions granted=", granted, "pusher=", pusher.value);
+          formatAppLog("log", "at pages/live/push.nvue:264", "[push] permissions granted=", granted, "pusher=", pusher.value);
           logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
           if (!granted) {
             uni.showToast({ title: "\u9700\u8981\u76F8\u673A/\u9EA6\u514B\u98CE\u6743\u9650", icon: "none" });
@@ -628,7 +639,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           let tries = 0;
           const tryPreview = () => {
             if (pusher.value) {
-              formatAppLog("log", "at pages/live/push.nvue:262", "[push] startPreview \u8C03\u7528");
+              formatAppLog("log", "at pages/live/push.nvue:275", "[push] startPreview \u8C03\u7528");
               logToFile("[push] startPreview \u8C03\u7528\uFF0C\u7EC4\u4EF6\u5DF2\u6302\u8F7D");
               pusher.value.startPreview();
               logToFile("[push] startPreview \u8C03\u7528\u5B8C\u6210");
@@ -637,7 +648,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
             } else if (tries++ < 20) {
               setTimeout(tryPreview, 100);
             } else {
-              formatAppLog("log", "at pages/live/push.nvue:272", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
+              formatAppLog("log", "at pages/live/push.nvue:285", "[push] pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D");
               logToFile("[push] \u2717 pusher ref \u59CB\u7EC8\u4E3A null -- livepusherview \u7EC4\u4EF6\u672A\u6CE8\u518C/\u672A\u6302\u8F7D\uFF08\u63D2\u4EF6\u672A\u6253\u8FDB\u57FA\u5EA7\uFF09");
               uni.showToast({ title: "\u63A8\u6D41\u7EC4\u4EF6\u672A\u52A0\u8F7D\uFF0C\u8BF7\u786E\u8BA4\u63D2\u4EF6\u5DF2\u6253\u5305", icon: "none" });
             }
@@ -657,7 +668,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         plus.screen.lockOrientation("portrait-primary");
       });
       function loadGameDetail() {
-        getGameDetail(gameId.value, "basketball").then((res) => {
+        getGameDetail(gameId.value, sport.value).then((res) => {
           if (res.code !== 1) {
             logToFile("[push] loadGameDetail code=" + res.code);
             return;
@@ -841,19 +852,26 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           pushConnectingTimer = null;
         }
       }
-      function refreshPublishUrl() {
+      function findCurrentStream() {
         return getLiveGameList(gameId.value).then((res) => {
           if (res.code !== 1 || !res.data || !res.data.length)
-            return;
+            return null;
           const m = publishUrl.value.match(/game\/([^?]+)/);
           if (!m)
+            return null;
+          return res.data.find((it) => (it.publish || "").indexOf("game/" + m[1]) !== -1) || null;
+        }).catch(() => null);
+      }
+      function refreshPublishUrl() {
+        return findCurrentStream().then((hit) => {
+          if (!hit)
             return;
-          const hit = res.data.find((it) => (it.publish || "").indexOf("game/" + m[1]) !== -1);
-          if (hit && hit.publish && hit.publish !== publishUrl.value) {
+          if (hit.id)
+            streamId.value = hit.id;
+          if (hit.publish && hit.publish !== publishUrl.value) {
             publishUrl.value = hit.publish;
             logToFile("[push] \u91CD\u63A8\u524D\u5DF2\u5237\u65B0\u63A8\u6D41\u5730\u5740");
           }
-        }).catch(() => {
         });
       }
       function switchCamera() {
@@ -869,7 +887,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         if (sectionEndTimer)
           clearTimeout(sectionEndTimer);
         burnSectionEnd();
-        getGameDetail(gameId.value, "basketball").then((res) => {
+        getGameDetail(gameId.value, sport.value).then((res) => {
           if (res.code !== 1 || !sectionEnd.value)
             return;
           const page = res.data || {};
@@ -902,7 +920,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
       }
       function onState(e) {
         const d = e.detail || {};
-        formatAppLog("log", "at pages/live/push.nvue:536", "[pusher] state", d);
+        formatAppLog("log", "at pages/live/push.nvue:557", "[pusher] state", d);
         logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
         if (d.msg)
           statusText.value = d.msg;
@@ -918,8 +936,12 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         }
       }
       function onCompose() {
-        compose({ gameId: gameId.value }).then((res) => {
-          uni.showToast({ title: res.code === 1 ? "\u5DF2\u751F\u6210\u56DE\u653E" : "\u751F\u6210\u5931\u8D25", icon: "none" });
+        if (!streamId.value) {
+          uni.showToast({ title: "\u76F4\u64AD\u6D41\u4FE1\u606F\u672A\u83B7\u53D6\u5230\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5", icon: "none" });
+          return;
+        }
+        compose({ id: streamId.value }).then((res) => {
+          uni.showToast({ title: res.code === 1 ? "\u5DF2\u751F\u6210\u56DE\u653E" : res.msg || "\u751F\u6210\u5931\u8D25", icon: "none" });
         });
       }
       function back() {
@@ -966,7 +988,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         plus.screen.lockOrientation("portrait-primary");
         return false;
       });
-      const __returned__ = { publishUrl, gameId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, hostMembers: hostMembers2, guestMembers: guestMembers2, get msgTimer() {
+      const __returned__ = { publishUrl, gameId, sport, streamId, homeName, guestName, homeLogo, guestLogo, hostScore, guestScore, section, hostFoul, guestFoul, leagueName, leagueLogo, leagueStageName, msg, hostMembers: hostMembers2, guestMembers: guestMembers2, get msgTimer() {
         return msgTimer;
       }, set msgTimer(v) {
         msgTimer = v;
@@ -998,7 +1020,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
         return pushConnectingTimer;
       }, set pushConnectingTimer(v) {
         pushConnectingTimer = v;
-      }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref: import_vue2.ref, computed: import_vue2.computed, get onLoad() {
+      }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, findCurrentStream, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref: import_vue2.ref, computed: import_vue2.computed, get onLoad() {
         return onLoad;
       }, get onReady() {
         return onReady;

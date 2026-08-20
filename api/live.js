@@ -12,5 +12,5 @@ export const getLiveGameList = (gameId) => request({ url: 'live/stream/game-list
 /** 添加比赛直播 POST live/stream/game-add Body{gameId, name, event, channel}（event=比赛类型 1篮球/2足球） */
 export const addGame = (params) => request({ url: 'live/stream/game-add', method: 'POST', data: params })
 
-/** 直播合成（生成回放）POST live/stream/compose Body */
+/** 直播合成（生成回放）POST live/stream/compose Body{id: 直播流id(game-list 的 data[].id，非 gameId)} */
 export const compose = (params) => request({ url: 'live/stream/compose', method: 'POST', data: params })

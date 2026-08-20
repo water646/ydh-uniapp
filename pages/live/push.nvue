@@ -136,6 +136,9 @@ import { compose, getLiveGameList } from '@/api/live'
 
 const publishUrl = ref('')
 const gameId = ref('')
+const sport = ref('basketball')
+/** 直播流记录 id（game-list 返回的 data[].id），生成回放 compose 要用的是它而非 gameId */
+const streamId = ref('')
 const homeName = ref('主队')
 const guestName = ref('客队')
 const homeLogo = ref('')
@@ -219,11 +222,21 @@ onLoad((opt) => {
   // #endif
   publishUrl.value = decodeURIComponent(opt.livepublish || '')
   gameId.value = opt.gameId || ''
+  sport.value = opt.sport || 'basketball'   // 篮球 game/... 足球 soccer/game/...，别写死
   homeName.value = opt.name || '直播'
   console.log('[push] publishUrl=', publishUrl.value, 'gameId=', gameId.value)
   logToFile('[push] onLoad url=' + publishUrl.value + ' gameId=' + gameId.value + ' name=' + opt.name)
   loadGameDetail()
   connectScore()
+  // 取直播流 id（生成回放 compose 用的是它而非 gameId）
+  findCurrentStream().then((it) => {
+    if (it && it.id) {
+      streamId.value = it.id
+      logToFile('[push] streamId=' + streamId.value)
+    } else {
+      logToFile('[push] 未找到当前直播流记录')
+    }
+  })
 })
 
 /** 申请相机/麦克风权限（Android 运行时权限） */
@@ -291,8 +304,8 @@ onUnload(() => {
 })
 
 function loadGameDetail() {
-  // 拉比赛详情取队名/比分/联赛（篮球 game/{id}/detail；足球 soccer/）
-  getGameDetail(gameId.value, 'basketball').then((res) => {
+  // 拉比赛详情取队名/比分/联赛（篮球 game/{id}/detail；足球 soccer/game/{id}/detail）
+  getGameDetail(gameId.value, sport.value).then((res) => {
     if (res.code !== 1) {
       logToFile('[push] loadGameDetail code=' + res.code)
       return
@@ -469,18 +482,26 @@ function clearConnectingLock() {
   if (pushConnectingTimer) { clearTimeout(pushConnectingTimer); pushConnectingTimer = null }
 }
 
+/** 从 game-list 里找当前这路流（publishUrl 中的 streamName 匹配）的记录，拿直播流 id / 新推流地址 */
+function findCurrentStream() {
+  return getLiveGameList(gameId.value).then((res) => {
+    if (res.code !== 1 || !res.data || !res.data.length) return null
+    const m = publishUrl.value.match(/game\/([^?]+)/)
+    if (!m) return null
+    return res.data.find((it) => (it.publish || '').indexOf('game/' + m[1]) !== -1) || null
+  }).catch(() => null)
+}
+
 /** 刷新推流地址：game-list 里找同一路流(streamName 相同)的新 publish */
 function refreshPublishUrl() {
-  return getLiveGameList(gameId.value).then((res) => {
-    if (res.code !== 1 || !res.data || !res.data.length) return
-    const m = publishUrl.value.match(/game\/([^?]+)/)
-    if (!m) return
-    const hit = res.data.find((it) => (it.publish || '').indexOf('game/' + m[1]) !== -1)
-    if (hit && hit.publish && hit.publish !== publishUrl.value) {
+  return findCurrentStream().then((hit) => {
+    if (!hit) return
+    if (hit.id) streamId.value = hit.id
+    if (hit.publish && hit.publish !== publishUrl.value) {
       publishUrl.value = hit.publish
       logToFile('[push] 重推前已刷新推流地址')
     }
-  }).catch(() => {})
+  })
 }
 
 function switchCamera() {
@@ -499,7 +520,7 @@ function showSectionEnd() {
   if (sectionEndTimer) clearTimeout(sectionEndTimer)
   burnSectionEnd()
   // 原生在小节结束时会重新拉 game/{id}/detail 刷新球员统计，这里同步刷新一次，若窗口内返回则重烧更准的统计
-  getGameDetail(gameId.value, 'basketball').then((res) => {
+  getGameDetail(gameId.value, sport.value).then((res) => {
     if (res.code !== 1 || !sectionEnd.value) return
     const page = res.data || {}
     hostMembers.value = page.hostMembers || []
@@ -547,10 +568,14 @@ function onState(e) {
   }
 }
 
-/** 生成回放（POST live/stream/compose） */
+/** 生成回放（POST live/stream/compose；原生 Compose 传的是直播流 id，非 gameId） */
 function onCompose() {
-  compose({ gameId: gameId.value }).then((res) => {
-    uni.showToast({ title: res.code === 1 ? '已生成回放' : '生成失败', icon: 'none' })
+  if (!streamId.value) {
+    uni.showToast({ title: '直播流信息未获取到，请稍后再试', icon: 'none' })
+    return
+  }
+  compose({ id: streamId.value }).then((res) => {
+    uni.showToast({ title: res.code === 1 ? '已生成回放' : (res.msg || '生成失败'), icon: 'none' })
   })
 }
 
