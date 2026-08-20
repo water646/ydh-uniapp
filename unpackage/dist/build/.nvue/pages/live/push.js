@@ -903,6 +903,7 @@ const _sfc_main = {
             createElementVNode("view", { class: "top" }, [
               createElementVNode("u-text", {
                 class: "gray-btn",
+                style: { "height": "40rpx" },
                 onClick: back
               }, "返回"),
               createElementVNode("u-text", { class: "status" }, toDisplayString(statusText.value), 1),
