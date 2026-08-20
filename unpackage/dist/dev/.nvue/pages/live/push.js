@@ -384,12 +384,14 @@ function request(options) {
   });
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
+const getLiveGameList = (gameId) => request({ url: "live/stream/game-list", query: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
 const _imports_0 = "/static/mipmap-xxhdpi/watermark.png";
 const _imports_1 = "/static/mipmap-xxhdpi/new_bifen.png";
 const _imports_2 = "/static/mipmap-xxhdpi/sectionbackground.png";
 const _imports_3 = "/static/mipmap-xxhdpi/bottom.png";
 const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "16rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "56rpx" } }, "gray-btn": { "": { "paddingTop": "5rpx", "paddingRight": "13rpx", "paddingBottom": "5rpx", "paddingLeft": "13rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "16rpx", "lineHeight": "27rpx", "marginRight": "11rpx" } }, "preview-layer": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-top-left": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "flexDirection": "row", "alignItems": "center" } }, "pv-league-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginRight": "10rpx" } }, "pv-league-name": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "2rpx", "paddingRight": "10rpx", "paddingBottom": "2rpx", "paddingLeft": "10rpx", "backgroundColor": "rgba(0,0,0,0.4)", "borderRadius": "4rpx" } }, "pv-watermark-clip": { "": { "position": "absolute", "top": "64rpx", "right": "24rpx", "width": "57.6rpx", "height": "19rpx", "overflow": "hidden", "alignItems": "flex-start" } }, "pv-watermark-img": { "": { "width": "120rpx", "height": "19rpx" } }, "pv-scorebar-wrap": { "": { "position": "absolute", "bottom": "56rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-scorebar": { "": { "position": "relative", "width": "600rpx", "height": "44rpx", "flexDirection": "row", "alignItems": "center", "justifyContent": "center" } }, "pv-bifen-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "600rpx", "height": "44rpx" } }, "pv-team-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginTop": 0, "marginRight": "4rpx", "marginBottom": 0, "marginLeft": "4rpx" } }, "pv-cell": { "": { "flex": 1, "alignItems": "center", "justifyContent": "center" } }, "pv-name-cell": { "": { "minWidth": 0 } }, "pv-team-name": { "": { "fontSize": "15rpx", "color": "#ffffff", "lines": 1, "textOverflow": "ellipsis" } }, "pv-score": { "": { "fontSize": "22rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-section-text": { "": { "fontSize": "14rpx", "color": "#ffffff" } }, "pv-foul": { "": { "width": "60rpx", "height": "8rpx", "marginTop": "4rpx" } }, "pv-sub-row": { "": { "flexDirection": "row", "marginTop": "4rpx" } }, "pv-sub-text": { "": { "fontSize": "14rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-msg": { "": { "position": "absolute", "bottom": "24rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-msg-text": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "4rpx", "paddingRight": "24rpx", "paddingBottom": "4rpx", "paddingLeft": "24rpx", "backgroundColor": "rgba(0,0,0,0.5)", "borderRadius": "4rpx" } }, "pv-section-end": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "alignItems": "center", "paddingTop": "30rpx" } }, "pv-se-banner": { "": { "position": "relative", "width": "480rpx", "height": "60rpx" } }, "pv-se-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "480rpx", "height": "60rpx" } }, "pv-se-content": { "": { "flex": 1, "flexDirection": "column", "alignItems": "center", "justifyContent": "center" } }, "pv-se-league": { "": { "fontSize": "11rpx", "color": "#ffffff" } }, "pv-se-row": { "": { "flexDirection": "row", "alignItems": "center", "justifyContent": "center", "marginTop": "3rpx" } }, "pv-se-name": { "": { "fontSize": "10rpx", "color": "#000000", "lines": 1 } }, "pv-se-name-left": { "": { "marginRight": "12rpx" } }, "pv-se-name-right": { "": { "marginLeft": "12rpx" } }, "pv-se-score": { "": { "fontSize": "14rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-se-score-left": { "": { "marginRight": "12rpx" } }, "pv-se-score-right": { "": { "marginLeft": "12rpx" } }, "pv-se-section": { "": { "fontSize": "10rpx", "color": "#ffffff" } }, "pv-se-stats": { "": { "position": "relative", "width": "480rpx", "flexDirection": "row", "marginTop": "4rpx", "paddingTop": "4rpx", "paddingRight": 0, "paddingBottom": "4rpx", "paddingLeft": 0 } }, "pv-se-stats-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-se-col": { "": { "flex": 1, "flexDirection": "column" } }, "pv-se-tr": { "": { "flexDirection": "row", "height": "32rpx", "alignItems": "center" } }, "pv-se-td": { "": { "flex": 1, "textAlign": "center", "fontSize": "11rpx", "color": "#ffffff" } }, "pv-se-td-name": { "": { "flex": 1.6, "textAlign": "left", "paddingLeft": "10rpx", "lines": 1, "textOverflow": "ellipsis" } } };
+const MAX_PUSH_RETRY = 5;
 const _sfc_main = {
   __name: "push",
   setup(__props, { expose: __expose }) {
@@ -433,6 +435,12 @@ const _sfc_main = {
     const showScore = ref(true);
     const sectionEnd = ref(false);
     let sectionEndTimer = null;
+    let wsEverOpened = false;
+    let wantPush = false;
+    let pushRetryTimer = null;
+    let pushRetryCount = 0;
+    let pushConnecting = false;
+    let pushConnectingTimer = null;
     const pushing = ref(false);
     const statusText = ref("未连接");
     const pusher = ref(null);
@@ -448,7 +456,7 @@ const _sfc_main = {
         fw.write(ts + " " + msg2 + "\n");
         fw.close();
       } catch (e) {
-        formatAppLog("log", "at pages/live/push.nvue:200", "logToFile err: " + e);
+        formatAppLog("log", "at pages/live/push.nvue:210", "logToFile err: " + e);
       }
     }
     onLoad((opt) => {
@@ -456,7 +464,7 @@ const _sfc_main = {
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:213", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:223", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
@@ -476,7 +484,7 @@ const _sfc_main = {
     }
     onReady(() => {
       ensurePermissions().then((granted) => {
-        formatAppLog("log", "at pages/live/push.nvue:241", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        formatAppLog("log", "at pages/live/push.nvue:251", "[push] permissions granted=", granted, "pusher=", pusher.value);
         logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
         if (!granted) {
           uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
@@ -486,7 +494,7 @@ const _sfc_main = {
         let tries = 0;
         const tryPreview = () => {
           if (pusher.value) {
-            formatAppLog("log", "at pages/live/push.nvue:252", "[push] startPreview 调用");
+            formatAppLog("log", "at pages/live/push.nvue:262", "[push] startPreview 调用");
             logToFile("[push] startPreview 调用，组件已挂载");
             pusher.value.startPreview();
             logToFile("[push] startPreview 调用完成");
@@ -495,7 +503,7 @@ const _sfc_main = {
           } else if (tries++ < 20) {
             setTimeout(tryPreview, 100);
           } else {
-            formatAppLog("log", "at pages/live/push.nvue:262", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            formatAppLog("log", "at pages/live/push.nvue:272", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
             logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
             uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
           }
@@ -545,7 +553,8 @@ const _sfc_main = {
         hostMembers2.value = page.hostMembers || [];
         guestMembers2.value = page.guestMembers || [];
         logToFile("[push] loadGameDetail OK host=" + homeName.value + " guest=" + guestName.value + " score=" + hostScore.value + ":" + guestScore.value + " members=" + hostMembers2.value.length + "/" + guestMembers2.value.length);
-        pushScore();
+        if (!sectionEnd.value)
+          pushScore();
       });
     }
     function connectScore() {
@@ -578,6 +587,11 @@ const _sfc_main = {
           if (event === "open") {
             statusText.value = "比分接口已连接";
             logToFile("[push] ws open group=push" + gameId.value);
+            if (wsEverOpened) {
+              logToFile("[push] ws 重连成功，补拉比分");
+              loadGameDetail();
+            }
+            wsEverOpened = true;
           } else if (event === "close")
             statusText.value = "比分接口已断开，重连中…";
           else if (event === "error")
@@ -622,17 +636,91 @@ const _sfc_main = {
         logToFile("[push] startPush 失败：pusher ref null");
         return;
       }
+      if (pushing.value) {
+        uni.showToast({ title: "已在直播中", icon: "none" });
+        return;
+      }
+      if (pushConnecting) {
+        uni.showToast({ title: "正在连接，请稍候", icon: "none" });
+        return;
+      }
       logToFile("[push] startPush url=" + publishUrl.value);
+      if (pushRetryTimer) {
+        clearTimeout(pushRetryTimer);
+        pushRetryTimer = null;
+      }
+      wantPush = true;
+      pushConnecting = true;
+      if (pushConnectingTimer)
+        clearTimeout(pushConnectingTimer);
+      pushConnectingTimer = setTimeout(() => {
+        pushConnecting = false;
+        pushConnectingTimer = null;
+      }, 15e3);
       pusher.value.startPush(publishUrl.value);
       statusText.value = "推流连接中…";
     }
     function stopPush() {
+      wantPush = false;
+      if (pushRetryTimer) {
+        clearTimeout(pushRetryTimer);
+        pushRetryTimer = null;
+      }
+      pushRetryCount = 0;
+      pushConnecting = false;
+      if (pushConnectingTimer) {
+        clearTimeout(pushConnectingTimer);
+        pushConnectingTimer = null;
+      }
       if (pusher.value) {
         pusher.value.stopPush();
         pushing.value = false;
         statusText.value = "已结束";
         logToFile("[push] stopPush");
       }
+    }
+    function schedulePushRetry() {
+      if (pushRetryTimer)
+        return;
+      if (pushRetryCount >= MAX_PUSH_RETRY) {
+        statusText.value = "直播中断，请点「开始直播」重连";
+        uni.showToast({ title: "自动重连失败，请手动重连", icon: "none" });
+        logToFile("[push] 自动重推达上限(" + MAX_PUSH_RETRY + "次)，等待手动重连");
+        return;
+      }
+      const delay = Math.min(3e3 * (pushRetryCount + 1), 15e3);
+      pushRetryCount++;
+      statusText.value = "网络中断，" + Math.round(delay / 1e3) + "秒后自动重连…";
+      logToFile("[push] 断网，" + delay + "ms 后自动重推(第" + pushRetryCount + "次)");
+      pushRetryTimer = setTimeout(() => {
+        pushRetryTimer = null;
+        refreshPublishUrl().then(() => {
+          if (wantPush)
+            startPush();
+        });
+      }, delay);
+    }
+    function clearConnectingLock() {
+      pushConnecting = false;
+      if (pushConnectingTimer) {
+        clearTimeout(pushConnectingTimer);
+        pushConnectingTimer = null;
+      }
+    }
+    function refreshPublishUrl() {
+      return getLiveGameList(gameId.value).then((res) => {
+        if (res.code !== 1 || !res.data || !res.data.length)
+          return;
+        const m = publishUrl.value.match(/game\/([^?]+)/);
+        if (!m)
+          return;
+        const hit = res.data.find((it) => (it.publish || "").indexOf("game/" + m[1]) !== -1);
+        if (hit && hit.publish && hit.publish !== publishUrl.value) {
+          publishUrl.value = hit.publish;
+          logToFile("[push] 重推前已刷新推流地址");
+        }
+      }).catch(() => {
+      });
     }
     function switchCamera() {
       if (pusher.value)
@@ -680,14 +768,20 @@ const _sfc_main = {
     }
     function onState(e) {
       const d = e.detail || {};
-      formatAppLog("log", "at pages/live/push.nvue:449", "[pusher] state", d);
+      formatAppLog("log", "at pages/live/push.nvue:536", "[pusher] state", d);
       logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
       if (d.msg)
         statusText.value = d.msg;
-      if (d.code === 1005)
+      if (d.code === 1005) {
         pushing.value = true;
-      else if (d.code === -1305)
+        pushRetryCount = 0;
+        clearConnectingLock();
+      } else if (d.code === -1305) {
         pushing.value = false;
+        clearConnectingLock();
+        if (wantPush)
+          schedulePushRetry();
+      }
     }
     function onCompose() {
       compose({ gameId: gameId.value }).then((res) => {
@@ -746,7 +840,31 @@ const _sfc_main = {
       return sectionEndTimer;
     }, set sectionEndTimer(v) {
       sectionEndTimer = v;
-    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
+    }, get wsEverOpened() {
+      return wsEverOpened;
+    }, set wsEverOpened(v) {
+      wsEverOpened = v;
+    }, get wantPush() {
+      return wantPush;
+    }, set wantPush(v) {
+      wantPush = v;
+    }, get pushRetryTimer() {
+      return pushRetryTimer;
+    }, set pushRetryTimer(v) {
+      pushRetryTimer = v;
+    }, get pushRetryCount() {
+      return pushRetryCount;
+    }, set pushRetryCount(v) {
+      pushRetryCount = v;
+    }, MAX_PUSH_RETRY, get pushConnecting() {
+      return pushConnecting;
+    }, set pushConnecting(v) {
+      pushConnecting = v;
+    }, get pushConnectingTimer() {
+      return pushConnectingTimer;
+    }, set pushConnectingTimer(v) {
+      pushConnectingTimer = v;
+    }, pushing, statusText, pusher, logToFile, ensurePermissions, loadGameDetail, connectScore, reconnectScore, pushScore, startPush, stopPush, schedulePushRetry, clearConnectingLock, refreshPublishUrl, switchCamera, toggleScore, showSectionEnd, burnSectionEnd, onState, onCompose, back, ref, computed, get onLoad() {
       return onLoad;
     }, get onReady() {
       return onReady;
@@ -762,6 +880,8 @@ const _sfc_main = {
       return getGameDetail;
     }, get compose() {
       return compose;
+    }, get getLiveGameList() {
+      return getLiveGameList;
     } };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;
@@ -1107,10 +1227,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         ]),
         createElementVNode("view", { class: "bottom" }, [
           createElementVNode("view", { class: "bottom-row" }, [
-            createElementVNode("u-text", {
-              class: "gray-btn",
-              onClick: $setup.startPush
-            }, "开始直播"),
+            createElementVNode(
+              "u-text",
+              {
+                class: "gray-btn",
+                onClick: $setup.startPush
+              },
+              toDisplayString($setup.pushing ? "直播中" : "开始直播"),
+              1
+              /* TEXT */
+            ),
             createElementVNode("u-text", {
               class: "gray-btn",
               onClick: $setup.stopPush

@@ -111,7 +111,7 @@
 
       <view class="bottom">
         <view class="bottom-row">
-          <text class="gray-btn" @click="startPush">开始直播</text>
+          <text class="gray-btn" @click="startPush">{{ pushing ? '直播中' : '开始直播' }}</text>
           <text class="gray-btn" @click="stopPush">结束直播</text>
         </view>
         <text class="gray-btn" @click="onCompose">生成回放</text>
@@ -132,7 +132,7 @@ import { ref, computed } from 'vue'
 import { onLoad, onReady, onUnload, onBackPress } from '@dcloudio/uni-app'
 import { connectSocket, closeSocket } from '@/utils/websocket'
 import { getGameDetail } from '@/api/game'
-import { compose } from '@/api/live'
+import { compose, getLiveGameList } from '@/api/live'
 
 const publishUrl = ref('')
 const gameId = ref('')
@@ -176,9 +176,19 @@ const foulHostImg = computed(() => foulImg(hostFoul.value))
 const foulGuestImg = computed(() => foulImg(guestFoul.value))
 
 const showScore = ref(true)
-/** 小节结束「报幕」：显示整屏小节比分画面，2 秒后自动切回比分条 */
+/** 小节结束「报幕」：显示整屏小节比分画面，10 秒后自动切回比分条 */
 const sectionEnd = ref(false)
 let sectionEndTimer = null
+/** WS 是否已成功连过一次：重连成功时补拉一次全量比分，找回断线期间错过的分数（#2） */
+let wsEverOpened = false
+/** 断网自动重推状态（#1）：wantPush=用户意图推流，手动「结束直播」置 false 防误重连 */
+let wantPush = false
+let pushRetryTimer = null
+let pushRetryCount = 0
+const MAX_PUSH_RETRY = 5
+/** 推流连接中(等待 1005 成功事件)：「开始直播」防重复点击锁，15s 兜底解锁 */
+let pushConnecting = false
+let pushConnectingTimer = null
 const pushing = ref(false)
 const statusText = ref('未连接')
 const pusher = ref(null)
@@ -304,7 +314,8 @@ function loadGameDetail() {
     hostMembers.value = page.hostMembers || []
     guestMembers.value = page.guestMembers || []
     logToFile('[push] loadGameDetail OK host=' + homeName.value + ' guest=' + guestName.value + ' score=' + hostScore.value + ':' + guestScore.value + ' members=' + hostMembers.value.length + '/' + guestMembers.value.length)
-    pushScore()
+    // 报幕展示期间不刷：详情刷新触发的 pushScore 会提前顶掉报幕画面
+    if (!sectionEnd.value) pushScore()
   })
 }
 
@@ -334,7 +345,16 @@ function connectScore() {
       }
     },
     (event) => {
-      if (event === 'open') { statusText.value = '比分接口已连接'; logToFile('[push] ws open group=push' + gameId.value) }
+      if (event === 'open') {
+        statusText.value = '比分接口已连接'
+        logToFile('[push] ws open group=push' + gameId.value)
+        // #2 断线重连成功(非首次连接)：补拉一次全量比分，找回断线期间错过的分数
+        if (wsEverOpened) {
+          logToFile('[push] ws 重连成功，补拉比分')
+          loadGameDetail()
+        }
+        wsEverOpened = true
+      }
       else if (event === 'close') statusText.value = '比分接口已断开，重连中…'
       else if (event === 'error') statusText.value = '比分接口连接失败'
     }
@@ -382,18 +402,85 @@ function startPush() {
     logToFile('[push] startPush 失败：pusher ref null')
     return
   }
+  // 防重复点击：已在直播 / 正在连接中 都不允许再触发 startPusher
+  if (pushing.value) {
+    uni.showToast({ title: '已在直播中', icon: 'none' })
+    return
+  }
+  if (pushConnecting) {
+    uni.showToast({ title: '正在连接，请稍候', icon: 'none' })
+    return
+  }
   logToFile('[push] startPush url=' + publishUrl.value)
+  // 手动重开时取消还在排队的自动重推，避免内部重试到点后再顶一次
+  if (pushRetryTimer) { clearTimeout(pushRetryTimer); pushRetryTimer = null }
+  wantPush = true
+  pushConnecting = true
+  // 兜底：15s 内没等到 1005(SDK 立即失败可能不发事件)自动解锁，允许再点
+  if (pushConnectingTimer) clearTimeout(pushConnectingTimer)
+  pushConnectingTimer = setTimeout(() => { pushConnecting = false; pushConnectingTimer = null }, 15000)
   pusher.value.startPush(publishUrl.value)
   statusText.value = '推流连接中…'
 }
 
 function stopPush() {
+  // 手动结束：清掉自动重推状态，防止 -1305 到达后又把流拉起来
+  wantPush = false
+  if (pushRetryTimer) { clearTimeout(pushRetryTimer); pushRetryTimer = null }
+  pushRetryCount = 0
+  pushConnecting = false
+  if (pushConnectingTimer) { clearTimeout(pushConnectingTimer); pushConnectingTimer = null }
   if (pusher.value) {
     pusher.value.stopPush()
     pushing.value = false
     statusText.value = '已结束'
     logToFile('[push] stopPush')
   }
+}
+
+/**
+ * #1 断网自动重推：3s 起步线性退避(3/6/9/12/15s)，最多 5 次，重连成功(1005)后重置计数；
+ * 手动「结束直播」不自动重连(wantPush=false)
+ */
+function schedulePushRetry() {
+  if (pushRetryTimer) return   // 已有重试在排队，-1305 重复到达时不再叠加
+  if (pushRetryCount >= MAX_PUSH_RETRY) {
+    statusText.value = '直播中断，请点「开始直播」重连'
+    uni.showToast({ title: '自动重连失败，请手动重连', icon: 'none' })
+    logToFile('[push] 自动重推达上限(' + MAX_PUSH_RETRY + '次)，等待手动重连')
+    return
+  }
+  const delay = Math.min(3000 * (pushRetryCount + 1), 15000)
+  pushRetryCount++
+  statusText.value = '网络中断，' + Math.round(delay / 1000) + '秒后自动重连…'
+  logToFile('[push] 断网，' + delay + 'ms 后自动重推(第' + pushRetryCount + '次)')
+  pushRetryTimer = setTimeout(() => {
+    pushRetryTimer = null
+    // 重推前先刷新推流地址(auth_key 有时效)，失败则沿用旧地址
+    refreshPublishUrl().then(() => {
+      if (wantPush) startPush()
+    })
+  }, delay)
+}
+
+/** 清除「开始直播」防重复点击锁(1005 成功 / -1305 失败 / 手动结束时调用) */
+function clearConnectingLock() {
+  pushConnecting = false
+  if (pushConnectingTimer) { clearTimeout(pushConnectingTimer); pushConnectingTimer = null }
+}
+
+/** 刷新推流地址：game-list 里找同一路流(streamName 相同)的新 publish */
+function refreshPublishUrl() {
+  return getLiveGameList(gameId.value).then((res) => {
+    if (res.code !== 1 || !res.data || !res.data.length) return
+    const m = publishUrl.value.match(/game\/([^?]+)/)
+    if (!m) return
+    const hit = res.data.find((it) => (it.publish || '').indexOf('game/' + m[1]) !== -1)
+    if (hit && hit.publish && hit.publish !== publishUrl.value) {
+      publishUrl.value = hit.publish
+      logToFile('[push] 重推前已刷新推流地址')
+    }
+  }).catch(() => {})
 }
 
 function switchCamera() {
@@ -449,8 +536,15 @@ function onState(e) {
   console.log('[pusher] state', d)
   logToFile('[pusher] state code=' + d.code + ' msg=' + d.msg)
   if (d.msg) statusText.value = d.msg
-  if (d.code === 1005) pushing.value = true           // PUSH_EVT_CONNECT_SUCC
-  else if (d.code === -1305) pushing.value = false     // PUSH_ERR_NET_DISCONNECT
+  if (d.code === 1005) {
+    pushing.value = true           // PUSH_EVT_CONNECT_SUCC
+    pushRetryCount = 0             // 推流恢复，重置自动重推计数
+    clearConnectingLock()
+  } else if (d.code === -1305) {   // PUSH_ERR_NET_DISCONNECT
+    pushing.value = false
+    clearConnectingLock()
+    if (wantPush) schedulePushRetry()   // #1 非手动结束 -> 自动重推
+  }
 }
 
 /** 生成回放（POST live/stream/compose） */
