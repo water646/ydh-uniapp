@@ -1080,6 +1080,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         createElementVNode("view", { class: "top" }, [
           createElementVNode("u-text", {
             class: "gray-btn",
+            style: { "height": "40rpx" },
             onClick: $setup.back
           }, "返回"),
           createElementVNode(

@@ -103,7 +103,7 @@
     <!-- 控制覆盖层（横屏铺满，view 可覆盖原生推流组件） -->
     <view class="overlay">
       <view class="top">
-        <text class="gray-btn" @click="back">返回</text>
+        <text class="gray-btn" style="height: 40rpx;" @click="back">返回</text>
         <text class="status">{{ statusText }}</text>
         <text class="gray-btn" @click="toggleScore">{{ showScore ? '隐藏' : '显示' }}比分</text>
         <text class="gray-btn" @click="reconnectScore">比分重连</text>

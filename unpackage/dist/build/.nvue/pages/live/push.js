@@ -389,7 +389,7 @@ function request(options) {
 }
 const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
 const compose = (params) => request({ url: "live/stream/compose", method: "POST", data: params });
-const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "16rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "56rpx" } }, "gray-btn": { "": { "paddingTop": "5rpx", "paddingRight": "13rpx", "paddingBottom": "5rpx", "paddingLeft": "13rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "16rpx", "lineHeight": "27rpx", "marginRight": "11rpx" } }, "preview-layer": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-top-left": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "flexDirection": "row", "alignItems": "center" } }, "pv-league-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginRight": "10rpx" } }, "pv-league-name": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "2rpx", "paddingRight": "10rpx", "paddingBottom": "2rpx", "paddingLeft": "10rpx", "backgroundColor": "rgba(0,0,0,0.4)", "borderRadius": "4rpx" } }, "pv-watermark-clip": { "": { "position": "absolute", "top": "64rpx", "right": "24rpx", "width": "57.6rpx", "height": "19rpx", "overflow": "hidden", "alignItems": "flex-start" } }, "pv-watermark-img": { "": { "width": "120rpx", "height": "19rpx" } }, "pv-scorebar-wrap": { "": { "position": "absolute", "bottom": "56rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-scorebar": { "": { "position": "relative", "width": "600rpx", "height": "44rpx", "flexDirection": "row", "alignItems": "center", "justifyContent": "center" } }, "pv-bifen-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "600rpx", "height": "44rpx" } }, "pv-team-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginTop": 0, "marginRight": "4rpx", "marginBottom": 0, "marginLeft": "4rpx" } }, "pv-cell": { "": { "flex": 1, "alignItems": "center", "justifyContent": "center" } }, "pv-name-cell": { "": { "minWidth": 0 } }, "pv-team-name": { "": { "fontSize": "15rpx", "color": "#ffffff", "lines": 1, "textOverflow": "ellipsis" } }, "pv-score": { "": { "fontSize": "22rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-section-text": { "": { "fontSize": "14rpx", "color": "#ffffff" } }, "pv-foul": { "": { "width": "60rpx", "height": "8rpx", "marginTop": "4rpx" } }, "pv-sub-row": { "": { "flexDirection": "row", "marginTop": "4rpx" } }, "pv-sub-text": { "": { "fontSize": "14rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-msg": { "": { "position": "absolute", "bottom": "24rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-msg-text": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "4rpx", "paddingRight": "24rpx", "paddingBottom": "4rpx", "paddingLeft": "24rpx", "backgroundColor": "rgba(0,0,0,0.5)", "borderRadius": "4rpx" } }, "pv-section-end": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "alignItems": "center", "paddingTop": "30rpx" } }, "pv-se-banner": { "": { "position": "relative", "width": "480rpx", "height": "90rpx" } }, "pv-se-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "480rpx", "height": "90rpx" } }, "pv-se-content": { "": { "flex": 1, "flexDirection": "column", "alignItems": "center", "justifyContent": "center" } }, "pv-se-league": { "": { "fontSize": "16rpx", "color": "#ffffff" } }, "pv-se-row": { "": { "flexDirection": "row", "alignItems": "center", "justifyContent": "center", "marginTop": "4rpx" } }, "pv-se-name": { "": { "fontSize": "13rpx", "color": "#000000" } }, "pv-se-name-left": { "": { "marginRight": "16rpx" } }, "pv-se-name-right": { "": { "marginLeft": "16rpx" } }, "pv-se-score": { "": { "fontSize": "18rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-se-section": { "": { "fontSize": "13rpx", "color": "#ffffff", "marginTop": "2rpx" } }, "pv-se-stats": { "": { "position": "relative", "width": "480rpx", "flexDirection": "row", "marginTop": "6rpx", "paddingTop": "4rpx", "paddingRight": 0, "paddingBottom": "4rpx", "paddingLeft": 0 } }, "pv-se-stats-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-se-col": { "": { "flex": 1, "flexDirection": "column" } }, "pv-se-tr": { "": { "flexDirection": "row", "height": "32rpx", "alignItems": "center" } }, "pv-se-td": { "": { "flex": 1, "textAlign": "center", "fontSize": "11rpx", "color": "#ffffff" } }, "pv-se-td-name": { "": { "flex": 1.6, "textAlign": "left", "paddingLeft": "10rpx", "lines": 1, "textOverflow": "ellipsis" } } };
+const _style_0 = { "live-push": { "": { "flex": 1, "backgroundColor": "#000000" } }, "pusher": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "overlay": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "top": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "flexDirection": "row", "alignItems": "center", "paddingTop": "16rpx", "paddingRight": "20rpx", "paddingBottom": "16rpx", "paddingLeft": "20rpx" } }, "status": { "": { "flex": 1, "textAlign": "center", "color": "#ffffff", "fontSize": "16rpx" } }, "bottom": { "": { "position": "absolute", "bottom": 0, "left": 0, "flexDirection": "column", "alignItems": "flex-start", "paddingTop": "30rpx", "paddingRight": "30rpx", "paddingBottom": "30rpx", "paddingLeft": "30rpx" } }, "bottom-row": { "": { "flexDirection": "row", "marginBottom": "56rpx" } }, "gray-btn": { "": { "paddingTop": "5rpx", "paddingRight": "13rpx", "paddingBottom": "5rpx", "paddingLeft": "13rpx", "backgroundColor": "rgba(0,0,0,0.06)", "color": "#ffffff", "fontSize": "16rpx", "lineHeight": "27rpx", "marginRight": "11rpx" } }, "preview-layer": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-top-left": { "": { "position": "absolute", "top": "24rpx", "left": "24rpx", "flexDirection": "row", "alignItems": "center" } }, "pv-league-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginRight": "10rpx" } }, "pv-league-name": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "2rpx", "paddingRight": "10rpx", "paddingBottom": "2rpx", "paddingLeft": "10rpx", "backgroundColor": "rgba(0,0,0,0.4)", "borderRadius": "4rpx" } }, "pv-watermark-clip": { "": { "position": "absolute", "top": "64rpx", "right": "24rpx", "width": "57.6rpx", "height": "19rpx", "overflow": "hidden", "alignItems": "flex-start" } }, "pv-watermark-img": { "": { "width": "120rpx", "height": "19rpx" } }, "pv-scorebar-wrap": { "": { "position": "absolute", "bottom": "56rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-scorebar": { "": { "position": "relative", "width": "600rpx", "height": "44rpx", "flexDirection": "row", "alignItems": "center", "justifyContent": "center" } }, "pv-bifen-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "600rpx", "height": "44rpx" } }, "pv-team-logo": { "": { "width": "36rpx", "height": "36rpx", "borderRadius": "18rpx", "marginTop": 0, "marginRight": "4rpx", "marginBottom": 0, "marginLeft": "4rpx" } }, "pv-cell": { "": { "flex": 1, "alignItems": "center", "justifyContent": "center" } }, "pv-name-cell": { "": { "minWidth": 0 } }, "pv-team-name": { "": { "fontSize": "15rpx", "color": "#ffffff", "lines": 1, "textOverflow": "ellipsis" } }, "pv-score": { "": { "fontSize": "22rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-section-text": { "": { "fontSize": "14rpx", "color": "#ffffff" } }, "pv-foul": { "": { "width": "60rpx", "height": "8rpx", "marginTop": "4rpx" } }, "pv-sub-row": { "": { "flexDirection": "row", "marginTop": "4rpx" } }, "pv-sub-text": { "": { "fontSize": "14rpx", "color": "#ffffff", "marginTop": 0, "marginRight": "8rpx", "marginBottom": 0, "marginLeft": "8rpx" } }, "pv-msg": { "": { "position": "absolute", "bottom": "24rpx", "left": 0, "right": 0, "alignItems": "center" } }, "pv-msg-text": { "": { "fontSize": "20rpx", "color": "#ffffff", "paddingTop": "4rpx", "paddingRight": "24rpx", "paddingBottom": "4rpx", "paddingLeft": "24rpx", "backgroundColor": "rgba(0,0,0,0.5)", "borderRadius": "4rpx" } }, "pv-section-end": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "alignItems": "center", "paddingTop": "30rpx" } }, "pv-se-banner": { "": { "position": "relative", "width": "480rpx", "height": "60rpx" } }, "pv-se-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0, "width": "480rpx", "height": "60rpx" } }, "pv-se-content": { "": { "flex": 1, "flexDirection": "column", "alignItems": "center", "justifyContent": "center" } }, "pv-se-league": { "": { "fontSize": "11rpx", "color": "#ffffff" } }, "pv-se-row": { "": { "flexDirection": "row", "alignItems": "center", "justifyContent": "center", "marginTop": "3rpx" } }, "pv-se-name": { "": { "fontSize": "10rpx", "color": "#000000", "lines": 1 } }, "pv-se-name-left": { "": { "marginRight": "12rpx" } }, "pv-se-name-right": { "": { "marginLeft": "12rpx" } }, "pv-se-score": { "": { "fontSize": "14rpx", "color": "#ffffff", "fontWeight": "bold" } }, "pv-se-score-left": { "": { "marginRight": "12rpx" } }, "pv-se-score-right": { "": { "marginLeft": "12rpx" } }, "pv-se-section": { "": { "fontSize": "10rpx", "color": "#ffffff" } }, "pv-se-stats": { "": { "position": "relative", "width": "480rpx", "flexDirection": "row", "marginTop": "4rpx", "paddingTop": "4rpx", "paddingRight": 0, "paddingBottom": "4rpx", "paddingLeft": 0 } }, "pv-se-stats-bg": { "": { "position": "absolute", "top": 0, "left": 0, "right": 0, "bottom": 0 } }, "pv-se-col": { "": { "flex": 1, "flexDirection": "column" } }, "pv-se-tr": { "": { "flexDirection": "row", "height": "32rpx", "alignItems": "center" } }, "pv-se-td": { "": { "flex": 1, "textAlign": "center", "fontSize": "11rpx", "color": "#ffffff" } }, "pv-se-td-name": { "": { "flex": 1.6, "textAlign": "left", "paddingLeft": "10rpx", "lines": 1, "textOverflow": "ellipsis" } } };
 const _sfc_main = {
   __name: "push",
   setup(__props) {
@@ -447,7 +447,7 @@ const _sfc_main = {
         fw.write(ts + " " + msg2 + "\n");
         fw.close();
       } catch (e) {
-        formatAppLog("log", "at pages/live/push.nvue:199", "logToFile err: " + e);
+        formatAppLog("log", "at pages/live/push.nvue:200", "logToFile err: " + e);
       }
     }
     onLoad((opt) => {
@@ -455,7 +455,7 @@ const _sfc_main = {
       publishUrl.value = decodeURIComponent(opt.livepublish || "");
       gameId.value = opt.gameId || "";
       homeName.value = opt.name || "直播";
-      formatAppLog("log", "at pages/live/push.nvue:212", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
+      formatAppLog("log", "at pages/live/push.nvue:213", "[push] publishUrl=", publishUrl.value, "gameId=", gameId.value);
       logToFile("[push] onLoad url=" + publishUrl.value + " gameId=" + gameId.value + " name=" + opt.name);
       loadGameDetail();
       connectScore();
@@ -475,7 +475,7 @@ const _sfc_main = {
     }
     onReady(() => {
       ensurePermissions().then((granted) => {
-        formatAppLog("log", "at pages/live/push.nvue:240", "[push] permissions granted=", granted, "pusher=", pusher.value);
+        formatAppLog("log", "at pages/live/push.nvue:241", "[push] permissions granted=", granted, "pusher=", pusher.value);
         logToFile("[push] onReady permissions=" + granted + " pusher=" + (pusher.value ? "yes" : "null"));
         if (!granted) {
           uni.showToast({ title: "需要相机/麦克风权限", icon: "none" });
@@ -485,7 +485,7 @@ const _sfc_main = {
         let tries = 0;
         const tryPreview = () => {
           if (pusher.value) {
-            formatAppLog("log", "at pages/live/push.nvue:251", "[push] startPreview 调用");
+            formatAppLog("log", "at pages/live/push.nvue:252", "[push] startPreview 调用");
             logToFile("[push] startPreview 调用，组件已挂载");
             pusher.value.startPreview();
             logToFile("[push] startPreview 调用完成");
@@ -494,7 +494,7 @@ const _sfc_main = {
           } else if (tries++ < 20) {
             setTimeout(tryPreview, 100);
           } else {
-            formatAppLog("log", "at pages/live/push.nvue:261", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
+            formatAppLog("log", "at pages/live/push.nvue:262", "[push] pusher ref 始终为 null -- livepusherview 组件未注册/未挂载");
             logToFile("[push] ✗ pusher ref 始终为 null -- livepusherview 组件未注册/未挂载（插件未打进基座）");
             uni.showToast({ title: "推流组件未加载，请确认插件已打包", icon: "none" });
           }
@@ -675,7 +675,7 @@ const _sfc_main = {
     }
     function onState(e) {
       const d = e.detail || {};
-      formatAppLog("log", "at pages/live/push.nvue:448", "[pusher] state", d);
+      formatAppLog("log", "at pages/live/push.nvue:449", "[pusher] state", d);
       logToFile("[pusher] state code=" + d.code + " msg=" + d.msg);
       if (d.msg)
         statusText.value = d.msg;
@@ -836,13 +836,14 @@ const _sfc_main = {
                   createElementVNode("u-text", { class: "pv-se-league" }, toDisplayString(leagueName.value), 1),
                   createElementVNode("view", { class: "pv-se-row" }, [
                     createElementVNode("u-text", { class: "pv-se-name pv-se-name-left" }, toDisplayString(homeName.value), 1),
-                    createElementVNode("u-text", { class: "pv-se-score" }, toDisplayString(hostScore.value) + " : " + toDisplayString(guestScore.value), 1),
+                    createElementVNode("u-text", { class: "pv-se-score pv-se-score-left" }, toDisplayString(hostScore.value), 1),
+                    section.value ? (openBlock(), createElementBlock("u-text", {
+                      key: 0,
+                      class: "pv-se-section"
+                    }, toDisplayString(section.value), 1)) : createCommentVNode("", true),
+                    createElementVNode("u-text", { class: "pv-se-score pv-se-score-right" }, toDisplayString(guestScore.value), 1),
                     createElementVNode("u-text", { class: "pv-se-name pv-se-name-right" }, toDisplayString(guestName.value), 1)
-                  ]),
-                  section.value ? (openBlock(), createElementBlock("u-text", {
-                    key: 0,
-                    class: "pv-se-section"
-                  }, toDisplayString(section.value), 1)) : createCommentVNode("", true)
+                  ])
                 ])
               ]),
               createElementVNode("view", { class: "pv-se-stats" }, [

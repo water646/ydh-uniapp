@@ -1214,6 +1214,7 @@ if (typeof uni !== 'undefined' && uni && uni.requireGlobal) {
           (0, import_vue2.createElementVNode)("view", { class: "top" }, [
             (0, import_vue2.createElementVNode)("u-text", {
               class: "gray-btn",
+              style: { "height": "40rpx" },
               onClick: $setup.back
             }, "\u8FD4\u56DE"),
             (0, import_vue2.createElementVNode)(
