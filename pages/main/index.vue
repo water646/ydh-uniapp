@@ -394,7 +394,10 @@ function logout() {
 
 /** 版本更新检查（对应 MainActivity VersionCheck） */
 function checkUpdate() {
-  versionCheck({ deviceType: 'android', appType: 'statistics', versionCode: appStore.version }).then((res) => {
+  // 服务端参数全是数字枚举（原生 MainActivity:193 传 1,2,VERSION_CODE），传 'android'/'statistics'/版本名会 500
+  const vc = Number(appStore.version)
+  if (!vc || vc <= 0) return // 取不到合法 versionCode 就不查，别弹更新也不报错
+  versionCheck({ deviceType: 1, appType: 2, versionCode: vc }).then((res) => {
     if (res.code === 1 && res.data) {
       const v = res.data
       if (v.versionCode && Number(v.versionCode) > Number(appStore.version)) {

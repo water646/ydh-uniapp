@@ -88,7 +88,7 @@ async function doLogin() {
   const res = await validateLogin(phone.value, code.value)
   if (res.code === 1) {
     userStore.setAuth(String(res.data))
-    uni.reLaunch({ url: '/pages/main/index' })
+    uni.reLaunch({ url: '/pages/home/index' })
   } else {
     uni.showToast({ title: res.msg || '登录失败', icon: 'none' })
   }

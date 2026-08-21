@@ -36,7 +36,6 @@
     },
     "popGesture": "close",
     "launchwebview": {
-      "render": "always",
       "id": "1",
       "kernel": "WKWebview"
     },
@@ -112,6 +111,12 @@
       "enable": false
     },
     "allowsInlineMediaPlayback": true,
+    "safearea": {
+      "background": "#ffffff",
+      "bottom": {
+        "offset": "auto"
+      }
+    },
     "uni-app": {
       "control": "uni-v3",
       "vueVersion": "3",
@@ -125,6 +130,34 @@
       "webView": {
         "minUserAgentVersion": "49.0"
       }
+    },
+    "tabBar": {
+      "position": "bottom",
+      "color": "#999999",
+      "selectedColor": "#00B39B",
+      "borderStyle": "rgba(0,0,0,0.4)",
+      "blurEffect": "none",
+      "fontSize": "10px",
+      "iconWidth": "24px",
+      "spacing": "3px",
+      "height": "50px",
+      "list": [
+        {
+          "pagePath": "pages/home/index",
+          "text": "首页",
+          "iconPath": "/static/tabbar/home.png",
+          "selectedIconPath": "/static/tabbar/home_sel.png"
+        },
+        {
+          "pagePath": "pages/mine/index",
+          "text": "我的",
+          "iconPath": "/static/tabbar/mine.png",
+          "selectedIconPath": "/static/tabbar/mine_sel.png"
+        }
+      ],
+      "backgroundColor": "#ffffff",
+      "selectedIndex": 0,
+      "shown": true
     }
   },
   "app-harmony": {
@@ -134,6 +167,12 @@
     },
     "uniStatistics": {
       "enable": false
+    },
+    "safearea": {
+      "background": "#ffffff",
+      "bottom": {
+        "offset": "auto"
+      }
     }
   },
   "launch_path": "__uniappview.html"

@@ -19,7 +19,7 @@ onLoad(() => {
   requestPermissions().then(() => {
     setTimeout(() => {
       if (userStore.isLogin) {
-        uni.reLaunch({ url: '/pages/main/index' })
+        uni.reLaunch({ url: '/pages/home/index' })
       } else {
         uni.reLaunch({ url: '/pages/login/index' })
       }

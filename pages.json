@@ -10,7 +10,9 @@
   "pages": [
     { "path": "pages/loading/index", "style": { "navigationStyle": "custom", "disableScroll": true } },
     { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
+    { "path": "pages/home/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/mine/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/basketball-setup", "style": { "navigationStyle": "custom" } },
     { "path": "pages/game-setup/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/football-setup", "style": { "navigationStyle": "custom" } },
@@ -41,5 +43,25 @@
     "navigationBarBackgroundColor": "#FFFFFF",
     "backgroundColor": "#F8F8F8",
     "app-plus": { "titleNView": false }
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#00B39B",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home_sel.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/mine.png",
+        "selectedIconPath": "static/tabbar/mine_sel.png"
+      }
+    ]
   }
 }

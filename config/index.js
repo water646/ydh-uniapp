@@ -10,8 +10,9 @@ export const config = {
    * 测试完毕请改回 false。
    */
   useMock: false,
-  /** Retrofit baseUrl：对应 Api.APP_DOMAIN */
-  baseUrl: 'http://app.ydh123.com/ydh-service/',
+  /** Retrofit baseUrl：对应 Api.APP_DOMAIN。本地联调：localhost:9898；测完换回生产（下一行） */
+  baseUrl: 'http://localhost:9898/ydh-service/',
+  // baseUrl: 'http://app.ydh123.com/ydh-service/',
   /** WebSocket 长连接地址：对应 Api.LONG_URL，用于直播实时比分推送 */ 
   wsUrl: 'ws://im.ydh123.com?',
   /** 加密密钥：对应 AppConfig.SECRET，Global.s = MD5(secret) */
