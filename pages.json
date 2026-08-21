@@ -13,6 +13,7 @@
     { "path": "pages/home/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/mine/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/order/finish-service", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/basketball-setup", "style": { "navigationStyle": "custom" } },
     { "path": "pages/game-setup/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/football-setup", "style": { "navigationStyle": "custom" } },

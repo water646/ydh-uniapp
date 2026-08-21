@@ -1,4 +1,83 @@
 
+.popblcok[data-v-d6c9ccb3] {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 999;
+}
+.popwindow[data-v-d6c9ccb3] {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 19.0625rem;
+  height: 12.3125rem;
+  top: 40%;
+  background-color: #fff;
+  border-radius: 1.25rem;
+  overflow: visible;
+}
+.potobgc[data-v-d6c9ccb3] {
+  width: 19.0625rem;
+  height: 3.25rem;
+  background: linear-gradient(180deg, rgba(27, 208, 184, 0.33) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+.pupmainicon[data-v-d6c9ccb3] {
+  width: 4.4375rem;
+  height: 4.4375rem;
+  margin-top: -2rem;
+}
+.poconte[data-v-d6c9ccb3] {
+  height: 5.6875rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #414141;
+  line-height: 5.6875rem;
+}
+.pobuton[data-v-d6c9ccb3] {
+  display: flex;
+  margin: 0 auto;
+}
+.poreturn[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #e9e9e9;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+}
+.poreturntext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #333333;
+}
+.porenter[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #00b39b;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+  margin-left: 1.5rem;
+}
+.porentertext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #ffffff;
+}
+
+
 .page[data-v-569e925a] {
   min-height: 100vh;
   background-color: #f8f8f8;
@@ -136,83 +215,4 @@
   width: 0.3125rem;
   height: 0.625rem;
   margin-top: 1.5625rem;
-}
-
-/* 弹窗 */
-.popblcok[data-v-569e925a] {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.38);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  z-index: 999;
-}
-.popwindow[data-v-569e925a] {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: 19.0625rem;
-  height: 12.3125rem;
-  top: 40%;
-  background-color: #fff;
-  border-radius: 1.25rem;
-  overflow: visible;
-}
-.potobgc[data-v-569e925a] {
-  width: 19.0625rem;
-  height: 3.25rem;
-  background: linear-gradient(180deg, rgba(27, 208, 184, 0.33) 0%, rgba(255, 255, 255, 0.08) 100%);
-  border-radius: 1.25rem 1.25rem 0 0;
-}
-.pupmainicon[data-v-569e925a] {
-  width: 4.4375rem;
-  height: 4.4375rem;
-  margin-top: -2rem;
-}
-.poconte[data-v-569e925a] {
-  height: 5.6875rem;
-  font-weight: 500;
-  font-size: 1rem;
-  color: #414141;
-  line-height: 5.6875rem;
-}
-.pobuton[data-v-569e925a] {
-  display: flex;
-  margin: 0 auto;
-}
-.poreturn[data-v-569e925a] {
-  width: 6.25rem;
-  height: 2.25rem;
-  background: #e9e9e9;
-  border-radius: 1.125rem;
-  display: flex;
-  justify-content: center;
-}
-.poreturntext[data-v-569e925a] {
-  height: 2.25rem;
-  font-weight: bold;
-  font-size: 0.875rem;
-  line-height: 2.25rem;
-  color: #333333;
-}
-.porenter[data-v-569e925a] {
-  width: 6.25rem;
-  height: 2.25rem;
-  background: #00b39b;
-  border-radius: 1.125rem;
-  display: flex;
-  justify-content: center;
-  margin-left: 1.5rem;
-}
-.porentertext[data-v-569e925a] {
-  height: 2.25rem;
-  font-weight: bold;
-  font-size: 0.875rem;
-  line-height: 2.25rem;
-  color: #ffffff;
 }

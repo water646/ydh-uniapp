@@ -8,7 +8,7 @@
       </view>
       <view class="search-box">
         <view class="search-icon"></view>
-        <input class="search-input" v-model="keyword" placeholder="搜索订单" placeholder-class="search-ph" confirm-type="search" />
+        <input class="search-input" v-model="keyword" placeholder="请输入您要搜索的内容" placeholder-class="search-ph" confirm-type="search" />
       </view>
     </view>
 
@@ -65,6 +65,18 @@
 						<p class="btn-text accept-text">接单</p>
 					</view>
 				</view>
+				<!-- 待服务：开始服务 -->
+				<view class="btn-group" v-else-if="o.status === 3">
+					<view class="btn btn-accept btn-start" @click.stop="onStartService(o)">
+						<p class="btn-text accept-text">开始服务</p>
+					</view>
+				</view>
+				<!-- 服务中：结束服务申请（跳转申请页） -->
+				<view class="btn-group" v-else-if="o.status === 4">
+					<view class="btn btn-accept btn-finish" @click.stop="onFinishService(o)">
+						<p class="btn-text accept-text">结束服务申请</p>
+					</view>
+				</view>
 			</view>
         </view>
 
@@ -75,6 +87,9 @@
 
         <view class="list-end" v-if="orders.length">— 没有更多了 —</view>
     </view>
+
+    <!-- 接单/拒绝确认弹窗（同退出登录样式） -->
+    <confirm-popup :show="showConfirm" :message="confirmMsg" @confirm="doConfirm" @cancel="showConfirm = false"></confirm-popup>
   </view>
 </template>
 
@@ -82,40 +97,25 @@
 /**
  * 「首页」订单卡片列表
  * 数据源：GET rest/userServiceOrder/list（本地/生产后端同路径）
- * 上拉翻页（nextPage），拒绝/接单按钮接口待后端提供。
+ * 上拉翻页（nextPage）；接单/拒绝均走 POST userServiceOrder/confirm（整个订单对象为请求体）。
  */
 import { ref } from 'vue'
 import { onLoad, onShow, onReachBottom } from '@dcloudio/uni-app'
-import { getOrderList } from '@/api/order'
+import { getOrderList, confirmOrder } from '@/api/order'
+import { STATUS_MAP, ST_WAIT_SERVICE, ST_CANCELLED, ST_SERVING, stText, stColor } from '@/utils/order-status'
+import confirmPopup from '@/components/confirm-popup/confirm-popup.vue'
 
 const keyword = ref('')
 
 // 当前城市：默认「北京」，IP 定位成功后覆盖
 const city = ref('北京')
 
-// 状态文案 + 右上角标识背景色映射（颜色跟名称走）
-// 枚举按递增猜测：1待确认 2已取消 3待服务 4服务中 5服务完成 6已打款
-const statusMap = {
-  1: { text: '待确认', color: '#CF8A03' },
-  2: { text: '已取消', color: '#AFAFAF' },
-  3: { text: '待服务', color: '#00B39D' },
-  4: { text: '服务中', color: '#2E7CF6' },
-  5: { text: '服务完成', color: '#03B098' },
-  6: { text: '已打款', color: '#67C23A' }
-}
+// 状态文案/底色/状态号统一在 utils/order-status.js 维护
 
-function stText(s) {
-  return (statusMap[s] && statusMap[s].text) || ('状态' + s)
-}
-
-function stColor(s) {
-  return (statusMap[s] && statusMap[s].color) || '#AFAFAF'
-}
-
-// 副顶栏筛选项：全部 + 六种状态（顺序同 statusMap 编号）
+// 副顶栏筛选项：全部 + 六种状态（顺序同状态编号）
 const statusTabs = [
   { label: '全部', value: 0 },
-  ...Object.keys(statusMap).map((k) => ({ label: statusMap[k].text, value: Number(k) }))
+  ...Object.keys(STATUS_MAP).map((k) => ({ label: STATUS_MAP[k].text, value: Number(k) }))
 ]
 
 // 当前筛选状态：0 = 全部（不传 status 参数）
@@ -191,14 +191,59 @@ function onOrderClick(o) {
   // TODO: 订单详情
 }
 
-function onReject(o) {
-  // TODO: 拒绝接单接口（后端待提供）
-  uni.showToast({ title: '拒绝：接口待接入', icon: 'none' })
-}
+// 接单/拒绝：同一 confirm 接口、同一确认弹窗，只是成功后落到不同状态
+// 状态号常量 ST_* 从 utils/order-status.js 引入
+
+const showConfirm = ref(false)
+const confirmMsg = ref('')
+const confirmTarget = ref(null) // { o, next, okText }
+const submitting = ref(false)
 
 function onAccept(o) {
-  // TODO: 接单接口（后端待提供）
-  uni.showToast({ title: '接单：接口待接入', icon: 'none' })
+  confirmTarget.value = { o, next: ST_WAIT_SERVICE, okText: '接单成功' }
+  confirmMsg.value = '确定接单吗？'
+  showConfirm.value = true
+}
+
+function onReject(o) {
+  confirmTarget.value = { o, next: ST_CANCELLED, okText: '已拒绝' }
+  confirmMsg.value = '确定拒绝此订单吗？'
+  showConfirm.value = true
+}
+
+/** 待服务订单：开始服务，状态改为服务中 */
+function onStartService(o) {
+  confirmTarget.value = { o, next: ST_SERVING, okText: '已开始服务' }
+  confirmMsg.value = '确定开始服务吗？'
+  showConfirm.value = true
+}
+
+/** 服务中订单：跳转结束服务申请页（整个订单对象经 data 参数传入） */
+function onFinishService(o) {
+  uni.navigateTo({
+    url: '/pages/order/finish-service?data=' + encodeURIComponent(JSON.stringify(o))
+  })
+}
+
+/** 弹窗点确定：先把订单的 status 改为目标状态号，整个对象 POST confirm（后端按请求体落库），失败回滚 */
+function doConfirm() {
+  showConfirm.value = false
+  const t = confirmTarget.value
+  if (!t || submitting.value) return
+  submitting.value = true
+  const prev = t.o.status
+  t.o.status = t.next
+  confirmOrder(t.o).then((res) => {
+    submitting.value = false
+    if (res.code === 1) {
+      uni.showToast({ title: t.okText, icon: 'none' })
+    } else {
+      t.o.status = prev
+    }
+  }).catch(() => {
+    submitting.value = false
+    t.o.status = prev
+  })
 }
 </script>
 
@@ -418,6 +463,16 @@ function onAccept(o) {
 .btn-accept {
   background-color: #03b098;
   border: 2rpx solid #03b098;
+}
+
+/* 开始服务按钮：同接单样式，加宽放四个字 */
+.btn-start {
+  width: 160rpx;
+}
+
+/* 结束服务申请按钮：同上，更宽放六个字 */
+.btn-finish {
+  width: 220rpx;
 }
 
 .btn-text {
