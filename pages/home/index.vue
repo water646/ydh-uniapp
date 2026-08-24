@@ -97,11 +97,11 @@
 /**
  * 「首页」订单卡片列表
  * 数据源：GET rest/userServiceOrder/list（本地/生产后端同路径）
- * 上拉翻页（nextPage）；接单/拒绝均走 POST userServiceOrder/confirm（整个订单对象为请求体）。
+ * 上拉翻页（nextPage）；接单/拒绝/开始服务均走 POST userServiceOrder/edit（整个订单对象为请求体）。
  */
 import { ref } from 'vue'
 import { onLoad, onShow, onReachBottom } from '@dcloudio/uni-app'
-import { getOrderList, confirmOrder } from '@/api/order'
+import { getOrderList, editOrder } from '@/api/order'
 import { STATUS_MAP, ST_WAIT_SERVICE, ST_CANCELLED, ST_SERVING, stText, stColor } from '@/utils/order-status'
 import confirmPopup from '@/components/confirm-popup/confirm-popup.vue'
 
@@ -191,7 +191,7 @@ function onOrderClick(o) {
   // TODO: 订单详情
 }
 
-// 接单/拒绝：同一 confirm 接口、同一确认弹窗，只是成功后落到不同状态
+// 接单/拒绝/开始服务：同一 edit 接口、同一确认弹窗，只是请求体里 status 落到不同状态号
 // 状态号常量 ST_* 从 utils/order-status.js 引入
 
 const showConfirm = ref(false)
@@ -225,24 +225,23 @@ function onFinishService(o) {
   })
 }
 
-/** 弹窗点确定：先把订单的 status 改为目标状态号，整个对象 POST confirm（后端按请求体落库），失败回滚 */
+/** 弹窗点确定：整个订单对象（status 置为目标状态号）POST edit，成功后重拉列表，展示以后端为准 */
 function doConfirm() {
   showConfirm.value = false
   const t = confirmTarget.value
   if (!t || submitting.value) return
   submitting.value = true
-  const prev = t.o.status
-  t.o.status = t.next
-  confirmOrder(t.o).then((res) => {
+  const body = { ...t.o, status: t.next }
+  editOrder(body).then((res) => {
     submitting.value = false
     if (res.code === 1) {
       uni.showToast({ title: t.okText, icon: 'none' })
-    } else {
-      t.o.status = prev
+      refresh()
+    } else if (res.msg) {
+      uni.showToast({ title: res.msg, icon: 'none' })
     }
   }).catch(() => {
     submitting.value = false
-    t.o.status = prev
   })
 }
 </script>

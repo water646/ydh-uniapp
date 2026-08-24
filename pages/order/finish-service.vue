@@ -35,7 +35,12 @@
 
       <view class="upload-label">现场图片</view>
       <view class="upload-grid">
-        <image v-for="(p, i) in images" :key="i" class="upload-cell" :src="p" mode="aspectFill" @click="previewImage(i)"></image>
+        <view class="img-cell" v-for="(p, i) in images" :key="i">
+          <image class="upload-cell" :src="p.path" mode="aspectFill" @click="previewImage(i)"></image>
+          <view class="del-badge" @click.stop="removeImage(i)">
+            <view class="del-icon"></view>
+          </view>
+        </view>
         <view class="upload-box" v-if="images.length < IMG_MAX" @click="onChooseImage">
           <view class="plus"></view>
         </view>
@@ -46,6 +51,9 @@
         <view class="video-cell" v-for="(v, i) in videos" :key="i">
           <video class="video-player" :src="v.path" :controls="false" object-fit="cover"></video>
           <text class="video-duration" v-if="v.duration">{{ fmtDur(v.duration) }}</text>
+          <view class="del-badge" @click.stop="removeVideo(i)">
+            <view class="del-icon"></view>
+          </view>
         </view>
         <view class="upload-box" v-if="videos.length < VIDEO_MAX" @click="onChooseVideo">
           <view class="plus"></view>
@@ -130,6 +138,15 @@ function onChooseImage() {
 
 function previewImage(i) {
   uni.previewImage({ urls: images.value.map((x) => x.path), current: i })
+}
+
+/** 删除已选素材：仅移出宫格（已上传到 OSS 的文件不回收） */
+function removeImage(i) {
+  images.value.splice(i, 1)
+}
+
+function removeVideo(i) {
+  videos.value.splice(i, 1)
 }
 
 /** 选现场视频（相册/拍摄），一次一个，选完上传换 URL */
@@ -273,6 +290,58 @@ function onSubmit() {
   width: 4rpx;
   height: 56rpx;
   left: 26rpx;
+  top: 0;
+}
+
+/* 已选图片格：承载图片 + 右上角删除角标 */
+.img-cell {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+/* 删除角标：主题绿圆底 + 白叉，压在素材格右上角 */
+.del-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background-color: #03b098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* css 画白叉：加号旋转 45° 即成叉 */
+.del-icon {
+  position: relative;
+  width: 20rpx;
+  height: 20rpx;
+  transform: rotate(45deg);
+}
+
+.del-icon::before,
+.del-icon::after {
+  content: '';
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 2rpx;
+}
+
+.del-icon::before {
+  width: 20rpx;
+  height: 3rpx;
+  top: 8.5rpx;
+  left: 0;
+}
+
+.del-icon::after {
+  width: 3rpx;
+  height: 20rpx;
+  left: 8.5rpx;
   top: 0;
 }
 

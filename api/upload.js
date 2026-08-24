@@ -1,17 +1,19 @@
 /**
  * OSS 文件上传 POST oss/file/upload（multipart/form-data，文件字段名 file）
+ * formData 附带 type 业务类型（后端要求，订单素材当前为 9）。
  * 上传成功 resolve 文件 URL 字符串；失败 toast 并 reject。
  * 注：uni.uploadFile 的响应体是字符串，需手动 JSON.parse。
  */
 import { config } from '@/config'
 import { getToken } from '@/utils/auth'
 
-export function uploadFile(filePath) {
+export function uploadFile(filePath, type = 9) {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
       url: config.baseUrl + 'oss/file/upload',
       filePath,
       name: 'file',
+      formData: { type: String(type) },
       header: { token: getToken() },
       success: (res) => {
         let body = null

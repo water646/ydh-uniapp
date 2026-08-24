@@ -13,7 +13,7 @@ import { request } from './request'
 export const getOrderList = (params) => request({ url: 'rest/userServiceOrder/list', query: params, hideError: false })
 
 /**
- * 接单确认 POST rest/userServiceOrder/confirm
- * 请求体：整个订单对象（列表项原样回传）；成功后订单状态变为待服务
+ * 订单编辑 POST rest/userServiceOrder/edit
+ * 请求体：整个订单对象（status 已置为目标状态号），后端按请求体原样更新
  */
-export const confirmOrder = (data) => request({ url: 'rest/userServiceOrder/confirm', method: 'POST', data })
+export const editOrder = (data) => request({ url: 'rest/userServiceOrder/edit', method: 'POST', data })

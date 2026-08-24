@@ -37,6 +37,9 @@ function onBack() {
   const pages = getCurrentPages()
   if (pages.length > 1) {
     uni.navigateBack()
+  } else {
+    // 兜底：热同步重载后页面栈只剩当前页，navigateBack 无效，改回首页 tab
+    uni.switchTab({ url: '/pages/home/index' })
   }
 }
 </script>
