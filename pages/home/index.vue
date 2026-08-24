@@ -31,23 +31,23 @@
 			</view>
 
 			<view class="info-line">
-				<image class="info-icon" src="/static/images/infoicon.png"></image>
+				<image class="info-icon" src="/static/images/otwo.png"></image>
 				<p class="info-row">派单时间: {{ o.assignTime }}</p>
 			</view>
 			<view class="info-line">
-				<image class="info-icon" src="/static/images/infoicon.png"></image>
+				<image class="info-icon" src="/static/images/otwo.png"></image>
 				<p class="info-row">服务比赛: {{ o.serviceMatch || '—' }}</p>
 			</view>
 			<view class="info-line">
-				<image class="info-icon" src="/static/images/infoicon.png"></image>
+				<image class="info-icon" src="/static/images/otwo.png"></image>
 				<p class="info-row">服务角色: {{ o.serviceRole || '—' }}</p>
 			</view>
 			<view class="info-line">
-				<image class="info-icon" src="/static/images/infoicon.png"></image>
+				<image class="info-icon" src="/static/images/otwo.png"></image>
 				<p class="info-row">服务开始时间: {{ o.serviceStartTime }}</p>
 			</view>
 			<view class="info-line">
-				<image class="info-icon" src="/static/images/infoicon.png"></image>
+				<image class="info-icon" src="/static/images/otwo.png"></image>
 				<p class="info-row">服务单号: {{ o.orderNumber }}</p>
 			</view>
 			<p class="info-row pay-row" v-if="o.paymentResult">打款: {{ o.paymentResult }}（{{ o.paymentTime }}）</p>

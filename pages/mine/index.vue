@@ -2,16 +2,28 @@
   <view class="page">
     <!-- 顶部信息区（背景图 minbgctop.png） -->
     <view class="topcontent">
+	  <view class="pagetitle">
+		  <p>个人中心</p>
+	  </view>
       <view class="personblcok">
-        <image class="perphone" :src="molist.avatar || '/static/images/anpeo.png'" mode="" @click="uploadAvatar"></image>
+        <image class="perphone" :src="molist.avatar || '/static/images/headimg.png'" mode="" @click="uploadAvatar"></image>
         <view class="permess" @click="popClick('person')">
-          <view class="mestop">手机号: <text class="mestop-text">{{ molist.phone }}</text></view>
-          <view class="mesbot">
-            <view class="idmes">账户ID：{{ molist.accountId }}</view>
-            <view class="idmesimg">
-              <view class="idtext">{{ molist.isAuth === 1 ? '已认证' : '未认证' }}</view>
-            </view>
-          </view>
+			<view class="namerow">
+				<view class="idmesimg">
+					<view class="idtext">{{ AUTH_BADGE[authState] }}</view>
+				</view>
+				
+				<view class="mestop"> 
+					<p class="mestop-text">{{ molist.nickname }}</p>
+				</view>
+				
+				<view class="idmes copy-btn" @click="doManage">管理</view>
+			</view>
+
+			<view class="mesbot">
+				<view class="idmes">账户ID：{{ molist.accountId }}</view>	
+				<view class="idmes copy-btn" @click="copyAccountId">复制</view>
+			</view>
         </view>
       </view>
     </view>
@@ -19,8 +31,14 @@
     <!-- 菜单白色卡片（顶部快捷入口按钮 + 下方菜单列表） -->
     <view class="bolist">
       <view class="funbar">
-        <view class="funbtn" @click="goStats">技术统计</view>
-        <view class="funbtn" @click="goLive">现场直播</view>
+        <view class="funbtn funbtn-stats" @click="goStats">
+			<p class="funbtn-text">技术统计</p>
+			<image class="funbtn-img" src="/static/images/skill.png"></image>
+		</view>
+        <view class="funbtn funbtn-live" @click="goLive">
+			<p class="funbtn-text">现场直播</p>
+			<image class="funbtn-img" src="/static/images/live.png"></image>
+		</view>
       </view>
       <view class="list-menu-cell" @click="authenClick()">
         <image class="cell-imga" src="/static/images/mycer.png" mode=""></image>
@@ -42,6 +60,12 @@
         <view class="cell-title">退出登录</view>
         <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
       </view>
+
+      <!-- 底部版本信息 -->
+      <view class="pagefoot">
+        <view class="pagefoot-text">当前版本:v1.0</view>
+        <view class="pagefoot-text">北京星河联盟科技有限公司</view>
+      </view>
     </view>
 
     <!-- 确认弹窗 -->
@@ -52,19 +76,24 @@
 <script setup>
 /**
  * 「我的」页（样式迁移自 F:/项目文件/UNIAPP/pages/minePage/minePage.vue）
- * 已接逻辑：user/info 显示手机号/账户ID/头像、退出登录（清 token 回登录页）。
- * 仍占位：认证徽章/我的认证/我的服务/打款历史（本后端无认证体系）、头像上传。
+ * 已接逻辑：user/info 显示手机号/账户ID/头像、userAuthInfo/info 认证徽章、退出登录（清 token 回登录页）。
+ * 仍占位：我的服务/打款历史、头像上传、去认证跳转（认证页待做）。
  */
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getUserInfo } from '@/api/login'
+import { getAuthInfo } from '@/api/auth'
 import { useUserStore } from '@/store/user'
 import confirmPopup from '@/components/confirm-popup/confirm-popup.vue'
 
 const userStore = useUserStore()
 
-// 用户信息（user/info 返回；认证字段本后端没有，徽章固定显示未认证）
+// 用户信息（user/info 返回）
 const molist = ref({ phone: '—', accountId: '—', avatar: '' })
+
+// 认证状态（rest/userAuthInfo/info）：none 未认证 / pending 有记录未过审 / ok 已认证
+const authState = ref('none')
+const AUTH_BADGE = { none: '未认证', pending: '审核中', ok: '已认证' }
 
 // 弹窗状态
 const isAuthen = ref(false)
@@ -78,6 +107,7 @@ onShow(() => {
     return
   }
   loadInfo()
+  loadAuth()
 })
 
 /** 拉取个人信息：手机号、账户ID(id)、头像 */
@@ -88,9 +118,20 @@ function loadInfo() {
       molist.value = {
         phone: d.phone || '—',
         accountId: d.id || '—',
-        avatar: d.avatar || ''
+        avatar: d.avatar || '',
+		nickname: d.nickName || '-',
       }
       userStore.setUserInfo(d)
+    }
+  }).catch(() => {})
+}
+
+/** 拉取认证状态：有记录且 auditStatus===1 视为已认证；有记录未过审视为审核中（状态含义待后端定稿） */
+function loadAuth() {
+  getAuthInfo().then((res) => {
+    if (res.code === 1 && Array.isArray(res.data)) {
+      const rec = res.data[0]
+      authState.value = rec ? (rec.auditStatus === 1 ? 'ok' : 'pending') : 'none'
     }
   }).catch(() => {})
 }
@@ -100,6 +141,8 @@ function popClick(type) {
   if (type === 'outconfirm') {
     popmessage.value = '确定退出登录吗?'
     popbut.value = '确定'
+  } else if (authState.value === 'ok') {
+    return // 已认证不再拦截（个人资料编辑页待做）
   } else {
     popmessage.value = '请先进行认证'
     popbut.value = '去认证'
@@ -125,7 +168,32 @@ function goStats() {
 function goLive() {}
 
 function uploadAvatar() {}
-function authenClick() {}
+
+/** 复制账户ID到剪贴板（ID 未加载出来时不动作） */
+function copyAccountId() {
+  const id = molist.value.accountId
+  if (!id || id === '—') return
+  uni.setClipboardData({
+    data: String(id),
+    success: () => uni.showToast({ title: '已复制', icon: 'none' })
+  })
+}
+
+/** 我的认证：已认证先提示（详情页待做），未认证/审核中弹「去认证」引导 */
+function authenClick() {
+  if (authState.value === 'ok') {
+    uni.showToast({ title: '已认证', icon: 'none' })
+  } else {
+    popClick('auth')
+  }
+}
+
+const doManage=()=>{
+	uni.navigateTo({
+		url:"/pages/mine/manage"
+	})
+}
+
 function myserClick() {}
 function payhisClick() {}
 </script>
@@ -133,6 +201,9 @@ function payhisClick() {}
 <style scoped>
 .page {
   min-height: 100vh;
+  /* 顶栏 + 白卡片纵向排列，白卡片撑满剩余高度 */
+  display: flex;
+  flex-direction: column;
   background-color: #f8f8f8;
 }
 
@@ -148,10 +219,17 @@ function payhisClick() {}
   left: 0;
 }
 
+/* 页面标题（个人中心） */
+.pagetitle {
+  display: flex;
+  justify-content: center;
+  padding-top: 60rpx;
+}
+
 .personblcok {
   display: flex;
   align-items: center;
-  padding-top: 110rpx;
+  padding-top: 80rpx;
 }
 
 .perphone {
@@ -164,7 +242,14 @@ function payhisClick() {}
 .permess {
   display: flex;
   flex-direction: column;
-  margin-left: 60rpx;
+  margin-left: 15rpx;
+}
+
+/* 昵称行：认证徽章 + 昵称横向排列 */
+.namerow {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
 }
 
 .mestop {
@@ -178,20 +263,28 @@ function payhisClick() {}
 
 .mestop-text {
   margin-left: 8rpx;
+  font-weight: bold;
 }
 
 .mesbot {
   display: flex;
   margin-top: 20rpx;
+  margin-left: 24rpx;
 }
 
 .idmes {
   height: 28rpx;
   font-weight: 400;
-  font-size: 20rpx;
+  font-size: 23rpx;
   color: #333333;
   line-height: 28rpx;
   text-align: left;
+}
+
+/* 复制按钮（账户ID后，主题绿） */
+.copy-btn {
+  margin-left: 15rpx;
+  color: #00b39b;
 }
 
 .idmesimg {
@@ -205,7 +298,7 @@ function payhisClick() {}
 
 .idtext {
   height: 28rpx;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 16rpx;
   color: #333333;
   line-height: 28rpx;
@@ -220,10 +313,8 @@ function payhisClick() {}
 
 .funbtn {
   flex: 1;
-  height: 120rpx;
-  border-radius: 20rpx;
-  background: #00b39b;
-  box-shadow: 0 8rpx 20rpx rgba(0, 179, 155, 0.25);
+  height: 130rpx;
+  border-radius: 30rpx;
   color: #ffffff;
   font-size: 30rpx;
   font-weight: 500;
@@ -236,15 +327,52 @@ function payhisClick() {}
   margin-left: 24rpx;
 }
 
+/* 两个快捷入口的渐变底色 */
+.funbtn-stats {
+  background: linear-gradient(to right, #D3FBC7, #E6FFEA);
+}
+
+.funbtn-live {
+  background: linear-gradient(to right, #C9E5FF, #DFF1FD);
+}
+
+/* 入口文字（黑字）与右下装饰图 */
+.funbtn-text {
+  color: #000000;
+}
+
+.funbtn-img {
+  width: 150rpx;
+  height: 150rpx;
+  position: relative;
+  bottom: 20rpx;
+}
+
+/* 白卡片：撑满顶栏之外的剩余高度，直到底部 */
 .bolist {
   width: 100%;
-  min-height: calc(100vh - 572rpx);
-  border-top-left-radius: 40rpx;
-  border-top-right-radius: 40rpx;
+  flex: 1;
+  border-radius: 50rpx 50rpx 0 0;
+  box-shadow: 0 -2rpx 3rpx rgba(0, 0, 0, 0.05);
   z-index: 1;
   margin-top: -60rpx;
   background-color: #fff;
   padding-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 底部版本信息：贴在白卡片最底部 */
+.pagefoot {
+  margin-top: auto;
+  padding: 30rpx 0 40rpx;
+  text-align: center;
+}
+
+.pagefoot-text {
+  font-size: 20rpx;
+  color: #bbbbbb;
+  line-height: 32rpx;
 }
 
 .list-menu-cell {

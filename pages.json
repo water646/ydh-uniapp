@@ -36,7 +36,8 @@
     { "path": "pages/photo/live-photo", "style": { "navigationStyle": "custom" } },
     { "path": "pages/preview/large-view", "style": { "navigationStyle": "custom", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
     { "path": "pages/agreement/index", "style": { "navigationBarTitleText": "", "navigationStyle": "custom", "app-plus": { "titleNView": false } } },
-    { "path": "pages/placeholder/index", "style": { "navigationBarTitleText": "" } }
+    { "path": "pages/placeholder/index", "style": { "navigationBarTitleText": "" } },
+	{ "path": "pages/mine/manage", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
@@ -54,14 +55,14 @@
       {
         "pagePath": "pages/home/index",
         "text": "首页",
-        "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/home_sel.png"
+        "iconPath": "static/tabbar/whitehome.png",
+        "selectedIconPath": "static/tabbar/selhome.png"
       },
       {
         "pagePath": "pages/mine/index",
         "text": "我的",
-        "iconPath": "static/tabbar/mine.png",
-        "selectedIconPath": "static/tabbar/mine_sel.png"
+        "iconPath": "static/tabbar/whitemine.png",
+        "selectedIconPath": "static/tabbar/selmine.png"
       }
     ]
   }
