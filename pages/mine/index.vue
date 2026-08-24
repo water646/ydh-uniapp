@@ -55,6 +55,11 @@
         <view class="cell-title">打款历史</view>
         <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
       </view>
+      <view class="list-menu-cell" @click="goWallet">
+        <image class="cell-imgb" src="/static/images/money.png" mode=""></image>
+        <view class="cell-title">我的钱包</view>
+        <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
+      </view>
       <view class="list-menu-cell" @click="popClick('outconfirm')">
         <image class="cell-imgd" src="/static/images/myexit.png" mode=""></image>
         <view class="cell-title">退出登录</view>
@@ -164,8 +169,10 @@ function goStats() {
   uni.navigateTo({ url: '/pages/main/index' })
 }
 
-/** 现场直播：入口待定，暂无动作 */
-function goLive() {}
+/** 现场直播：先进技术统计页（同「技术统计」入口，后续直播入口再细分） */
+function goLive() {
+  uni.navigateTo({ url: '/pages/main/index' })
+}
 
 function uploadAvatar() {}
 
@@ -196,6 +203,11 @@ const doManage=()=>{
 
 function myserClick() {}
 function payhisClick() {}
+
+/** 我的钱包：进钱包页（内容待做，当前为空白页） */
+function goWallet() {
+  uni.navigateTo({ url: '/pages/mine/wallet' })
+}
 </script>
 
 <style scoped>

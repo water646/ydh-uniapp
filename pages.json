@@ -40,7 +40,8 @@
 	{ "path": "pages/mine/manage", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/identity", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/phone", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/phone-new", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/phone-new", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/wallet", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

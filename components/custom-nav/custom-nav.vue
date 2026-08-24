@@ -65,8 +65,8 @@ function onBack() {
   justify-content: center;
 }
 .back {
-  width: 100rpx;
-  height: 100rpx;
+  width: 66rpx;
+  height: 66rpx;
 }
 .nav-title {
   position: absolute;

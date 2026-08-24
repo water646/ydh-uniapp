@@ -1,11 +1,6 @@
 <template>
   <view class="main">
-    <custom-nav title="智能技术台" :show-back="false">
-      <template #left>
-        <view class="avatar-btn" @click="drawer = true">
-          <image class="avatar" :src="userInfo && userInfo.avatar" mode="aspectFill" />
-        </view>
-      </template>
+    <custom-nav title="智能技术台">
       <template #right>
         <text class="nav-action" @click="goPhoto">活动列表</text>
       </template>
@@ -454,19 +449,6 @@ function doUpdate() {
 .main {
   min-height: 100vh;
   background-color: #f8f8f8;
-}
-.avatar-btn {
-  width: 90rpx;
-  height: 90rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.avatar {
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: 50%;
-  background-color: #eeeeee;
 }
 /* 抽屉 */
 .mask {
