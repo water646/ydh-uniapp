@@ -7,26 +7,23 @@
       <view class="card">
         <!-- 头像 + 右下角相机角标（点击更换头像） -->
         <view class="avatar-wrap">
-          <image class="avatar" :src="form.avatar || '/static/images/headimg.png'" mode="aspectFill"></image>
+          <image class="avatar" :src="form.avatar || '/static/images/headimg.png'" mode="aspectFill" @click="onChangeAvatar"></image>
           <image class="camera" src="/static/images/camera.png" @click="onChangeAvatar"></image>
         </view>
 
         <!-- 可编辑：昵称（label 独占一行，值落在下方横线上） -->
         <view class="field-col">
           <view class="field-label">昵称:</view>
-		  <view style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3rpx solid #edf1f5;">
+		  <view class="input-line">
 			  <input class="field-line-input" v-model="form.nickname" placeholder="请输入昵称" placeholder-class="field-ph" />
-			  <image src="/static/images/delete.png" v-if="form.nickname" @click="form.nickname=''" style="height: 25rpx; width: 25rpx;"></image>
+			  <image class="clear-icon" src="/static/images/delete.png" v-if="form.nickname" @click="form.nickname=''"></image>
 		  </view>
         </view>
 
-        <!-- 可编辑：姓名 -->
+        <!-- 不可编辑：姓名（来自认证记录） -->
         <view class="field-col">
           <view class="field-label">姓名:</view>
-		  <view style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3rpx solid #edf1f5;">
-		  		<input class="field-line-input" v-model="form.name" placeholder="请输入姓名" placeholder-class="field-ph" />
-		  		<image src="/static/images/delete.png" v-if="form.name" @click="form.name=''" style="height: 25rpx; width: 25rpx;"></image>
-		  </view>
+	  <view class="field-value">{{ form.name || '—' }}</view>
         </view>
 
         <!-- 不可编辑：账号ID + 复制 -->
@@ -42,25 +39,30 @@
         </view>
       </view>
 	  
-	  <view class="card" style="margin-top: 20rpx; padding-bottom:40rpx; position: relative;">
-		  <view style="display: flex; align-items: center;">
-			  <view style="font-size: 25rpx;">身份修改</view>
-			  <view style="margin-left: 30rpx;">
-				  <view style="padding:5rpx 15rpx; border:3rpx solid #00B39B; border-radius: 12rpx; background-color: #EAF8F6;">
-				  		<view style="font-size: 20rpx; color: #00B39B;">身份</view>
+	  <view class="card card-entry" @click="goIdentity">
+		  <view class="entry-row">
+			  <view class="entry-title">身份修改</view>
+			  <view class="entry-tag">
+				  <view>
+				  		<view class="entry-tag-text">身份</view>
 				  </view>
 			  </view>
-			  <image src="/static/images/continue.png" style="width: 15rpx; height:25rpx; position: absolute; right:45rpx"></image>
+			  <image class="entry-arrow" src="/static/images/continue.png"></image>
 		  </view>
 	  </view>
 	  
-	  <view class="card" style="margin-top: 20rpx; padding-bottom:40rpx; position: relative;">
-	  		  <view style="display: flex; align-items: center;">
-	  			  <view style="font-size: 25rpx;">修改手机号</view>
-	  			  <image src="/static/images/continue.png" style="width: 15rpx; height:25rpx; position: absolute; right:45rpx"></image>
+	  <view class="card card-entry" @click="goPhone">
+	  		  <view class="entry-row">
+	  			  <view class="entry-title">修改手机号</view>
+	  			  <image class="entry-arrow" src="/static/images/continue.png"></image>
 	  		  </view>
 	  </view>
-	  
+
+	  <!-- 保存 -->
+	  <view class="save-btn" @click="onSave">
+	  	<text class="save-text">保存</text>
+	  </view>
+
     </view>
   </view>
 </template>
@@ -69,13 +71,15 @@
 /**
  * 账号管理
  * 入口：「我的」页昵称行右侧「管理」按钮。
- * 数据：user/info（昵称/账号ID/头像）、userAuthInfo/info（姓名，取认证记录）；保存接口待后端提供。
+ * 数据：user/info（昵称/账号ID/头像）、userAuthInfo/info（姓名，取认证记录）。
+ * 保存：POST user/update（传哪些字段就保存哪些）。
  */
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
-import { getUserInfo } from '@/api/login'
+import { getUserInfo, updateUser } from '@/api/login'
 import { getAuthInfo } from '@/api/auth'
+import { uploadFile } from '@/api/upload'
 
 const form = ref({ nickname: '', name: '', accountId: '—', avatar: '' })
 
@@ -105,9 +109,36 @@ function loadName() {
   }).catch(() => {})
 }
 
-/** 更换头像：上传接口已有（oss/file/upload），保存到用户资料的接口待提供，先占位 */
+/** 更换头像：底部弹出「拍摄 / 在相册中选择」 */
 function onChangeAvatar() {
-  // TODO: chooseImage → uploadFile → 保存头像接口
+  uni.showActionSheet({
+    itemList: ['拍摄', '在相册中选择'],
+    success: (res) => {
+      if (res.tapIndex === 0) chooseAvatar('camera')
+      else if (res.tapIndex === 1) chooseAvatar('album')
+    }
+  })
+}
+
+/** 按来源选图 → 上传 OSS → 界面即时换新头像（点「保存」时随表单一并落库） */
+function chooseAvatar(sourceType) {
+  uni.chooseImage({
+    count: 1,
+    sizeType: ['compressed'],
+    sourceType: [sourceType],
+    success: (res) => {
+      const path = res.tempFilePaths && res.tempFilePaths[0]
+      if (!path) return
+      uni.showLoading({ title: '上传中...', mask: true })
+      uploadFile(path).then((url) => {
+        form.value.avatar = url
+      }).catch(() => {
+        /* 失败提示 uploadFile 内部已 toast */
+      }).finally(() => {
+        uni.hideLoading()
+      })
+    }
+  })
 }
 
 /** 复制账号ID到剪贴板（ID 未加载出来时不动作） */
@@ -117,6 +148,40 @@ function copyAccountId() {
   uni.setClipboardData({
     data: String(id),
     success: () => uni.showToast({ title: '已复制', icon: 'none' })
+  })
+}
+
+/** 身份修改：进身份选择页 */
+function goIdentity() {
+  uni.navigateTo({ url: '/pages/mine/identity' })
+}
+
+/** 修改手机号：进修改手机号页 */
+function goPhone() {
+  uni.navigateTo({ url: '/pages/mine/phone' })
+}
+
+const saving = ref(false)
+
+/** 保存：可编辑字段（昵称/头像）POST user/update（后端只更新传了的字段），成功后不重拉、界面即所见 */
+function onSave() {
+  if (saving.value) return
+  if (!form.value.nickname.trim()) {
+    return uni.showToast({ title: '请输入昵称', icon: 'none' })
+  }
+  saving.value = true
+  updateUser({
+    nickName: form.value.nickname.trim(),
+    avatar: form.value.avatar
+  }).then((res) => {
+    saving.value = false
+    if (res.code === 1) {
+      uni.showToast({ title: '已保存', icon: 'none' })
+    } else if (res.msg) {
+      uni.showToast({ title: res.msg, icon: 'none' })
+    }
+  }).catch(() => {
+    saving.value = false
   })
 }
 </script>
@@ -223,5 +288,73 @@ function copyAccountId() {
 .copy-text {
   color: #00b39b;
   font-size: 23rpx;
+}
+
+/* 输入行：值坐在横线上，右侧带一键清空按钮 */
+.input-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3rpx solid #edf1f5;
+}
+
+.clear-icon {
+  width: 25rpx;
+  height: 25rpx;
+}
+
+/* 入口卡（身份修改/修改手机号）：标题行 + 右侧箭头 */
+.card-entry {
+  margin-top: 20rpx;
+  padding-bottom: 40rpx;
+  position: relative;
+}
+
+.entry-row {
+  display: flex;
+  align-items: center;
+}
+
+.entry-title {
+  font-size: 25rpx;
+}
+
+/* 身份标签：主题绿描边小牌 */
+.entry-tag {
+  margin-left: 30rpx;
+  padding: 5rpx 15rpx;
+  border: 3rpx solid #00b39b;
+  border-radius: 12rpx;
+  background-color: #eaf8f6;
+}
+
+.entry-tag-text {
+  font-size: 20rpx;
+  color: #00b39b;
+}
+
+/* 右侧箭头（绝对定位贴卡片右边距，垂直沿用流内位置） */
+.entry-arrow {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  right: 45rpx;
+}
+
+/* 保存按钮（同结束服务申请页的提交按钮样式） */
+.save-btn {
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #03b098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40rpx;
+}
+
+.save-text {
+  font-size: 30rpx;
+  color: #ffffff;
+  font-weight: 550;
 }
 </style>

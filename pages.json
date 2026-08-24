@@ -37,7 +37,10 @@
     { "path": "pages/preview/large-view", "style": { "navigationStyle": "custom", "backgroundColor": "#000000", "navigationBarTextStyle": "white" } },
     { "path": "pages/agreement/index", "style": { "navigationBarTitleText": "", "navigationStyle": "custom", "app-plus": { "titleNView": false } } },
     { "path": "pages/placeholder/index", "style": { "navigationBarTitleText": "" } },
-	{ "path": "pages/mine/manage", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/manage", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/identity", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/phone", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/phone-new", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

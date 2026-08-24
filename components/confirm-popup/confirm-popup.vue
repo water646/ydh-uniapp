@@ -6,10 +6,10 @@
       </view>
       <view class="poconte">{{ message }}</view>
       <view class="pobuton">
-        <view class="poreturn" @click="close">
+        <view class="poreturn" v-if="showCancel" @click="close">
           <view class="poreturntext">取消</view>
         </view>
-        <view class="porenter" @click="onConfirm">
+        <view class="porenter" :class="{ single: !showCancel }" @click="onConfirm">
           <view class="porentertext">{{ confirmText }}</view>
         </view>
       </view>
@@ -25,7 +25,8 @@
 const props = defineProps({
   show: { type: Boolean, default: false },
   message: { type: String, default: '' },
-  confirmText: { type: String, default: '确定' }
+  confirmText: { type: String, default: '确定' },
+  showCancel: { type: Boolean, default: true } // 成功提示类弹窗可传 false 只留确定
 })
 
 const emit = defineEmits(['confirm', 'cancel'])
@@ -125,5 +126,10 @@ function onConfirm() {
   font-size: 28rpx;
   line-height: 72rpx;
   color: #ffffff;
+}
+
+/* 无取消按钮时：去掉与取消的间距，单独居中 */
+.porenter.single {
+  margin-left: 0;
 }
 </style>
