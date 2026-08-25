@@ -45,7 +45,9 @@
 	{ "path": "pages/mine/withdraw", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/bankcard", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/withdraw-result", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/bankcard-add", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/bankcard-add", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/feedback", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/feedback-add", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

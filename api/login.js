@@ -18,5 +18,11 @@ export const updateUser = (data) => request({ url: 'user/update', method: 'POST'
 /** POST user/phone 校验新手机号验证码，通过后后端自动更新手机号 Body{phone, code} */
 export const verifyPhone = (phone, code) => request({ url: 'user/phone', method: 'POST', data: { phone, code } })
 
+/** GET user/feedback/list 意见反馈记录 query{pageNo} */
+export const getFeedbackList = (pageNo) => request({ url: 'user/feedback/list', query: { pageNo } })
+
+/** POST user/feedback 提交意见反馈 Body{content, tag}（tag：建议/积极评价） */
+export const submitFeedback = (content, tag) => request({ url: 'user/feedback', method: 'POST', data: { content, tag } })
+
 /** GET statistics/page 同步统计数据（分页）query{gameId, pageNo} */
 export const synchr = (gameId, pageNo) => request({ url: 'statistics/page', query: { gameId, pageNo } })

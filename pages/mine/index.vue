@@ -45,14 +45,9 @@
         <view class="cell-title">我的认证</view>
         <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
       </view>
-      <view class="list-menu-cell" @click="myserClick()">
-        <image class="cell-imgb" src="/static/images/myser.png" mode=""></image>
-        <view class="cell-title">我的服务</view>
-        <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
-      </view>
-      <view class="list-menu-cell" @click="payhisClick()">
+      <view class="list-menu-cell" @click="goFeedback">
         <image class="cell-imgb" src="/static/images/mymoney.png" mode=""></image>
-        <view class="cell-title">打款历史</view>
+        <view class="cell-title">意见反馈</view>
         <image class="cell-next" src="/static/images/moicon.png" mode=""></image>
       </view>
       <view class="list-menu-cell" @click="goWallet">
@@ -82,7 +77,7 @@
 /**
  * 「我的」页（样式迁移自 F:/项目文件/UNIAPP/pages/minePage/minePage.vue）
  * 已接逻辑：user/info 显示手机号/账户ID/头像、userAuthInfo/info 认证徽章、退出登录（清 token 回登录页）。
- * 仍占位：我的服务/打款历史、头像上传、去认证跳转（认证页待做）。
+ * 仍占位：头像上传、去认证跳转（认证页待做）。
  */
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
@@ -201,8 +196,10 @@ const doManage=()=>{
 	})
 }
 
-function myserClick() {}
-function payhisClick() {}
+/** 意见反馈：进反馈记录列表页 */
+function goFeedback() {
+  uni.navigateTo({ url: '/pages/mine/feedback' })
+}
 
 /** 我的钱包：进钱包页（内容待做，当前为空白页） */
 function goWallet() {
