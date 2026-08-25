@@ -8,7 +8,7 @@
 <script setup>
 /**
  * 启动/闪屏页（对应 loadingActivity）
- * 运行时申请权限 -> 1s 后按登录态路由：已登录->main，未登录->login
+ * 运行时申请权限 -> 1s 后按登录态路由：已登录->home，未登录->身份选择页
  */
 import { onLoad } from '@dcloudio/uni-app'
 import { useUserStore } from '@/store/user'
@@ -21,7 +21,7 @@ onLoad(() => {
       if (userStore.isLogin) {
         uni.reLaunch({ url: '/pages/home/index' })
       } else {
-        uni.reLaunch({ url: '/pages/login/index' })
+        uni.reLaunch({ url: '/pages/identity/index' })
       }
     }, 1000)
   })

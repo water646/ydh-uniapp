@@ -85,7 +85,14 @@ function onConfirm() {
   font-weight: 500;
   font-size: 32rpx;
   color: #414141;
-  line-height: 182rpx;
+  /* 支持多行（message 传 \n）：flex 垂直居中，pre-line 让 \n 生效 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 48rpx;
+  white-space: pre-line;
+  padding: 0 30rpx;
+  box-sizing: border-box;
 }
 
 .pobuton {

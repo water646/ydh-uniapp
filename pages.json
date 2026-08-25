@@ -10,6 +10,7 @@
   "pages": [
     { "path": "pages/loading/index", "style": { "navigationStyle": "custom", "disableScroll": true } },
     { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录", "navigationStyle": "custom" } },
+    { "path": "pages/identity/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/home/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/mine/index", "style": { "navigationStyle": "custom" } },
