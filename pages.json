@@ -41,7 +41,11 @@
 	{ "path": "pages/mine/identity", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/phone", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/phone-new", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/wallet", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/wallet", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/withdraw", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/bankcard", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/withdraw-result", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/bankcard-add", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

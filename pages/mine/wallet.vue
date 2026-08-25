@@ -9,27 +9,26 @@
         <p>我的钱包</p>
       </view>
 	  
-	  <view style="display: flex; justify-content: center; flex-direction: column;">
-			<view style="flex:1; position: relative; margin: 50rpx 20rpx; background: linear-gradient(rgba(255,255,255,0.3),rgba(255,255,255,1),rgba(255,255,255,1)	); border-radius: 20rpx; border: 4rpx solid white; padding:20rpx; display: flex; flex-direction: column; align-items: center; z-index:2;">
-				<view style="color:#8B8B8B; margin-top: 20rpx; font-size: 26rpx;">钱包余额(元)</view>
-				<view style="margin-top: 45rpx; color: #00B39B; font-size: 48rpx; font-weight: bold;">12345.00</view>
-				<view style="color: #C0C0C0; font-size: 24rpx; margin-top: 10rpx;">提现金额少于300元收取0.5元手续费</view>
-				
-				<view style="background-color: #00B39B; width: 300rpx; height:68rpx; margin-top: 20rpx; border-radius:34rpx;display: flex;align-items: center;justify-content: center; z-index: 2;">
-					<view style="color: white;">提现</view>
+	  <view class="balance-area">
+			<view class="balance-card">
+				<view class="balance-label">钱包余额(元)</view>
+				<view class="balance-num">{{ balance }}</view>
+				<view class="balance-tip">提现金额少于300元收取0.5元手续费</view>
+
+				<view class="withdraw-btn" @click="goWithdraw">
+					<view class="withdraw-btn-text">提现</view>
 				</view>
-				<image src="/static/images/transparent_coin.png" style="position: absolute; width: 350rpx; height:270rpx; bottom:0; right:0;"></image>
+				<image class="coin-img" src="/static/images/transparent_coin.png"></image>
 			</view>
-			
-			<view style="flex:1; margin: 0 20rpx; position:relative; background:linear-gradient(#00C9BB,rgba(0,201,187,0.55)) ; border-radius: 20rpx; padding:55rpx 25rpx 25rpx 25rpx; display: flex; align-items: center; justify-content: space-between; bottom:80rpx">
-				
-				<view style="display: flex; align-items: center;gap:10rpx;">
-					<image src="/static/images/bankcard.png" style="width: 32rpx; height: 25rpx;"></image>
-					<p style="color: white; font-size: 25rpx;">银行卡</p>
+
+			<view class="bank-card" @click="goBankcard">
+				<view class="bank-left">
+					<image class="bank-icon" src="/static/images/bankcard.png"></image>
+					<p class="bank-title">银行卡</p>
 				</view>
-				<image src="/static/images/golook.png" style="width: 20rpx; height:20rpx"></image>
+				<image class="bank-arrow" src="/static/images/golook.png"></image>
 			</view>
-			
+
 	  </view>
 	  
     <!-- 明细类型 tab：黑色字体，选中绿色下划线，贴 topcontent 底部居中 -->
@@ -44,7 +43,7 @@
       <view v-for="o in incomeList" :key="o.id" class="order-card">
         <view class="card-top">
           <view class="card-match">金额: {{ amountFmt(o) }}元</view>
-          <view class="card-status" style="color:#B3B3B3">收入时间:{{ o.paymentTime || '—' }}</view>
+          <view class="card-status">收入时间:{{ o.paymentTime || '—' }}</view>
         </view> 
 		
 		<view class="card-top">
@@ -74,31 +73,46 @@
 <script setup>
 /**
  * 我的钱包
- * 入口：「我的」页「我的钱包」菜单；收入明细取 rest/userServiceOrder/list?status=6（已打款），提现明细接口待定。
+ * 入口：「我的」页「我的钱包」菜单；余额取 user/info 的 balance，
+ * 收入明细取 rest/userServiceOrder/list?status=6（已打款，isPaid===1），提现明细接口待定。
  */
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getOrderList } from '@/api/order'
-import { stText, stColor } from '@/utils/order-status'
+import { getUserInfo } from '@/api/login'
 
 // 当前明细类型：income 收入明细 / withdraw 提现明细
 const tab = ref('income')
+
+// 钱包余额（user/info 的 balance，两位小数展示）
+const balance = ref('0.00')
 
 // 收入明细列表
 const loading = ref(false)
 const incomeList = ref([])
 
 onShow(() => {
+  loadBalance()
   loadIncome()
 })
 
-/** 收入明细：拉 list 接口 status=6（已打款）第一页（分页加载后续需要再加） */
+/** 余额：user/info 的 balance */
+function loadBalance() {
+  getUserInfo().then((res) => {
+    if (res.code === 1 && res.data) {
+      const n = Number(res.data.balance || 0)
+      balance.value = isNaN(n) ? '0.00' : n.toFixed(2)
+    }
+  }).catch(() => {})
+}
+
+/** 收入明细：拉 list 接口 status=6（已打款）第一页，只留 isPaid===1 的记录（分页加载后续需要再加） */
 function loadIncome() {
   loading.value = true
   getOrderList({ pageNo: 1, status: 6 }).then((res) => {
     if (res.code === 1) {
-      incomeList.value = (res.data && res.data.list) || []
-	  incomeList.value.filter(item=>item.isPaid===1)
+      const list = (res.data && res.data.list) || []
+      incomeList.value = list.filter((item) => item.isPaid === 1)
     }
   }).finally(() => {
     loading.value = false
@@ -109,6 +123,16 @@ function loadIncome() {
 function amountFmt(o) {
   const n = Number(o.amountDue || 0)
   return isNaN(n) ? '0.00' : n.toFixed(2)
+}
+
+/** 提现：进提现页（选银行卡 + 输金额，提交接口待定） */
+function goWithdraw() {
+  uni.navigateTo({ url: '/pages/mine/withdraw' })
+}
+
+/** 银行卡条：进银行卡列表页（查看已绑卡/添加） */
+function goBankcard() {
+  uni.navigateTo({ url: '/pages/mine/bankcard' })
 }
 
 function onBack() {
@@ -160,6 +184,108 @@ function onBack() {
   padding-top: 60rpx;
 }
 
+/* 余额/银行卡区（标题与 tab 之间） */
+.balance-area {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* 余额卡片：白色渐变底 + 白描边 */
+.balance-card {
+  flex: 1;
+  position: relative;
+  margin: 50rpx 20rpx;
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
+  border-radius: 20rpx;
+  border: 4rpx solid #ffffff;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.balance-label {
+  color: #8B8B8B;
+  margin-top: 20rpx;
+  font-size: 26rpx;
+}
+
+.balance-num {
+  margin-top: 45rpx;
+  color: #00B39B;
+  font-size: 48rpx;
+  font-weight: bold;
+}
+
+.balance-tip {
+  color: #C0C0C0;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+
+/* 提现按钮（主题绿胶囊） */
+.withdraw-btn {
+  background-color: #00B39B;
+  width: 300rpx;
+  height: 68rpx;
+  margin-top: 20rpx;
+  border-radius: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.withdraw-btn-text {
+  color: #ffffff;
+}
+
+/* 装饰金币图（余额卡片右下角） */
+.coin-img {
+  position: absolute;
+  width: 350rpx;
+  height: 270rpx;
+  bottom: 0;
+  right: 0;
+}
+
+/* 银行卡条：主题绿渐变 */
+.bank-card {
+  flex: 1;
+  margin: 0 20rpx;
+  position: relative;
+  background: linear-gradient(#00C9BB, rgba(0, 201, 187, 0.55));
+  border-radius: 20rpx;
+  padding: 55rpx 25rpx 25rpx 25rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  bottom: 80rpx;
+}
+
+.bank-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.bank-icon {
+  width: 32rpx;
+  height: 25rpx;
+}
+
+.bank-title {
+  color: #ffffff;
+  font-size: 25rpx;
+}
+
+.bank-arrow {
+  width: 20rpx;
+  height: 20rpx;
+}
+
 /* 明细 tab：贴 topcontent 底部居中，下划线紧贴底边 */
 .tabs {
   margin-top: auto;
@@ -208,9 +334,10 @@ function onBack() {
   color: #333333;
 }
 
-/* 状态文字颜色随订单状态枚举变化 */
+/* 收入时间（卡片右上，浅灰） */
 .card-status {
   font-size: 24rpx;
+  color: #B3B3B3;
 }
 
 .card-line {
