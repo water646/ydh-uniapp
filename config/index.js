@@ -9,7 +9,7 @@ export const config = {
    * false => 走真实后端接口（baseUrl）
    * 测试完毕请改回 false。
    */
-  useMock: true,
+  useMock: false,
   /** Retrofit baseUrl：对应 Api.APP_DOMAIN。本地联调：localhost:9898；测完换回生产（下一行） */
   baseUrl: 'http://localhost:9898/ydh-service/',
   // baseUrl: 'http://app.ydh123.com/ydh-service/',
