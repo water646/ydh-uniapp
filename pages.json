@@ -51,7 +51,9 @@
 	{ "path": "pages/mine/feedback", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/feedback-add", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/certify", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/certify-face", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/certify-face", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/certify-success", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/certify-fail", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

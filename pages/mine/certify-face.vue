@@ -34,7 +34,7 @@
 /**
  * 人脸识别预备页
  * 入口：实名认证页通过姓名/身份证校验后进入（携带 name）；
- * 勾选协议后点「同意协议并认证」进入识别流程（识别方案待定）。
+ * 勾选协议后点「同意协议并认证」进认证成功页（识别方案待定，暂直达）。
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
@@ -50,13 +50,12 @@ onLoad((opt) => {
   realName.value = opt && opt.name ? decodeURIComponent(opt.name) : ''
 })
 
-/** 同意协议并认证：未勾选先提示，勾选后进入识别流程（待接入） */
+/** 同意协议并认证：识别流程未接入，暂直达成功页（方案确定后在此调起识别） */
 function onAgreeCertify() {
   if (!agreed.value) {
     return uni.showToast({ title: '请先同意认证服务协议', icon: 'none' })
   }
-  // TODO: 人脸识别方案确定后在此调起识别
-  uni.showToast({ title: '识别流程待接入', icon: 'none' })
+  uni.navigateTo({ url: '/pages/mine/certify-success' })
 }
 
 /** 暂不认证：返回上一页 */

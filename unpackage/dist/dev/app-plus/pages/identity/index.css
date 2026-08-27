@@ -1,0 +1,531 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+/**
+ * vue版本动画内置的动画模式有如下：
+ * fade：淡入
+ * zoom：缩放
+ * fade-zoom：缩放淡入
+ * fade-up：上滑淡入
+ * fade-down：下滑淡入
+ * fade-left：左滑淡入
+ * fade-right：右滑淡入
+ * slide-up：上滑进入
+ * slide-down：下滑进入
+ * slide-left：左滑进入
+ * slide-right：右滑进入
+ */
+.u-fade-enter-active[data-v-0573594d],
+.u-fade-leave-active[data-v-0573594d] {
+  transition-property: opacity;
+}
+.u-fade-enter[data-v-0573594d],
+.u-fade-leave-to[data-v-0573594d] {
+  opacity: 0;
+}
+.u-fade-zoom-enter[data-v-0573594d],
+.u-fade-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+  opacity: 0;
+}
+.u-fade-zoom-enter-active[data-v-0573594d],
+.u-fade-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform, opacity;
+}
+.u-fade-down-enter-active[data-v-0573594d],
+.u-fade-down-leave-active[data-v-0573594d],
+.u-fade-left-enter-active[data-v-0573594d],
+.u-fade-left-leave-active[data-v-0573594d],
+.u-fade-right-enter-active[data-v-0573594d],
+.u-fade-right-leave-active[data-v-0573594d],
+.u-fade-up-enter-active[data-v-0573594d],
+.u-fade-up-leave-active[data-v-0573594d] {
+  transition-property: opacity, transform;
+}
+.u-fade-up-enter[data-v-0573594d],
+.u-fade-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+}
+.u-fade-down-enter[data-v-0573594d],
+.u-fade-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+}
+.u-fade-left-enter[data-v-0573594d],
+.u-fade-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+  opacity: 0;
+}
+.u-fade-right-enter[data-v-0573594d],
+.u-fade-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+  opacity: 0;
+}
+.u-slide-down-enter-active[data-v-0573594d],
+.u-slide-down-leave-active[data-v-0573594d],
+.u-slide-left-enter-active[data-v-0573594d],
+.u-slide-left-leave-active[data-v-0573594d],
+.u-slide-right-enter-active[data-v-0573594d],
+.u-slide-right-leave-active[data-v-0573594d],
+.u-slide-up-enter-active[data-v-0573594d],
+.u-slide-up-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-slide-up-enter[data-v-0573594d],
+.u-slide-up-leave-to[data-v-0573594d] {
+  transform: translate3d(0, 100%, 0);
+}
+.u-slide-down-enter[data-v-0573594d],
+.u-slide-down-leave-to[data-v-0573594d] {
+  transform: translate3d(0, -100%, 0);
+}
+.u-slide-left-enter[data-v-0573594d],
+.u-slide-left-leave-to[data-v-0573594d] {
+  transform: translate3d(-100%, 0, 0);
+}
+.u-slide-right-enter[data-v-0573594d],
+.u-slide-right-leave-to[data-v-0573594d] {
+  transform: translate3d(100%, 0, 0);
+}
+.u-zoom-enter-active[data-v-0573594d],
+.u-zoom-leave-active[data-v-0573594d] {
+  transition-property: transform;
+}
+.u-zoom-enter[data-v-0573594d],
+.u-zoom-leave-to[data-v-0573594d] {
+  transform: scale(0.95);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-overlay[data-v-35f7c3e5] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-status-bar[data-v-c0b45a48] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-icon[data-v-1c933a9a] {
+  display: flex;
+  align-items: center;
+}
+.u-icon--left[data-v-1c933a9a] {
+  flex-direction: row-reverse;
+  align-items: center;
+}
+.u-icon--right[data-v-1c933a9a] {
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon--top[data-v-1c933a9a] {
+  flex-direction: column-reverse;
+  justify-content: center;
+}
+.u-icon--bottom[data-v-1c933a9a] {
+  flex-direction: column;
+  justify-content: center;
+}
+.u-icon__icon[data-v-1c933a9a] {
+  font-family: uicon-iconfont;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.u-icon__icon--primary[data-v-1c933a9a] {
+  color: #29a871;
+}
+.u-icon__icon--success[data-v-1c933a9a] {
+  color: var(--up-success, var(--u-success, #5ac725));
+}
+.u-icon__icon--error[data-v-1c933a9a] {
+  color: #ff2d2d;
+}
+.u-icon__icon--warning[data-v-1c933a9a] {
+  color: #ff6f21;
+}
+.u-icon__icon--info[data-v-1c933a9a] {
+  color: var(--up-info, var(--u-info, #909399));
+}
+.u-icon__img[data-v-1c933a9a] {
+  height: auto;
+  will-change: transform;
+}
+.u-icon__label[data-v-1c933a9a] {
+  line-height: 1;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-safe-bottom[data-v-3ec581de] {
+  width: 100%;
+}
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.u-popup[data-v-74921bef] {
+  flex: 1;
+}
+.u-popup__trigger[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__trigger__cover[data-v-74921bef] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.u-popup__content[data-v-74921bef] {
+  position: relative;
+}
+.u-popup__content--round-top[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-left[data-v-74921bef] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content--round-right[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-bottom[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.u-popup__content--round-center[data-v-74921bef] {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.u-popup__content__touch-area[data-v-74921bef] {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.3125rem;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.u-popup__content__indicator[data-v-74921bef] {
+  width: 100px;
+  height: 5px;
+  border-radius: 100px;
+  background-color: var(--up-light-color, #c0c4cc);
+}
+.u-popup__content__close[data-v-74921bef] {
+  position: absolute;
+}
+.u-popup__content__close--hover[data-v-74921bef] {
+  opacity: 0.4;
+}
+.u-popup__content__close--top-left[data-v-74921bef] {
+  top: 15px;
+  left: 15px;
+}
+.u-popup__content__close--top-right[data-v-74921bef] {
+  top: 15px;
+  right: 15px;
+}
+.u-popup__content__close--bottom-left[data-v-74921bef] {
+  bottom: 15px;
+  left: 15px;
+}
+.u-popup__content__close--bottom-right[data-v-74921bef] {
+  right: 15px;
+  bottom: 15px;
+}
+
+.popblcok[data-v-d6c9ccb3] {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 999;
+}
+.popwindow[data-v-d6c9ccb3] {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 19.0625rem;
+  height: 12.3125rem;
+  top: 40%;
+  background-color: #fff;
+  border-radius: 1.25rem;
+  overflow: visible;
+}
+.potobgc[data-v-d6c9ccb3] {
+  width: 19.0625rem;
+  height: 3.25rem;
+  background: linear-gradient(180deg, rgba(27, 208, 184, 0.33) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+.pupmainicon[data-v-d6c9ccb3] {
+  width: 4.4375rem;
+  height: 4.4375rem;
+  margin-top: -2rem;
+}
+.poconte[data-v-d6c9ccb3] {
+  height: 5.6875rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #414141;
+  /* 支持多行（message 传 \n）：flex 垂直居中，pre-line 让 \n 生效 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5rem;
+  white-space: pre-line;
+  padding: 0 0.9375rem;
+  box-sizing: border-box;
+}
+.pobuton[data-v-d6c9ccb3] {
+  display: flex;
+  margin: 0 auto;
+}
+.poreturn[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #e9e9e9;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+}
+.poreturntext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #333333;
+}
+.porenter[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #00b39b;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+  margin-left: 1.5rem;
+}
+.porentertext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #ffffff;
+}
+
+/* 无取消按钮时：去掉与取消的间距，单独居中 */
+.porenter.single[data-v-d6c9ccb3] {
+  margin-left: 0;
+}
+
+
+.page[data-v-d94739c3] {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+.hero[data-v-d94739c3] {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* 白色卡片：负 margin 上移覆盖主图底部约 60rpx，左右留 20rpx 空隙，高度撑到页面底部 */
+.panel[data-v-d94739c3] {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  background-color: #ffffff;
+  border-radius: 0.9375rem;
+  box-shadow: 0 -0.125rem 0.625rem rgba(0, 0, 0, 0.08);
+  margin: -1.875rem 0.625rem 0;
+}
+
+/* 卡片左上角标题 */
+.panel-title[data-v-d94739c3] {
+  font-size: 1.0625rem;
+  font-weight: bold;
+  color: #333333;
+  padding: 1.125rem 1rem 0;
+}
+
+/* 身份宫格：四行三列 */
+.panel-grid[data-v-d94739c3] {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 1.125rem 1.1875rem 0;
+}
+.grid-item[data-v-d94739c3] {
+  width: 6.25rem;
+  height: 1.875rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  color: #333333;
+  font-size: 0.78125rem;
+  margin-bottom: 0.75rem;
+}
+
+/* 选中态：淡绿底 + 主题绿字与描边（可多选） */
+.grid-item.active[data-v-d94739c3] {
+  background-color: #EAF8F6;
+  color: #00B39B;
+  border: 0.09375rem solid #00B39B;
+}
+
+/* 城市选择条：淡绿底圆角，居中文字 + 右箭头 */
+.city-picker[data-v-d94739c3] {
+  height: 3.0625rem;
+  background-color: #EAF8F6;
+  margin: 1rem;
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.city-text[data-v-d94739c3] {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333333;
+  margin-right: 0.3125rem;
+}
+.city-arrow[data-v-d94739c3] {
+  width: 0.25rem;
+  height: 0.625rem;
+}
+
+/* 弹层宿主：零尺寸固定定位，避免 u-popup 根节点参与 flex 布局把白色卡片顶起 */
+.popup-host[data-v-d94739c3] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 999;
+}
+
+/* 城市选择弹层（同提现页换卡弹层样式） */
+.sheet[data-v-d94739c3] {
+  padding: 0.9375rem 0 0.625rem;
+}
+.sheet-title[data-v-d94739c3] {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #999999;
+  margin-bottom: 0.3125rem;
+}
+.sheet-row[data-v-d94739c3] {
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #333333;
+  border-top: 0.03125rem solid #f1f2f6;
+}
+.sheet-cancel[data-v-d94739c3] {
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  text-align: center;
+  color: #999999;
+  font-size: 0.875rem;
+  border-top: 0.15625rem solid #f1f2f6;
+}
+
+/* 居中包裹（按钮所在行） */
+.center-wrap[data-v-d94739c3] {
+  display: flex;
+  justify-content: center;
+}
+
+/* 加入按钮：主题绿胶囊白字 */
+.join-btn[data-v-d94739c3] {
+  width: 19.375rem;
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #00B39B;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}

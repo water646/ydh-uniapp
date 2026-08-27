@@ -1,0 +1,229 @@
+
+.page[data-v-d346a3d5] {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+/* 悬浮返回键：状态栏下方一点，左上角（同身份选择页） */
+.back-btn[data-v-d346a3d5] {
+  position: fixed;
+  top: calc(var(--status-bar-height) + 0.75rem);
+  left: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  z-index: 10;
+}
+
+/* 顶部背景（与 mine 页 .topcontent 同款） */
+.topcontent[data-v-d346a3d5] {
+  width: 100%;
+  min-height: 20rem;
+  box-sizing: content-box;
+  /* 沉浸式状态栏：内容整体下移状态栏高度，背景图拉伸铺满 */
+  padding-top: var(--status-bar-height);
+  background: url('../../static/images/minbgctop.png') no-repeat;
+  background-size: 100% 100%;
+  top: 0;
+  left: 0;
+  /* 纵向排列：标题在上，tab 沉底 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 页面标题（我的钱包，同 mine 页「个人中心」标题样式） */
+.pagetitle[data-v-d346a3d5] {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.875rem;
+}
+
+/* 余额/银行卡区（标题与 tab 之间） */
+.balance-area[data-v-d346a3d5] {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* 余额卡片：白色渐变底 + 白描边 */
+.balance-card[data-v-d346a3d5] {
+  flex: 1;
+  position: relative;
+  margin: 1.5625rem 0.625rem;
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
+  border-radius: 0.625rem;
+  border: 0.125rem solid #ffffff;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+.balance-label[data-v-d346a3d5] {
+  color: #8B8B8B;
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+}
+.balance-num[data-v-d346a3d5] {
+  margin-top: 1.40625rem;
+  color: #00B39B;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.balance-tip[data-v-d346a3d5] {
+  color: #C0C0C0;
+  font-size: 0.75rem;
+  margin-top: 0.3125rem;
+}
+
+/* 提现按钮（主题绿胶囊） */
+.withdraw-btn[data-v-d346a3d5] {
+  background-color: #00B39B;
+  width: 9.375rem;
+  height: 2.125rem;
+  margin-top: 0.625rem;
+  border-radius: 1.0625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.withdraw-btn-text[data-v-d346a3d5] {
+  color: #ffffff;
+}
+
+/* 装饰金币图（余额卡片右下角） */
+.coin-img[data-v-d346a3d5] {
+  position: absolute;
+  width: 10.9375rem;
+  height: 8.4375rem;
+  bottom: 0;
+  right: 0;
+}
+
+/* 银行卡条：主题绿渐变 */
+.bank-card[data-v-d346a3d5] {
+  flex: 1;
+  margin: 0 0.625rem;
+  position: relative;
+  background: linear-gradient(#00C9BB, rgba(0, 201, 187, 0.55));
+  border-radius: 0.625rem;
+  padding: 1.71875rem 0.78125rem 0.78125rem 0.78125rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  bottom: 2.5rem;
+}
+.bank-left[data-v-d346a3d5] {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+.bank-icon[data-v-d346a3d5] {
+  width: 1rem;
+  height: 0.78125rem;
+}
+.bank-title[data-v-d346a3d5] {
+  color: #ffffff;
+  font-size: 0.78125rem;
+}
+.bank-arrow[data-v-d346a3d5] {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+/* 明细 tab：贴 topcontent 底部居中，下划线紧贴底边 */
+.tabs[data-v-d346a3d5] {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  gap: 2.8125rem;
+}
+
+/* 单个 tab：未选中 #414141 字 + 透明下划线占位（选中变黑字绿下划线，不跳动） */
+.tab[data-v-d346a3d5] {
+  font-size: 0.875rem;
+  color: #414141;
+  padding: 0.375rem 0.125rem;
+  border-bottom: 0.1875rem solid transparent;
+}
+.tab.active[data-v-d346a3d5] {
+  color: #000000;
+  border-bottom: 0.1875rem solid #00b39b;
+}
+
+/* 明细列表区 */
+.list-area[data-v-d346a3d5] {
+  padding: 0.75rem 0.75rem 1.25rem;
+}
+
+/* 单笔订单卡片（白卡圆角，同账号管理页卡片质感） */
+.order-card[data-v-d346a3d5] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 0.875rem;
+  margin-bottom: 0.625rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+}
+.card-top[data-v-d346a3d5] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.card-match[data-v-d346a3d5] {
+  font-size: 0.9375rem;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 收入时间（卡片右上，浅灰） */
+.card-status[data-v-d346a3d5] {
+  font-size: 0.75rem;
+  color: #B3B3B3;
+}
+.card-line[data-v-d346a3d5] {
+  display: flex;
+  margin-top: 0.3125rem;
+}
+.card-label[data-v-d346a3d5] {
+  width: 4.375rem;
+  font-size: 0.78125rem;
+  color: #999999;
+}
+.card-value[data-v-d346a3d5] {
+  flex: 1;
+  font-size: 0.78125rem;
+  color: #333333;
+}
+
+/* 卡片底部：打款信息 + 金额 */
+.card-bottom[data-v-d346a3d5] {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  border-top: 0.0625rem solid #edf1f5;
+}
+.card-pay[data-v-d346a3d5] {
+  font-size: 0.6875rem;
+  color: #999999;
+}
+.card-amount[data-v-d346a3d5] {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #00b39b;
+}
+.card-unit[data-v-d346a3d5] {
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-left: 0.1875rem;
+}
+
+/* 空列表占位 */
+.empty[data-v-d346a3d5] {
+  text-align: center;
+  color: #bbbbbb;
+  font-size: 0.8125rem;
+  padding: 2.5rem 0;
+}

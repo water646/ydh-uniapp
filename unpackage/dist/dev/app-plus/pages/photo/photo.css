@@ -86,6 +86,11 @@
   height: 3.125rem;
   margin: 3.125rem auto 1.5625rem auto;
 }
+
+/* 空态文字 */
+.no-data-text[data-v-5140b150] {
+  color: #BBBBBB;
+}
 .no-data[data-v-5140b150] {
   display: flex;
   flex-direction: column;

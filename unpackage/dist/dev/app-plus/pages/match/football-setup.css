@@ -751,8 +751,8 @@ to {
   justify-content: center;
 }
 .back[data-v-1b09776d] {
-  width: 3.125rem;
-  height: 3.125rem;
+  width: 2.0625rem;
+  height: 2.0625rem;
 }
 .nav-title[data-v-1b09776d] {
   position: absolute;
@@ -855,6 +855,9 @@ to {
 }
 .sync-btn.disabled[data-v-1153092f] {
   background-color: #cccccc;
+}
+.sync-btn.start[data-v-1153092f] {
+  background-color: #29a871;
 }
 .progress[data-v-1153092f] {
   margin-top: 0.625rem;
@@ -1015,6 +1018,16 @@ to {
 .op.on[data-v-f8ca6510] {
   background-color: #29a871;
   color: #ffffff;
+}
+
+/* 到场：未到场绿色（点击签到），已到场置灰（点击取消到场） */
+.op.sign[data-v-f8ca6510] {
+  background-color: #29a871;
+  color: #ffffff;
+}
+.op.sign.on[data-v-f8ca6510] {
+  background-color: #f2f2f2;
+  color: #999999;
 }
 .op.del[data-v-f8ca6510] {
   background-color: #ffeeee;

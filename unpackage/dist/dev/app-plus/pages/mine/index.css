@@ -39,7 +39,14 @@
   font-weight: 500;
   font-size: 1rem;
   color: #414141;
-  line-height: 5.6875rem;
+  /* 支持多行（message 传 \n）：flex 垂直居中，pre-line 让 \n 生效 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5rem;
+  white-space: pre-line;
+  padding: 0 0.9375rem;
+  box-sizing: border-box;
 }
 .pobuton[data-v-d6c9ccb3] {
   display: flex;
@@ -77,9 +84,17 @@
   color: #ffffff;
 }
 
+/* 无取消按钮时：去掉与取消的间距，单独居中 */
+.porenter.single[data-v-d6c9ccb3] {
+  margin-left: 0;
+}
+
 
 .page[data-v-569e925a] {
   min-height: 100vh;
+  /* 顶栏 + 白卡片纵向排列，白卡片撑满剩余高度 */
+  display: flex;
+  flex-direction: column;
   background-color: #f8f8f8;
 }
 .topcontent[data-v-569e925a] {
@@ -93,10 +108,17 @@
   top: 0;
   left: 0;
 }
+
+/* 页面标题（个人中心） */
+.pagetitle[data-v-569e925a] {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.875rem;
+}
 .personblcok[data-v-569e925a] {
   display: flex;
   align-items: center;
-  padding-top: 3.4375rem;
+  padding-top: 2.5rem;
 }
 .perphone[data-v-569e925a] {
   width: 3.75rem;
@@ -107,7 +129,14 @@
 .permess[data-v-569e925a] {
   display: flex;
   flex-direction: column;
-  margin-left: 1.875rem;
+  margin-left: 0.46875rem;
+}
+
+/* 昵称行：认证徽章 + 昵称横向排列 */
+.namerow[data-v-569e925a] {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
 }
 .mestop[data-v-569e925a] {
   height: 1.375rem;
@@ -119,18 +148,26 @@
 }
 .mestop-text[data-v-569e925a] {
   margin-left: 0.25rem;
+  font-weight: bold;
 }
 .mesbot[data-v-569e925a] {
   display: flex;
   margin-top: 0.625rem;
+  margin-left: 0.75rem;
 }
 .idmes[data-v-569e925a] {
   height: 0.875rem;
   font-weight: 400;
-  font-size: 0.625rem;
+  font-size: 0.71875rem;
   color: #333333;
   line-height: 0.875rem;
   text-align: left;
+}
+
+/* 复制按钮（账户ID后，主题绿） */
+.copy-btn[data-v-569e925a] {
+  margin-left: 0.46875rem;
+  color: #00b39b;
 }
 .idmesimg[data-v-569e925a] {
   width: 2.4375rem;
@@ -143,7 +180,7 @@
 }
 .idtext[data-v-569e925a] {
   height: 0.875rem;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 0.5rem;
   color: #333333;
   line-height: 0.875rem;
@@ -157,10 +194,8 @@
 }
 .funbtn[data-v-569e925a] {
   flex: 1;
-  height: 3.75rem;
-  border-radius: 0.625rem;
-  background: #00b39b;
-  box-shadow: 0 0.25rem 0.625rem rgba(0, 179, 155, 0.25);
+  height: 4.0625rem;
+  border-radius: 0.9375rem;
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 500;
@@ -171,15 +206,50 @@
 .funbtn + .funbtn[data-v-569e925a] {
   margin-left: 0.75rem;
 }
+
+/* 两个快捷入口的渐变底色 */
+.funbtn-stats[data-v-569e925a] {
+  background: linear-gradient(to right, #D3FBC7, #E6FFEA);
+}
+.funbtn-live[data-v-569e925a] {
+  background: linear-gradient(to right, #C9E5FF, #DFF1FD);
+}
+
+/* 入口文字（黑字）与右下装饰图 */
+.funbtn-text[data-v-569e925a] {
+  color: #000000;
+}
+.funbtn-img[data-v-569e925a] {
+  width: 4.6875rem;
+  height: 4.6875rem;
+  position: relative;
+  bottom: 0.625rem;
+}
+
+/* 白卡片：撑满顶栏之外的剩余高度，直到底部 */
 .bolist[data-v-569e925a] {
   width: 100%;
-  min-height: calc(100vh - 17.875rem);
-  border-top-left-radius: 1.25rem;
-  border-top-right-radius: 1.25rem;
+  flex: 1;
+  border-radius: 1.5625rem 1.5625rem 0 0;
+  box-shadow: 0 -0.0625rem 0.09375rem rgba(0, 0, 0, 0.05);
   z-index: 1;
   margin-top: -1.875rem;
   background-color: #fff;
   padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 底部版本信息：贴在白卡片最底部 */
+.pagefoot[data-v-569e925a] {
+  margin-top: auto;
+  padding: 0.9375rem 0 1.25rem;
+  text-align: center;
+}
+.pagefoot-text[data-v-569e925a] {
+  font-size: 0.625rem;
+  color: #bbbbbb;
+  line-height: 1rem;
 }
 .list-menu-cell[data-v-569e925a] {
   width: 21.1875rem;

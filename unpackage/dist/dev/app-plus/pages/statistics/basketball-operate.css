@@ -643,7 +643,7 @@
 .person-card[data-v-ef0dfe21] {
   width: 4.375rem;
   height: 2.5rem;
-  padding: 0.3125rem;
+  padding: 0.15625rem 0.3125rem;
   margin: 0.3125rem;
   background-color: #FFFFFF;
   display: flex;
@@ -682,8 +682,8 @@
   left: 4%;
 }
 .person-ball[data-v-ef0dfe21] {
-  width: 0.375rem;
-  height: 0.375rem;
+  width: 0.4375rem;
+  height: 0.4375rem;
   padding: 0.5625rem;
   border-radius: 50%;
   background-color: red;
@@ -707,7 +707,7 @@
   background-color: #F8F8F8;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  padding: 0.15625rem;
 }
 .player[data-v-ef0dfe21] {
   display: flex;
@@ -756,6 +756,17 @@
   flex: 1;
   min-height: 0;
   margin-bottom: 0.625rem;
+}
+
+/* 最近一次操作提示白框（按钮集合上方，新操作覆盖旧的） */
+.record-chip[data-v-ef0dfe21] {
+  background-color: #ffffff;
+  border: 0.03125rem solid #e5e5e5;
+  border-radius: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  margin-bottom: 0.3125rem;
+  font-size: 0.8125rem;
+  color: #333333;
 }
 .action-grid[data-v-ef0dfe21] {
   display: flex;

@@ -1,0 +1,146 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.custom-nav[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-status[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-content[data-v-1b09776d] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.nav-left[data-v-1b09776d] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back[data-v-1b09776d] {
+  width: 2.0625rem;
+  height: 2.0625rem;
+}
+.nav-title[data-v-1b09776d] {
+  position: absolute;
+  left: 2.8125rem;
+  right: 2.8125rem;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.0625rem;
+  color: #000000;
+  font-weight: 500;
+  pointer-events: none;
+}
+.nav-right[data-v-1b09776d] {
+  min-width: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.625rem;
+}
+.nav-line[data-v-1b09776d] {
+  height: 0.03125rem;
+  background-color: #d9d9d9;
+}
+
+.page[data-v-e44480dc] {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 主体区（顶栏不套此容器，保证白色顶栏铺满屏幕边角含状态栏） */
+.body[data-v-e44480dc] {
+  padding: 0.75rem;
+}
+
+/* 白色卡片 */
+.card[data-v-e44480dc] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 0.875rem;
+}
+
+/* 第二张卡片与第一张的间距 */
+.card-gap[data-v-e44480dc] {
+  margin-top: 0.625rem;
+}
+
+/* 反馈类型标题 */
+.tag-title[data-v-e44480dc] {
+  font-size: 0.78125rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 0.75rem;
+}
+
+/* 类型标签：单选胶囊，选中主题绿描边 */
+.tag-row[data-v-e44480dc] {
+  display: flex;
+}
+.tag-item[data-v-e44480dc] {
+  padding: 0.4375rem 1.375rem;
+  border-radius: 1rem;
+  border: 0.0625rem solid #dddddd;
+  color: #666666;
+  font-size: 0.8125rem;
+}
+.tag-item + .tag-item[data-v-e44480dc] {
+  margin-left: 0.75rem;
+}
+.tag-item.active[data-v-e44480dc] {
+  border-color: #00B39B;
+  color: #00B39B;
+  background-color: rgba(0, 179, 155, 0.08);
+}
+.fb-textarea[data-v-e44480dc] {
+  width: 100%;
+  height: 9.375rem;
+  font-size: 0.875rem;
+  color: #333333;
+  line-height: 1.25rem;
+}
+.ph-gray[data-v-e44480dc] {
+  color: #bbbbbb;
+}
+
+/* 字数统计：卡片右下角 */
+.fb-count[data-v-e44480dc] {
+  text-align: right;
+  font-size: 0.6875rem;
+  color: #bbbbbb;
+  margin-top: 0.375rem;
+}
+
+/* 居中包裹（按钮所在行） */
+.center-wrap[data-v-e44480dc] {
+  display: flex;
+  justify-content: center;
+}
+
+/* 提交按钮：主题绿胶囊 */
+.submit-btn[data-v-e44480dc] {
+  width: 19.375rem;
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #00B39B;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.875rem;
+}

@@ -39,7 +39,14 @@
   font-weight: 500;
   font-size: 1rem;
   color: #414141;
-  line-height: 5.6875rem;
+  /* 支持多行（message 传 \n）：flex 垂直居中，pre-line 让 \n 生效 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5rem;
+  white-space: pre-line;
+  padding: 0 0.9375rem;
+  box-sizing: border-box;
 }
 .pobuton[data-v-d6c9ccb3] {
   display: flex;
@@ -75,6 +82,11 @@
   font-size: 0.875rem;
   line-height: 2.25rem;
   color: #ffffff;
+}
+
+/* 无取消按钮时：去掉与取消的间距，单独居中 */
+.porenter.single[data-v-d6c9ccb3] {
+  margin-left: 0;
 }
 
 

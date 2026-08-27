@@ -1,0 +1,198 @@
+
+.popblcok[data-v-d6c9ccb3] {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 999;
+}
+.popwindow[data-v-d6c9ccb3] {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 19.0625rem;
+  height: 12.3125rem;
+  top: 40%;
+  background-color: #fff;
+  border-radius: 1.25rem;
+  overflow: visible;
+}
+.potobgc[data-v-d6c9ccb3] {
+  width: 19.0625rem;
+  height: 3.25rem;
+  background: linear-gradient(180deg, rgba(27, 208, 184, 0.33) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+.pupmainicon[data-v-d6c9ccb3] {
+  width: 4.4375rem;
+  height: 4.4375rem;
+  margin-top: -2rem;
+}
+.poconte[data-v-d6c9ccb3] {
+  height: 5.6875rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #414141;
+  /* 支持多行（message 传 \n）：flex 垂直居中，pre-line 让 \n 生效 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5rem;
+  white-space: pre-line;
+  padding: 0 0.9375rem;
+  box-sizing: border-box;
+}
+.pobuton[data-v-d6c9ccb3] {
+  display: flex;
+  margin: 0 auto;
+}
+.poreturn[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #e9e9e9;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+}
+.poreturntext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #333333;
+}
+.porenter[data-v-d6c9ccb3] {
+  width: 6.25rem;
+  height: 2.25rem;
+  background: #00b39b;
+  border-radius: 1.125rem;
+  display: flex;
+  justify-content: center;
+  margin-left: 1.5rem;
+}
+.porentertext[data-v-d6c9ccb3] {
+  height: 2.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+  color: #ffffff;
+}
+
+/* 无取消按钮时：去掉与取消的间距，单独居中 */
+.porenter.single[data-v-d6c9ccb3] {
+  margin-left: 0;
+}
+
+
+.page[data-v-061abb29] {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* 悬浮返回键：状态栏下方一点，左上角（同上一页） */
+.back-btn[data-v-061abb29] {
+  position: fixed;
+  top: calc(var(--status-bar-height) + 0.75rem);
+  left: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  z-index: 10;
+}
+
+/* 标题：与返回键同一水平带，居中，无分隔线 */
+.nav-title[data-v-061abb29] {
+  position: fixed;
+  top: calc(var(--status-bar-height) + 1.25rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #333333;
+}
+
+/* 新手机号区 */
+.content[data-v-061abb29] {
+  padding-top: 6.25rem;
+}
+.phone-box[data-v-061abb29] {
+  margin-left: 3.125rem;
+  margin-bottom: 1.5625rem;
+}
+.phone-label[data-v-061abb29] {
+  font-size: 0.78125rem;
+  margin-bottom: 0.875rem;
+}
+
+/* 新手机号输入：坐在空白横线上（字号同上一页的手机号展示） */
+.new-phone-input[data-v-061abb29] {
+  width: 17.1875rem;
+  height: 1.875rem;
+  font-size: 1.09375rem;
+  color: #333333;
+  border-bottom: 0.09375rem solid #edf1f5;
+  margin-bottom: 0.875rem;
+}
+.ph-gray[data-v-061abb29] {
+  color: #bbbbbb;
+  font-size: 0.78125rem;
+}
+
+/* 居中包裹（胶囊/按钮所在行） */
+.center-wrap[data-v-061abb29] {
+  display: flex;
+  justify-content: center;
+}
+
+/* 验证码胶囊：左 2/3 输入区，右 1/3 获取按钮（主题绿） */
+.code-bar[data-v-061abb29] {
+  display: flex;
+  align-items: center;
+  width: 19.375rem;
+  height: 2.125rem;
+  border-radius: 1.375rem;
+  background-color: #ffffff;
+  border: 0.09375rem solid #f2f3f5;
+  overflow: hidden;
+}
+.code-input[data-v-061abb29] {
+  flex: 1;
+  height: 2.75rem;
+  padding: 0 0.9375rem;
+  font-size: 0.875rem;
+  color: #333333;
+}
+.code-btn[data-v-061abb29] {
+  width: 33%;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00b39b;
+  color: #ffffff;
+  font-size: 0.6875rem;
+}
+
+/* 倒计时中：置灰不可再点 */
+.code-btn.counting[data-v-061abb29] {
+  background-color: #cacaca;
+}
+
+/* 下一步按钮：与验证码胶囊同宽（始终可点） */
+.next-btn[data-v-061abb29] {
+  width: 19.375rem;
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #00b39b;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.875rem;
+}

@@ -100,7 +100,7 @@
 					</view>
 					<view class="team-cell">
 						<text class="score">{{ g.guestTeamScore }}</text>
-						<view class="action-btn green" @click="goStatsDetail(g)">技术统计</view>
+						<view class="action-btn green" style="transform: translateY(-50%);" @click="goStatsDetail(g)">技术统计</view>
 					</view>
 				</view>
 			</view>

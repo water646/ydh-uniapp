@@ -1,0 +1,101 @@
+
+.page[data-v-bad7965c] {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* 悬浮返回键：状态栏下方一点，左上角（同身份选择页） */
+.back-btn[data-v-bad7965c] {
+  position: fixed;
+  top: calc(var(--status-bar-height) + 0.75rem);
+  left: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  z-index: 10;
+}
+
+/* 标题：与返回键同一水平带，居中，无分隔线 */
+.nav-title[data-v-bad7965c] {
+  position: fixed;
+  top: calc(var(--status-bar-height) + 1.25rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.0625rem;
+  /* font-weight: bold; */
+  color: #333333;
+}
+
+/* 原手机号区 */
+.content[data-v-bad7965c] {
+  padding-top: 6.25rem;
+}
+.phone-box[data-v-bad7965c] {
+  margin-left: 3.125rem;
+  margin-bottom: 1.5625rem;
+}
+.phone-label[data-v-bad7965c]{
+  font-size: 0.78125rem;
+  margin-bottom: 0.875rem;
+}
+.phone-num[data-v-bad7965c] {
+  font-size: 1.09375rem;
+  margin-bottom: 0.875rem;
+}
+
+/* 居中包裹（胶囊/按钮所在行） */
+.center-wrap[data-v-bad7965c] {
+  display: flex;
+  justify-content: center;
+}
+
+/* 下一步按钮：与验证码胶囊同宽（始终可点） */
+.next-btn[data-v-bad7965c] {
+  width: 19.375rem;
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #00b39b;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.875rem;
+}
+
+/* 验证码胶囊：左 2/3 输入区（浅灰底），右 1/3 获取按钮（主题绿） */
+.code-bar[data-v-bad7965c] {
+  display: flex;
+  align-items: center;
+  width: 19.375rem;
+  height: 2.125rem;
+  border-radius: 1.375rem;
+  background-color: #ffffff;
+  border:0.09375rem solid #f2f3f5;
+  overflow: hidden;
+}
+.code-input[data-v-bad7965c] {
+  flex: 1;
+  height: 2.75rem;
+  padding: 0 0.9375rem;
+  font-size: 0.875rem;
+  color: #333333;
+}
+.code-ph[data-v-bad7965c] {
+  color: #bbbbbb;
+}
+.code-btn[data-v-bad7965c] {
+  width: 33%;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00b39b;
+  color: #ffffff;
+  font-size: 0.6875rem;
+}
+
+/* 倒计时中：置灰不可再点 */
+.code-btn.counting[data-v-bad7965c] {
+  background-color: #cacaca;
+}

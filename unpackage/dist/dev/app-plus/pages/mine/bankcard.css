@@ -1,0 +1,129 @@
+/**
+ * uView Plus 主题变量 + 项目品牌色/字号体系
+ * 对应 Android colors.xml / dimens.xml / styles.xml
+ */
+/* ========== 品牌色（colors.xml） ========== */
+/* ========== 文字层级 ========== */
+/* ========== 背景与分割线 ========== */
+/* ========== uView 主题覆盖 ========== */
+/* ========== 字号体系（dimens.xml，1dp≈2rpx） ========== */
+/* ========== 通用尺寸 ========== */
+.custom-nav[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-status[data-v-1b09776d] {
+  background-color: #ffffff;
+}
+.nav-content[data-v-1b09776d] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.nav-left[data-v-1b09776d] {
+  width: 2.8125rem;
+  height: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back[data-v-1b09776d] {
+  width: 2.0625rem;
+  height: 2.0625rem;
+}
+.nav-title[data-v-1b09776d] {
+  position: absolute;
+  left: 2.8125rem;
+  right: 2.8125rem;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.0625rem;
+  color: #000000;
+  font-weight: 500;
+  pointer-events: none;
+}
+.nav-right[data-v-1b09776d] {
+  min-width: 2.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.625rem;
+}
+.nav-line[data-v-1b09776d] {
+  height: 0.03125rem;
+  background-color: #d9d9d9;
+}
+
+.page[data-v-b29eef19] {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  /* 给底部固定按钮留出空间 */
+  padding-bottom: 5rem;
+}
+
+/* 主体区（顶栏不套此容器，保证白色顶栏铺满屏幕边角含状态栏） */
+.body[data-v-b29eef19] {
+  padding: 0.75rem;
+}
+
+/* 单张银行卡卡片：主题绿渐变（同钱包页银行卡条） */
+.carditem[data-v-b29eef19] {
+  background: linear-gradient(#00C9BB, rgba(0, 201, 187, 0.55));
+  border-radius: 0.625rem;
+  padding: 0.9375rem 0.875rem;
+  margin-bottom: 0.625rem;
+}
+.carditem-top[data-v-b29eef19] {
+  display: flex;
+  align-items: center;
+}
+.carditem-icon[data-v-b29eef19] {
+  width: 1rem;
+  height: 0.78125rem;
+  margin-right: 0.375rem;
+}
+.carditem-bank[data-v-b29eef19] {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+.carditem-num[data-v-b29eef19] {
+  color: #ffffff;
+  font-size: 0.9375rem;
+  margin-top: 0.625rem;
+  letter-spacing: 0.0625rem;
+}
+.carditem-holder[data-v-b29eef19] {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.6875rem;
+  margin-top: 0.375rem;
+}
+
+/* 底部添加按钮：主题绿胶囊，固定贴底 */
+.add-btn[data-v-b29eef19] {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 1.25rem;
+  height: 2.75rem;
+  border-radius: 1.375rem;
+  background-color: #00B39B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-btn-text[data-v-b29eef19] {
+  color: #ffffff;
+  font-size: 0.9375rem;
+}
+
+/* 未绑卡占位 */
+.empty[data-v-b29eef19] {
+  text-align: center;
+  color: #bbbbbb;
+  font-size: 0.8125rem;
+  padding: 2.5rem 0;
+}
