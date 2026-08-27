@@ -2200,7 +2200,7 @@ This will fail in production.`);
     }
     return target;
   };
-  const _sfc_main$12 = {
+  const _sfc_main$13 = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -2244,7 +2244,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$11(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$12(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "loading" }, [
       vue.createElementVNode("image", {
         class: "bg",
@@ -2254,9 +2254,9 @@ This will fail in production.`);
       vue.createElementVNode("view", { class: "brand" }, "智能技术台")
     ]);
   }
-  const PagesLoadingIndex = /* @__PURE__ */ _export_sfc(_sfc_main$12, [["render", _sfc_render$11], ["__scopeId", "data-v-ce0ef2b6"], ["__file", "F:/项目文件/uniapp版本/pages/loading/index.vue"]]);
+  const PagesLoadingIndex = /* @__PURE__ */ _export_sfc(_sfc_main$13, [["render", _sfc_render$12], ["__scopeId", "data-v-ce0ef2b6"], ["__file", "F:/项目文件/uniapp版本/pages/loading/index.vue"]]);
   const _imports_0$f = "/static/mipmap-xxhdpi/black_back.png";
-  const _sfc_main$11 = {
+  const _sfc_main$12 = {
     __name: "custom-nav",
     props: {
       title: { type: String, default: "" },
@@ -2284,7 +2284,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$10(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$11(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "custom-nav" }, [
       vue.createElementVNode(
         "view",
@@ -2331,7 +2331,7 @@ This will fail in production.`);
       vue.createElementVNode("view", { class: "nav-line" })
     ]);
   }
-  const customNav = /* @__PURE__ */ _export_sfc(_sfc_main$11, [["render", _sfc_render$10], ["__scopeId", "data-v-1b09776d"], ["__file", "F:/项目文件/uniapp版本/components/custom-nav/custom-nav.vue"]]);
+  const customNav = /* @__PURE__ */ _export_sfc(_sfc_main$12, [["render", _sfc_render$11], ["__scopeId", "data-v-1b09776d"], ["__file", "F:/项目文件/uniapp版本/components/custom-nav/custom-nav.vue"]]);
   const E = (value, desc) => ({ value, desc });
   const EB = (value, desc, boolean) => ({ value, desc, boolean });
   const ok = (data, msg = "ok") => ({ status: 1, code: 1, msg, data });
@@ -2833,6 +2833,7 @@ This will fail in production.`);
   }
   const getNote = (phone) => request({ url: "sms/login", method: "POST", data: { phone } });
   const validateLogin = (phone, code2) => request({ url: "user/login", method: "POST", data: { phone, code: code2 } });
+  const wechatLogin = (code2) => request({ url: "user/wechat-login", method: "POST", data: { code: code2 } });
   const getUserInfo = () => request({ url: "user/info" });
   const updateUser = (data) => request({ url: "user/update", method: "POST", data });
   const verifyPhone = (phone, code2) => request({ url: "user/phone", method: "POST", data: { phone, code: code2 } });
@@ -3135,8 +3136,9 @@ This will fail in production.`);
   function checkPhone(phone) {
     return /^1[3-9]\d{9}$/.test(phone);
   }
-  const _imports_0$e = "/static/advertdown.png";
-  const _sfc_main$10 = {
+  const _imports_0$e = "/static/images/wechaticon.png";
+  const _imports_1$a = "/static/advertdown.png";
+  const _sfc_main$11 = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -3193,6 +3195,25 @@ This will fail in production.`);
           uni.showToast({ title: res.msg || "登录失败", icon: "none" });
         }
       }
+      function onWechatLogin() {
+        uni.login({
+          provider: "weixin",
+          success: (loginRes) => {
+            wechatLogin(loginRes.code).then((res) => {
+              if (res.code === 1) {
+                userStore.setAuth(String(res.data));
+                uni.reLaunch({ url: "/pages/home/index" });
+              } else {
+                uni.showToast({ title: res.msg || "微信登录失败", icon: "none" });
+              }
+            });
+          },
+          fail: (err) => {
+            uni.showToast({ title: "微信登录不可用", icon: "none" });
+            formatAppLog("log", "at pages/login/index.vue:120", "[wechat-login] uni.login fail:", err && err.errMsg);
+          }
+        });
+      }
       function goAgreement(type) {
         uni.navigateTo({ url: "/pages/agreement/index?type=" + type });
       }
@@ -3208,10 +3229,12 @@ This will fail in production.`);
         return currentTime;
       }, set currentTime(v) {
         currentTime = v;
-      }, sendCode, startCountDown, doLogin, goAgreement, ref: vue.ref, onUnmounted: vue.onUnmounted, customNav, get getNote() {
+      }, sendCode, startCountDown, doLogin, onWechatLogin, goAgreement, ref: vue.ref, onUnmounted: vue.onUnmounted, customNav, get getNote() {
         return getNote;
       }, get validateLogin() {
         return validateLogin;
+      }, get wechatLogin() {
+        return wechatLogin;
       }, get useUserStore() {
         return useUserStore;
       }, get checkPhone() {
@@ -3223,7 +3246,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$$(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$10(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "login" }, [
       vue.createVNode($setup["customNav"], {
         title: "登录",
@@ -3294,16 +3317,27 @@ This will fail in production.`);
             class: "link",
             onClick: _cache[3] || (_cache[3] = ($event) => $setup.goAgreement(2))
           }, "《隐私政策》")
+        ]),
+        vue.createElementVNode("view", {
+          class: "wx-login",
+          onClick: $setup.onWechatLogin
+        }, [
+          vue.createElementVNode("image", {
+            class: "wx-icon",
+            src: _imports_0$e,
+            mode: "aspectFit"
+          }),
+          vue.createElementVNode("text", { class: "wx-text" }, "微信登录")
         ])
       ]),
       vue.createElementVNode("image", {
         class: "bottom-logo",
-        src: _imports_0$e,
+        src: _imports_1$a,
         mode: "widthFix"
       })
     ]);
   }
-  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$10, [["render", _sfc_render$$], ["__scopeId", "data-v-d08ef7d4"], ["__file", "F:/项目文件/uniapp版本/pages/login/index.vue"]]);
+  const PagesLoginIndex = /* @__PURE__ */ _export_sfc(_sfc_main$11, [["render", _sfc_render$10], ["__scopeId", "data-v-d08ef7d4"], ["__file", "F:/项目文件/uniapp版本/pages/login/index.vue"]]);
   const defineMixin = (options) => {
     return options;
   };
@@ -5845,7 +5879,7 @@ This will fail in production.`);
       }
     }
   };
-  const _sfc_main$$ = {
+  const _sfc_main$10 = {
     name: "u-transition",
     data() {
       return {
@@ -5889,7 +5923,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$_(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$$(_ctx, _cache, $props, $setup, $data, $options) {
     return $data.inited ? (vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -5907,7 +5941,7 @@ This will fail in production.`);
       /* CLASS, STYLE, NEED_HYDRATION */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_4 = /* @__PURE__ */ _export_sfc(_sfc_main$$, [["render", _sfc_render$_], ["__scopeId", "data-v-0573594d"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-transition/u-transition.vue"]]);
+  const __easycom_4 = /* @__PURE__ */ _export_sfc(_sfc_main$10, [["render", _sfc_render$$], ["__scopeId", "data-v-0573594d"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-transition/u-transition.vue"]]);
   const OverlayDefaultProps = {
     // overlay组件
     overlay: {
@@ -5942,7 +5976,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$_ = {
+  const _sfc_main$$ = {
     name: "u-overlay",
     mixins: [mpMixin, mixin, props$9],
     computed: {
@@ -5966,7 +6000,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$Z(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$_(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_4);
     return vue.openBlock(), vue.createBlock(_component_u_transition, {
       show: _ctx.show,
@@ -5983,7 +6017,7 @@ This will fail in production.`);
       /* FORWARDED */
     }, 8, ["show", "duration", "custom-style", "onClick", "onTouchmove"]);
   }
-  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$_, [["render", _sfc_render$Z], ["__scopeId", "data-v-35f7c3e5"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
+  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$$, [["render", _sfc_render$_], ["__scopeId", "data-v-35f7c3e5"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
   const StatusBarDefaultProps = {
     // statusBar
     statusBar: {
@@ -6005,7 +6039,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$Z = {
+  const _sfc_main$_ = {
     name: "u-status-bar",
     mixins: [mpMixin, mixin, props$8],
     data() {
@@ -6031,7 +6065,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$Y(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$Z(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -6045,7 +6079,7 @@ This will fail in production.`);
       /* CLASS, STYLE */
     );
   }
-  const __easycom_1$3 = /* @__PURE__ */ _export_sfc(_sfc_main$Z, [["render", _sfc_render$Y], ["__scopeId", "data-v-c0b45a48"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
+  const __easycom_1$3 = /* @__PURE__ */ _export_sfc(_sfc_main$_, [["render", _sfc_render$Z], ["__scopeId", "data-v-c0b45a48"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
   const icons = {
     "uicon-level": "",
     "uicon-column-line": "",
@@ -6419,7 +6453,7 @@ This will fail in production.`);
     params,
     loadFont
   };
-  const _sfc_main$Y = {
+  const _sfc_main$Z = {
     name: "u-icon",
     beforeCreate() {
       if (!fontUtil.params.loaded) {
@@ -6487,7 +6521,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$X(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$Y(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -6530,12 +6564,12 @@ This will fail in production.`);
       /* CLASS */
     );
   }
-  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$Y, [["render", _sfc_render$X], ["__scopeId", "data-v-1c933a9a"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-icon/u-icon.vue"]]);
+  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$Z, [["render", _sfc_render$Y], ["__scopeId", "data-v-1c933a9a"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-icon/u-icon.vue"]]);
   registerComponentProps({ safeBottom: {} });
   const props$6 = defineMixin({
     props: {}
   });
-  const _sfc_main$X = {
+  const _sfc_main$Y = {
     name: "u-safe-bottom",
     mixins: [mpMixin, mixin, props$6],
     data() {
@@ -6553,7 +6587,7 @@ This will fail in production.`);
     mounted() {
     }
   };
-  function _sfc_render$W(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$X(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -6565,7 +6599,7 @@ This will fail in production.`);
       /* CLASS, STYLE */
     );
   }
-  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$X, [["render", _sfc_render$W], ["__scopeId", "data-v-3ec581de"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
+  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$Y, [["render", _sfc_render$X], ["__scopeId", "data-v-3ec581de"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
   const PopupDefaultProps = {
     // popup组件
     popup: {
@@ -6690,7 +6724,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$W = {
+  const _sfc_main$X = {
     name: "u-popup",
     mixins: [mpMixin, mixin, props$5],
     data() {
@@ -6874,7 +6908,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$V(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$W(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_overlay = resolveEasycom(vue.resolveDynamicComponent("u-overlay"), __easycom_0$4);
     const _component_u_status_bar = resolveEasycom(vue.resolveDynamicComponent("u-status-bar"), __easycom_1$3);
     const _component_up_icon = resolveEasycom(vue.resolveDynamicComponent("up-icon"), __easycom_0$3);
@@ -6988,9 +7022,9 @@ This will fail in production.`);
       /* CLASS, STYLE */
     );
   }
-  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$W, [["render", _sfc_render$V], ["__scopeId", "data-v-74921bef"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-popup/u-popup.vue"]]);
+  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$X, [["render", _sfc_render$W], ["__scopeId", "data-v-74921bef"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-popup/u-popup.vue"]]);
   const _imports_0$d = "/static/images/pupmainicon.png";
-  const _sfc_main$V = {
+  const _sfc_main$W = {
     __name: "confirm-popup",
     props: {
       show: { type: Boolean, default: false },
@@ -7015,7 +7049,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$U(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$V(_ctx, _cache, $props, $setup, $data, $options) {
     return $props.show ? (vue.openBlock(), vue.createElementBlock("view", {
       key: 0,
       class: "popblcok",
@@ -7070,10 +7104,10 @@ This will fail in production.`);
       ])
     ])) : vue.createCommentVNode("v-if", true);
   }
-  const confirmPopup = /* @__PURE__ */ _export_sfc(_sfc_main$V, [["render", _sfc_render$U], ["__scopeId", "data-v-d6c9ccb3"], ["__file", "F:/项目文件/uniapp版本/components/confirm-popup/confirm-popup.vue"]]);
+  const confirmPopup = /* @__PURE__ */ _export_sfc(_sfc_main$W, [["render", _sfc_render$V], ["__scopeId", "data-v-d6c9ccb3"], ["__file", "F:/项目文件/uniapp版本/components/confirm-popup/confirm-popup.vue"]]);
   const _imports_0$c = "/static/images/shouyepic.png";
-  const _imports_1$8 = "/static/images/choosecity.png";
-  const _sfc_main$U = {
+  const _imports_1$9 = "/static/images/choosecity.png";
+  const _sfc_main$V = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -7124,7 +7158,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$T(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$U(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("image", {
@@ -7164,7 +7198,7 @@ This will fail in production.`);
           !$setup.city ? (vue.openBlock(), vue.createElementBlock("image", {
             key: 0,
             class: "city-arrow",
-            src: _imports_1$8
+            src: _imports_1$9
           })) : vue.createCommentVNode("v-if", true)
         ]),
         vue.createElementVNode("view", { class: "center-wrap" }, [
@@ -7207,7 +7241,7 @@ This will fail in production.`);
       }, null, 8, ["show"])
     ]);
   }
-  const PagesIdentityIndex = /* @__PURE__ */ _export_sfc(_sfc_main$U, [["render", _sfc_render$T], ["__scopeId", "data-v-d94739c3"], ["__file", "F:/项目文件/uniapp版本/pages/identity/index.vue"]]);
+  const PagesIdentityIndex = /* @__PURE__ */ _export_sfc(_sfc_main$V, [["render", _sfc_render$U], ["__scopeId", "data-v-d94739c3"], ["__file", "F:/项目文件/uniapp版本/pages/identity/index.vue"]]);
   const getOrderList = (params2) => request({ url: "rest/userServiceOrder/list", query: params2, hideError: false });
   const editOrder = (data) => request({ url: "rest/userServiceOrder/edit", method: "POST", data });
   const STATUS_MAP = {
@@ -7228,8 +7262,8 @@ This will fail in production.`);
     return STATUS_MAP[s] && STATUS_MAP[s].color || "#AFAFAF";
   }
   const _imports_0$b = "/static/images/locicon.png";
-  const _imports_1$7 = "/static/images/otwo.png";
-  const _sfc_main$T = {
+  const _imports_1$8 = "/static/images/otwo.png";
+  const _sfc_main$U = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -7370,7 +7404,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$S(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$T(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("view", { class: "topbar" }, [
         vue.createElementVNode("view", { class: "loc" }, [
@@ -7455,7 +7489,7 @@ This will fail in production.`);
               vue.createElementVNode("view", { class: "info-line" }, [
                 vue.createElementVNode("image", {
                   class: "info-icon",
-                  src: _imports_1$7
+                  src: _imports_1$8
                 }),
                 vue.createElementVNode(
                   "p",
@@ -7468,7 +7502,7 @@ This will fail in production.`);
               vue.createElementVNode("view", { class: "info-line" }, [
                 vue.createElementVNode("image", {
                   class: "info-icon",
-                  src: _imports_1$7
+                  src: _imports_1$8
                 }),
                 vue.createElementVNode(
                   "p",
@@ -7481,7 +7515,7 @@ This will fail in production.`);
               vue.createElementVNode("view", { class: "info-line" }, [
                 vue.createElementVNode("image", {
                   class: "info-icon",
-                  src: _imports_1$7
+                  src: _imports_1$8
                 }),
                 vue.createElementVNode(
                   "p",
@@ -7494,7 +7528,7 @@ This will fail in production.`);
               vue.createElementVNode("view", { class: "info-line" }, [
                 vue.createElementVNode("image", {
                   class: "info-icon",
-                  src: _imports_1$7
+                  src: _imports_1$8
                 }),
                 vue.createElementVNode(
                   "p",
@@ -7507,7 +7541,7 @@ This will fail in production.`);
               vue.createElementVNode("view", { class: "info-line" }, [
                 vue.createElementVNode("image", {
                   class: "info-icon",
-                  src: _imports_1$7
+                  src: _imports_1$8
                 }),
                 vue.createElementVNode(
                   "p",
@@ -7598,7 +7632,7 @@ This will fail in production.`);
       }, null, 8, ["show", "message"])
     ]);
   }
-  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$T, [["render", _sfc_render$S], ["__scopeId", "data-v-4978fed5"], ["__file", "F:/项目文件/uniapp版本/pages/home/index.vue"]]);
+  const PagesHomeIndex = /* @__PURE__ */ _export_sfc(_sfc_main$U, [["render", _sfc_render$T], ["__scopeId", "data-v-4978fed5"], ["__file", "F:/项目文件/uniapp版本/pages/home/index.vue"]]);
   const getMatchList = (status, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/list-my-manage`, query: { status } });
   const getMember = (gameTeamId) => request({ url: "statistics/member/list", query: { gameTeamId } });
   const getGameDetail = (gameId, sport = SportType.BASKETBALL) => request({ url: `${sportPrefix(sport)}game/{gameId}/detail`, path: { gameId } });
@@ -7680,9 +7714,9 @@ This will fail in production.`);
     uni.$off(event, callback);
   }
   const _imports_0$a = "/static/mipmap-xhdpi/lianxi.png";
-  const _imports_1$6 = "/static/mipmap-xhdpi/tuichu.png";
-  const _imports_1$5 = "/static/mipmap-xxhdpi/no_shuju.png";
-  const _sfc_main$S = {
+  const _imports_1$7 = "/static/mipmap-xhdpi/tuichu.png";
+  const _imports_1$6 = "/static/mipmap-xxhdpi/no_shuju.png";
+  const _sfc_main$T = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -7911,7 +7945,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$R(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$S(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "main" }, [
       vue.createVNode($setup["customNav"], { title: "智能技术台" }, {
@@ -8000,7 +8034,7 @@ This will fail in production.`);
             }, [
               vue.createElementVNode("image", {
                 class: "exit-icon",
-                src: _imports_1$6
+                src: _imports_1$7
               }),
               vue.createElementVNode("view", { class: "exit-text" }, "退出登录")
             ]),
@@ -8195,7 +8229,7 @@ This will fail in production.`);
         }, [
           vue.createElementVNode("image", {
             class: "no-data-img",
-            src: _imports_1$5,
+            src: _imports_1$6,
             mode: "aspectFit"
           }),
           vue.createElementVNode("view", { class: "no-data-text" }, "暂无数据")
@@ -8286,8 +8320,8 @@ This will fail in production.`);
       }, 8, ["show"])
     ]);
   }
-  const PagesMainIndex = /* @__PURE__ */ _export_sfc(_sfc_main$S, [["render", _sfc_render$R], ["__scopeId", "data-v-d311227b"], ["__file", "F:/项目文件/uniapp版本/pages/main/index.vue"]]);
-  const _sfc_main$R = {
+  const PagesMainIndex = /* @__PURE__ */ _export_sfc(_sfc_main$T, [["render", _sfc_render$S], ["__scopeId", "data-v-d311227b"], ["__file", "F:/项目文件/uniapp版本/pages/main/index.vue"]]);
+  const _sfc_main$S = {
     __name: "stats",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -8482,7 +8516,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$Q(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$R(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "main" }, [
       vue.createVNode($setup["customNav"], { title: "技术统计" }, {
@@ -8571,7 +8605,7 @@ This will fail in production.`);
             }, [
               vue.createElementVNode("image", {
                 class: "exit-icon",
-                src: _imports_1$6
+                src: _imports_1$7
               }),
               vue.createElementVNode("view", { class: "exit-text" }, "退出登录")
             ]),
@@ -8766,7 +8800,7 @@ This will fail in production.`);
         }, [
           vue.createElementVNode("image", {
             class: "no-data-img",
-            src: _imports_1$5,
+            src: _imports_1$6,
             mode: "aspectFit"
           }),
           vue.createElementVNode("view", { class: "no-data-text" }, "暂无数据")
@@ -8814,16 +8848,16 @@ This will fail in production.`);
       }, 8, ["show"])
     ]);
   }
-  const PagesMainStats = /* @__PURE__ */ _export_sfc(_sfc_main$R, [["render", _sfc_render$Q], ["__scopeId", "data-v-4ffe64f1"], ["__file", "F:/项目文件/uniapp版本/pages/main/stats.vue"]]);
+  const PagesMainStats = /* @__PURE__ */ _export_sfc(_sfc_main$S, [["render", _sfc_render$R], ["__scopeId", "data-v-4ffe64f1"], ["__file", "F:/项目文件/uniapp版本/pages/main/stats.vue"]]);
   const getAuthInfo = () => request({ url: "rest/userAuthInfo/info" });
   const _imports_0$9 = "/static/images/skill.png";
-  const _imports_1$4 = "/static/images/live.png";
+  const _imports_1$5 = "/static/images/live.png";
   const _imports_2$4 = "/static/images/mycer.png";
   const _imports_3$1 = "/static/images/moicon.png";
   const _imports_4 = "/static/images/mymoney.png";
   const _imports_5 = "/static/images/money.png";
   const _imports_6 = "/static/images/myexit.png";
-  const _sfc_main$Q = {
+  const _sfc_main$R = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -8937,7 +8971,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$P(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$Q(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("view", { class: "topcontent" }, [
         vue.createElementVNode("view", { class: "pagetitle" }, [
@@ -9013,7 +9047,7 @@ This will fail in production.`);
             vue.createElementVNode("p", { class: "funbtn-text" }, "现场直播"),
             vue.createElementVNode("image", {
               class: "funbtn-img",
-              src: _imports_1$4
+              src: _imports_1$5
             })
           ])
         ]),
@@ -9095,7 +9129,7 @@ This will fail in production.`);
       }, null, 8, ["show", "message", "confirm-text"])
     ]);
   }
-  const PagesMineIndex = /* @__PURE__ */ _export_sfc(_sfc_main$Q, [["render", _sfc_render$P], ["__scopeId", "data-v-569e925a"], ["__file", "F:/项目文件/uniapp版本/pages/mine/index.vue"]]);
+  const PagesMineIndex = /* @__PURE__ */ _export_sfc(_sfc_main$R, [["render", _sfc_render$Q], ["__scopeId", "data-v-569e925a"], ["__file", "F:/项目文件/uniapp版本/pages/mine/index.vue"]]);
   function uploadFile(filePath, type = 9) {
     return new Promise((resolve, reject) => {
       uni.uploadFile({
@@ -9131,7 +9165,7 @@ This will fail in production.`);
   const _imports_0$8 = "/static/images/infoicon.png";
   const IMG_MAX = 9;
   const VIDEO_MAX = 3;
-  const _sfc_main$P = {
+  const _sfc_main$Q = {
     __name: "finish-service",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -9220,7 +9254,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$O(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$P(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "结束服务申请" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -9411,7 +9445,7 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesOrderFinishService = /* @__PURE__ */ _export_sfc(_sfc_main$P, [["render", _sfc_render$O], ["__scopeId", "data-v-3ddd820a"], ["__file", "F:/项目文件/uniapp版本/pages/order/finish-service.vue"]]);
+  const PagesOrderFinishService = /* @__PURE__ */ _export_sfc(_sfc_main$Q, [["render", _sfc_render$P], ["__scopeId", "data-v-3ddd820a"], ["__file", "F:/项目文件/uniapp版本/pages/order/finish-service.vue"]]);
   const BadgeDefaultProps = {
     // 徽标数组件
     badge: {
@@ -9508,7 +9542,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$O = {
+  const _sfc_main$P = {
     name: "u-badge",
     mixins: [mpMixin, props$4, mixin],
     computed: {
@@ -9554,7 +9588,7 @@ This will fail in production.`);
       addStyle
     }
   };
-  function _sfc_render$N(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$O(_ctx, _cache, $props, $setup, $data, $options) {
     return _ctx.show && ((Number(_ctx.value) === 0 ? _ctx.showZero : true) || _ctx.isDot) ? (vue.openBlock(), vue.createElementBlock(
       "text",
       {
@@ -9567,7 +9601,7 @@ This will fail in production.`);
       /* TEXT, CLASS, STYLE */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_1$2 = /* @__PURE__ */ _export_sfc(_sfc_main$O, [["render", _sfc_render$N], ["__scopeId", "data-v-aa9883b1"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-badge/u-badge.vue"]]);
+  const __easycom_1$2 = /* @__PURE__ */ _export_sfc(_sfc_main$P, [["render", _sfc_render$O], ["__scopeId", "data-v-aa9883b1"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-badge/u-badge.vue"]]);
   const TabsDefaultProps = {
     //
     tabs: {
@@ -9668,7 +9702,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$N = {
+  const _sfc_main$O = {
     name: "u-tabs",
     mixins: [mpMixin, mixin, props$3],
     data() {
@@ -9888,7 +9922,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$M(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$N(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_up_icon = resolveEasycom(vue.resolveDynamicComponent("up-icon"), __easycom_0$3);
     const _component_u_badge = resolveEasycom(vue.resolveDynamicComponent("u-badge"), __easycom_1$2);
     return vue.openBlock(), vue.createElementBlock(
@@ -10035,7 +10069,7 @@ This will fail in production.`);
       /* CLASS */
     );
   }
-  const __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$N, [["render", _sfc_render$M], ["__scopeId", "data-v-0546c3e4"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-tabs/u-tabs.vue"]]);
+  const __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$O, [["render", _sfc_render$N], ["__scopeId", "data-v-0546c3e4"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-tabs/u-tabs.vue"]]);
   const LineDefaultProps = {
     // line组件
     line: {
@@ -10081,7 +10115,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$M = {
+  const _sfc_main$N = {
     name: "u-line",
     mixins: [mpMixin, mixin, props$2],
     computed: {
@@ -10106,7 +10140,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$L(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$M(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -10118,7 +10152,7 @@ This will fail in production.`);
       /* STYLE */
     );
   }
-  const __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$M, [["render", _sfc_render$L], ["__scopeId", "data-v-bbd9963c"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-line/u-line.vue"]]);
+  const __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$N, [["render", _sfc_render$M], ["__scopeId", "data-v-bbd9963c"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-line/u-line.vue"]]);
   const {
     color
   } = config;
@@ -10308,7 +10342,7 @@ This will fail in production.`);
     rgbToHex,
     colorToRgba
   };
-  const _sfc_main$L = {
+  const _sfc_main$M = {
     name: "u-loading-icon",
     mixins: [mpMixin, mixin, props$1],
     data() {
@@ -10370,7 +10404,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$K(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$L(_ctx, _cache, $props, $setup, $data, $options) {
     return _ctx.show ? (vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -10433,7 +10467,7 @@ This will fail in production.`);
       /* CLASS, STYLE */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_1$1 = /* @__PURE__ */ _export_sfc(_sfc_main$L, [["render", _sfc_render$K], ["__scopeId", "data-v-00752c6d"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
+  const __easycom_1$1 = /* @__PURE__ */ _export_sfc(_sfc_main$M, [["render", _sfc_render$L], ["__scopeId", "data-v-00752c6d"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
   const zhHans = {
     "up.common.cancel": "取消",
     "up.common.confirm": "确定",
@@ -10684,7 +10718,7 @@ This will fail in production.`);
       }
     }
   });
-  const _sfc_main$K = {
+  const _sfc_main$L = {
     name: "u-modal",
     mixins: [mpMixin, mixin, props],
     data() {
@@ -10747,7 +10781,7 @@ This will fail in production.`);
       }
     }
   };
-  function _sfc_render$J(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$K(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_line = resolveEasycom(vue.resolveDynamicComponent("u-line"), __easycom_0);
     const _component_u_loading_icon = resolveEasycom(vue.resolveDynamicComponent("u-loading-icon"), __easycom_1$1);
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
@@ -10905,7 +10939,7 @@ This will fail in production.`);
       /* FORWARDED */
     }, 8, ["zoom", "show", "class", "customStyle", "closeOnClickOverlay", "duration", "onClick"]);
   }
-  const __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$K, [["render", _sfc_render$J], ["__scopeId", "data-v-12b77a26"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-modal/u-modal.vue"]]);
+  const __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$L, [["render", _sfc_render$K], ["__scopeId", "data-v-12b77a26"], ["__file", "F:/项目文件/uniapp版本/node_modules/uview-plus/components/u-modal/u-modal.vue"]]);
   var zhCn = { exports: {} };
   (function(module, exports) {
     !function(e, _) {
@@ -11059,7 +11093,7 @@ This will fail in production.`);
       return v ? "1" : "0";
     return `'${String(v).replace(/'/g, "''")}'`;
   }
-  const _sfc_main$J = {
+  const _sfc_main$K = {
     __name: "game-status-dialog",
     props: {
       show: { type: Boolean, default: false }
@@ -11080,7 +11114,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$I(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$J(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: $props.show,
@@ -11112,8 +11146,8 @@ This will fail in production.`);
       /* STABLE */
     }, 8, ["show"]);
   }
-  const gameStatusDialog = /* @__PURE__ */ _export_sfc(_sfc_main$J, [["render", _sfc_render$I], ["__scopeId", "data-v-0fb0a458"], ["__file", "F:/项目文件/uniapp版本/components/game-status-dialog/game-status-dialog.vue"]]);
-  const _sfc_main$I = {
+  const gameStatusDialog = /* @__PURE__ */ _export_sfc(_sfc_main$K, [["render", _sfc_render$J], ["__scopeId", "data-v-0fb0a458"], ["__file", "F:/项目文件/uniapp版本/components/game-status-dialog/game-status-dialog.vue"]]);
+  const _sfc_main$J = {
     __name: "match-info",
     props: {
       gameId: { type: String, default: "" },
@@ -11224,7 +11258,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$H(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$I(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "match-info" }, [
       vue.createElementVNode("view", { class: "row" }, [
         vue.createElementVNode("text", { class: "label" }, "日期"),
@@ -11318,8 +11352,8 @@ This will fail in production.`);
       }, null, 8, ["show"])
     ]);
   }
-  const matchInfo = /* @__PURE__ */ _export_sfc(_sfc_main$I, [["render", _sfc_render$H], ["__scopeId", "data-v-1153092f"], ["__file", "F:/项目文件/uniapp版本/components/match-info/match-info.vue"]]);
-  const _sfc_main$H = {
+  const matchInfo = /* @__PURE__ */ _export_sfc(_sfc_main$J, [["render", _sfc_render$I], ["__scopeId", "data-v-1153092f"], ["__file", "F:/项目文件/uniapp版本/components/match-info/match-info.vue"]]);
+  const _sfc_main$I = {
     __name: "empty-layout",
     props: {
       status: { type: String, default: "" }
@@ -11336,7 +11370,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$G(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$H(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "empty-layout" }, [
       $props.status === "loading" ? (vue.openBlock(), vue.createElementBlock("view", {
         key: 0,
@@ -11363,8 +11397,8 @@ This will fail in production.`);
       ])) : vue.renderSlot(_ctx.$slots, "default", { key: 4 }, void 0, true)
     ]);
   }
-  const emptyLayout = /* @__PURE__ */ _export_sfc(_sfc_main$H, [["render", _sfc_render$G], ["__scopeId", "data-v-d6c9915e"], ["__file", "F:/项目文件/uniapp版本/components/empty-layout/empty-layout.vue"]]);
-  const _sfc_main$G = {
+  const emptyLayout = /* @__PURE__ */ _export_sfc(_sfc_main$I, [["render", _sfc_render$H], ["__scopeId", "data-v-d6c9915e"], ["__file", "F:/项目文件/uniapp版本/components/empty-layout/empty-layout.vue"]]);
+  const _sfc_main$H = {
     __name: "add-member-dialog",
     props: {
       show: { type: Boolean, default: false },
@@ -11399,7 +11433,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$F(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$G(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: $props.show,
@@ -11467,8 +11501,8 @@ This will fail in production.`);
       /* STABLE */
     }, 8, ["show"]);
   }
-  const addMemberDialog = /* @__PURE__ */ _export_sfc(_sfc_main$G, [["render", _sfc_render$F], ["__scopeId", "data-v-c3334222"], ["__file", "F:/项目文件/uniapp版本/components/add-member-dialog/add-member-dialog.vue"]]);
-  const _sfc_main$F = {
+  const addMemberDialog = /* @__PURE__ */ _export_sfc(_sfc_main$H, [["render", _sfc_render$G], ["__scopeId", "data-v-c3334222"], ["__file", "F:/项目文件/uniapp版本/components/add-member-dialog/add-member-dialog.vue"]]);
+  const _sfc_main$G = {
     __name: "team-roster",
     props: {
       gameId: { type: String, default: "" },
@@ -11618,7 +11652,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$E(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$F(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "team-roster" }, [
       vue.createElementVNode("scroll-view", {
         "scroll-y": "",
@@ -11702,8 +11736,8 @@ This will fail in production.`);
       }, null, 8, ["show", "sport"])
     ]);
   }
-  const teamRoster = /* @__PURE__ */ _export_sfc(_sfc_main$F, [["render", _sfc_render$E], ["__scopeId", "data-v-f8ca6510"], ["__file", "F:/项目文件/uniapp版本/components/team-roster/team-roster.vue"]]);
-  const _sfc_main$E = {
+  const teamRoster = /* @__PURE__ */ _export_sfc(_sfc_main$G, [["render", _sfc_render$F], ["__scopeId", "data-v-f8ca6510"], ["__file", "F:/项目文件/uniapp版本/components/team-roster/team-roster.vue"]]);
+  const _sfc_main$F = {
     __name: "basketball-setup",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -11785,7 +11819,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$D(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$E(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_tabs = resolveEasycom(vue.resolveDynamicComponent("u-tabs"), __easycom_0$1);
     const _component_u_modal = resolveEasycom(vue.resolveDynamicComponent("u-modal"), __easycom_1);
     return vue.openBlock(), vue.createElementBlock("view", { class: "basketball-setup" }, [
@@ -11831,8 +11865,8 @@ This will fail in production.`);
       }, null, 8, ["show", "content"])
     ]);
   }
-  const PagesMatchBasketballSetup = /* @__PURE__ */ _export_sfc(_sfc_main$E, [["render", _sfc_render$D], ["__scopeId", "data-v-d2d4d0a2"], ["__file", "F:/项目文件/uniapp版本/pages/match/basketball-setup.vue"]]);
-  const _sfc_main$D = {
+  const PagesMatchBasketballSetup = /* @__PURE__ */ _export_sfc(_sfc_main$F, [["render", _sfc_render$E], ["__scopeId", "data-v-d2d4d0a2"], ["__file", "F:/项目文件/uniapp版本/pages/match/basketball-setup.vue"]]);
+  const _sfc_main$E = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -11866,7 +11900,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$C(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$D(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_tabs = resolveEasycom(vue.resolveDynamicComponent("u-tabs"), __easycom_0$1);
     const _component_u_modal = resolveEasycom(vue.resolveDynamicComponent("u-modal"), __easycom_1);
     return vue.openBlock(), vue.createElementBlock("view", { class: "game-setup" }, [
@@ -11919,8 +11953,8 @@ This will fail in production.`);
       }, null, 8, ["show"])
     ]);
   }
-  const PagesGameSetupIndex = /* @__PURE__ */ _export_sfc(_sfc_main$D, [["render", _sfc_render$C], ["__scopeId", "data-v-fe81e945"], ["__file", "F:/项目文件/uniapp版本/pages/game-setup/index.vue"]]);
-  const _sfc_main$C = {
+  const PagesGameSetupIndex = /* @__PURE__ */ _export_sfc(_sfc_main$E, [["render", _sfc_render$D], ["__scopeId", "data-v-fe81e945"], ["__file", "F:/项目文件/uniapp版本/pages/game-setup/index.vue"]]);
+  const _sfc_main$D = {
     __name: "football-setup",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -12006,7 +12040,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$B(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$C(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_tabs = resolveEasycom(vue.resolveDynamicComponent("u-tabs"), __easycom_0$1);
     const _component_u_modal = resolveEasycom(vue.resolveDynamicComponent("u-modal"), __easycom_1);
     return vue.openBlock(), vue.createElementBlock("view", { class: "football-setup" }, [
@@ -12060,8 +12094,8 @@ This will fail in production.`);
       }, null, 8, ["show", "content"])
     ]);
   }
-  const PagesMatchFootballSetup = /* @__PURE__ */ _export_sfc(_sfc_main$C, [["render", _sfc_render$B], ["__scopeId", "data-v-a74d07ea"], ["__file", "F:/项目文件/uniapp版本/pages/match/football-setup.vue"]]);
-  const _sfc_main$B = {
+  const PagesMatchFootballSetup = /* @__PURE__ */ _export_sfc(_sfc_main$D, [["render", _sfc_render$C], ["__scopeId", "data-v-a74d07ea"], ["__file", "F:/项目文件/uniapp版本/pages/match/football-setup.vue"]]);
+  const _sfc_main$C = {
     __name: "battery-view",
     props: {
       power: { type: Number, default: 100 },
@@ -12083,7 +12117,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$A(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$B(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -12108,8 +12142,8 @@ This will fail in production.`);
       /* CLASS */
     );
   }
-  const batteryView = /* @__PURE__ */ _export_sfc(_sfc_main$B, [["render", _sfc_render$A], ["__scopeId", "data-v-646cc3ef"], ["__file", "F:/项目文件/uniapp版本/components/battery-view/battery-view.vue"]]);
-  const _sfc_main$A = {
+  const batteryView = /* @__PURE__ */ _export_sfc(_sfc_main$C, [["render", _sfc_render$B], ["__scopeId", "data-v-646cc3ef"], ["__file", "F:/项目文件/uniapp版本/components/battery-view/battery-view.vue"]]);
+  const _sfc_main$B = {
     __name: "change-member-dialog",
     props: {
       show: { type: Boolean, default: false },
@@ -12153,7 +12187,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$z(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$A(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: $props.show,
@@ -12220,8 +12254,8 @@ This will fail in production.`);
       /* STABLE */
     }, 8, ["show"]);
   }
-  const changeMemberDialog = /* @__PURE__ */ _export_sfc(_sfc_main$A, [["render", _sfc_render$z], ["__scopeId", "data-v-e301e1db"], ["__file", "F:/项目文件/uniapp版本/components/change-member-dialog/change-member-dialog.vue"]]);
-  const _sfc_main$z = {
+  const changeMemberDialog = /* @__PURE__ */ _export_sfc(_sfc_main$B, [["render", _sfc_render$A], ["__scopeId", "data-v-e301e1db"], ["__file", "F:/项目文件/uniapp版本/components/change-member-dialog/change-member-dialog.vue"]]);
+  const _sfc_main$A = {
     __name: "section-dialog",
     props: {
       show: { type: Boolean, default: false },
@@ -12247,7 +12281,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$y(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$z(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: $props.show,
@@ -12307,7 +12341,7 @@ This will fail in production.`);
       /* STABLE */
     }, 8, ["show"]);
   }
-  const sectionDialog = /* @__PURE__ */ _export_sfc(_sfc_main$z, [["render", _sfc_render$y], ["__scopeId", "data-v-b243f57c"], ["__file", "F:/项目文件/uniapp版本/components/section-dialog/section-dialog.vue"]]);
+  const sectionDialog = /* @__PURE__ */ _export_sfc(_sfc_main$A, [["render", _sfc_render$z], ["__scopeId", "data-v-b243f57c"], ["__file", "F:/项目文件/uniapp版本/components/section-dialog/section-dialog.vue"]]);
   const uploadData = (params2) => request({ url: "statistics/add", method: "POST", data: params2 });
   const uploadDataAll = (params2) => request({ url: "statistics/add-all", method: "POST", data: params2 });
   const cancelData = (params2) => request({ url: "statistics/cancel", method: "POST", data: params2 });
@@ -12504,8 +12538,8 @@ This will fail in production.`);
     });
     return s;
   }
-  const _imports_1$3 = "/static/mipmap-xxhdpi/delete_record.png";
-  const _sfc_main$y = {
+  const _imports_1$4 = "/static/mipmap-xxhdpi/delete_record.png";
+  const _sfc_main$z = {
     __name: "basketball-operate",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -12787,7 +12821,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$x(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$y(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", {
       class: "basket-operate",
       onClick: $setup.clearSelection
@@ -13180,7 +13214,7 @@ This will fail in production.`);
                   ),
                   vue.createElementVNode("image", {
                     class: "rp-del",
-                    src: _imports_1$3,
+                    src: _imports_1$4,
                     mode: "aspectFit",
                     onClick: ($event) => $setup.onDelete(r)
                   }, null, 8, ["onClick"])
@@ -13198,8 +13232,8 @@ This will fail in production.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesStatisticsBasketballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$y, [["render", _sfc_render$x], ["__scopeId", "data-v-ef0dfe21"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate.vue"]]);
-  const _sfc_main$x = {
+  const PagesStatisticsBasketballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$z, [["render", _sfc_render$y], ["__scopeId", "data-v-ef0dfe21"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate.vue"]]);
+  const _sfc_main$y = {
     __name: "football-operate",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -13545,7 +13579,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$w(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$x(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "foot-operate" }, [
       vue.createElementVNode(
         "view",
@@ -13916,7 +13950,7 @@ This will fail in production.`);
                   ),
                   vue.createElementVNode("image", {
                     class: "rp-del",
-                    src: _imports_1$3,
+                    src: _imports_1$4,
                     mode: "aspectFit",
                     onClick: ($event) => $setup.onDelete(r)
                   }, null, 8, ["onClick"])
@@ -13934,8 +13968,8 @@ This will fail in production.`);
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesStatisticsFootballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$x, [["render", _sfc_render$w], ["__scopeId", "data-v-6d1135d0"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/football-operate.vue"]]);
-  const _sfc_main$w = {
+  const PagesStatisticsFootballOperate = /* @__PURE__ */ _export_sfc(_sfc_main$y, [["render", _sfc_render$x], ["__scopeId", "data-v-6d1135d0"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/football-operate.vue"]]);
+  const _sfc_main$x = {
     __name: "action-sheet",
     props: {
       show: { type: Boolean, default: false },
@@ -13958,7 +13992,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$v(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$w(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: $props.show,
@@ -13996,7 +14030,7 @@ This will fail in production.`);
       /* STABLE */
     }, 8, ["show"]);
   }
-  const actionSheet = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$v], ["__scopeId", "data-v-d53be547"], ["__file", "F:/项目文件/uniapp版本/components/action-sheet/action-sheet.vue"]]);
+  const actionSheet = /* @__PURE__ */ _export_sfc(_sfc_main$x, [["render", _sfc_render$w], ["__scopeId", "data-v-d53be547"], ["__file", "F:/项目文件/uniapp版本/components/action-sheet/action-sheet.vue"]]);
   let timer = null;
   let uploading = false;
   function startUploadQueue(gameId, onUploaded) {
@@ -14048,7 +14082,7 @@ This will fail in production.`);
     );
     return res[0] ? res[0].c : 0;
   }
-  const _sfc_main$v = {
+  const _sfc_main$w = {
     __name: "basketball-operate-new",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -14354,7 +14388,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$u(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$v(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-new" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -14624,8 +14658,8 @@ This will fail in production.`);
       }, null, 8, ["show", "members"])
     ]);
   }
-  const PagesStatisticsBasketballOperateNew = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$u], ["__scopeId", "data-v-c3cd0a4d"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate-new.vue"]]);
-  const _sfc_main$u = {
+  const PagesStatisticsBasketballOperateNew = /* @__PURE__ */ _export_sfc(_sfc_main$w, [["render", _sfc_render$v], ["__scopeId", "data-v-c3cd0a4d"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-operate-new.vue"]]);
+  const _sfc_main$v = {
     __name: "basketball-down",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -14811,7 +14845,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$t(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$u(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "basket-down" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -15011,10 +15045,10 @@ This will fail in production.`);
       }, null, 8, ["show"])
     ]);
   }
-  const PagesStatisticsBasketballDown = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$t], ["__scopeId", "data-v-2960a474"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-down.vue"]]);
+  const PagesStatisticsBasketballDown = /* @__PURE__ */ _export_sfc(_sfc_main$v, [["render", _sfc_render$u], ["__scopeId", "data-v-2960a474"], ["__file", "F:/项目文件/uniapp版本/pages/statistics/basketball-down.vue"]]);
   const scoreTypes$2 = "6,7,8";
   const foulTypes$2 = "9";
-  const _sfc_main$t = {
+  const _sfc_main$u = {
     __name: "record",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -15077,7 +15111,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$s(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$t(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-page" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -15177,10 +15211,10 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesRecordRecord = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$s], ["__scopeId", "data-v-ef6850c5"], ["__file", "F:/项目文件/uniapp版本/pages/record/record.vue"]]);
+  const PagesRecordRecord = /* @__PURE__ */ _export_sfc(_sfc_main$u, [["render", _sfc_render$t], ["__scopeId", "data-v-ef6850c5"], ["__file", "F:/项目文件/uniapp版本/pages/record/record.vue"]]);
   const scoreTypes$1 = "18,19";
   const foulTypes$1 = "9";
-  const _sfc_main$s = {
+  const _sfc_main$t = {
     __name: "record-foot",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -15243,7 +15277,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$s(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-page" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -15343,10 +15377,10 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesRecordRecordFoot = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$r], ["__scopeId", "data-v-cef4c907"], ["__file", "F:/项目文件/uniapp版本/pages/record/record-foot.vue"]]);
+  const PagesRecordRecordFoot = /* @__PURE__ */ _export_sfc(_sfc_main$t, [["render", _sfc_render$s], ["__scopeId", "data-v-cef4c907"], ["__file", "F:/项目文件/uniapp版本/pages/record/record-foot.vue"]]);
   const scoreTypes = "6,7,8";
   const foulTypes = "9,119,120,121";
-  const _sfc_main$r = {
+  const _sfc_main$s = {
     __name: "record-new",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -15409,7 +15443,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$r(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "record-new" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -15510,8 +15544,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesRecordRecordNew = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$q], ["__scopeId", "data-v-ec7ed095"], ["__file", "F:/项目文件/uniapp版本/pages/record/record-new.vue"]]);
-  const _sfc_main$q = {
+  const PagesRecordRecordNew = /* @__PURE__ */ _export_sfc(_sfc_main$s, [["render", _sfc_render$r], ["__scopeId", "data-v-ec7ed095"], ["__file", "F:/项目文件/uniapp版本/pages/record/record-new.vue"]]);
+  const _sfc_main$r = {
     __name: "member-data",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -15577,7 +15611,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "member-data" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -15819,8 +15853,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesGameMemberData = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$p], ["__scopeId", "data-v-f4187503"], ["__file", "F:/项目文件/uniapp版本/pages/game/member-data.vue"]]);
-  const _sfc_main$p = {
+  const PagesGameMemberData = /* @__PURE__ */ _export_sfc(_sfc_main$r, [["render", _sfc_render$q], ["__scopeId", "data-v-f4187503"], ["__file", "F:/项目文件/uniapp版本/pages/game/member-data.vue"]]);
+  const _sfc_main$q = {
     __name: "new-member-data",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -15870,7 +15904,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "new-member-data" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -16181,8 +16215,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesGameNewMemberData = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o], ["__scopeId", "data-v-222878b2"], ["__file", "F:/项目文件/uniapp版本/pages/game/new-member-data.vue"]]);
-  const _sfc_main$o = {
+  const PagesGameNewMemberData = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$p], ["__scopeId", "data-v-222878b2"], ["__file", "F:/项目文件/uniapp版本/pages/game/new-member-data.vue"]]);
+  const _sfc_main$p = {
     __name: "operation-record",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -16268,7 +16302,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "op-record" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -16373,10 +16407,10 @@ This will fail in production.`);
       ], 40, ["refresher-triggered"])
     ]);
   }
-  const PagesGameOperationRecord = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$n], ["__scopeId", "data-v-a085037c"], ["__file", "F:/项目文件/uniapp版本/pages/game/operation-record.vue"]]);
-  const _imports_1$2 = "/static/mipmap-xxhdpi/cuba.png";
+  const PagesGameOperationRecord = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o], ["__scopeId", "data-v-a085037c"], ["__file", "F:/项目文件/uniapp版本/pages/game/operation-record.vue"]]);
+  const _imports_1$3 = "/static/mipmap-xxhdpi/cuba.png";
   const _imports_2$3 = "/static/mipmap-xxhdpi/good.png";
-  const _sfc_main$n = {
+  const _sfc_main$o = {
     __name: "week-outs",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -16439,7 +16473,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "week-outs" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -16473,7 +16507,7 @@ This will fail in production.`);
         vue.createElementVNode("view", { class: "banner-box" }, [
           vue.createElementVNode("image", {
             class: "banner-img",
-            src: _imports_1$2,
+            src: _imports_1$3,
             mode: "aspectFit"
           })
         ]),
@@ -16665,10 +16699,10 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesGameWeekOuts = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-4f294de8"], ["__file", "F:/项目文件/uniapp版本/pages/game/week-outs.vue"]]);
+  const PagesGameWeekOuts = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$n], ["__scopeId", "data-v-4f294de8"], ["__file", "F:/项目文件/uniapp版本/pages/game/week-outs.vue"]]);
   const getLiveGameList = (gameId) => request({ url: "live/stream/game-list", query: { gameId } });
   const addGame = (params2) => request({ url: "live/stream/game-add", method: "POST", data: params2 });
-  const _sfc_main$m = {
+  const _sfc_main$n = {
     __name: "multiple",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -16746,7 +16780,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "live-multiple" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
@@ -16876,10 +16910,10 @@ This will fail in production.`);
       }, 8, ["show"])
     ]);
   }
-  const PagesLiveMultiple = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-a5336a99"], ["__file", "F:/项目文件/uniapp版本/pages/live/multiple.vue"]]);
+  const PagesLiveMultiple = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-a5336a99"], ["__file", "F:/项目文件/uniapp版本/pages/live/multiple.vue"]]);
   const getPhotoActivity = (pageNo) => request({ url: "photo/activity/list-my-manage", query: { pageNo } });
   const getUploadPhoto = () => request({ url: "photo/picture/upload-list" });
-  const _sfc_main$l = {
+  const _sfc_main$m = {
     __name: "photo",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -16932,7 +16966,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "photo" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -17026,7 +17060,7 @@ This will fail in production.`);
           }, [
             vue.createElementVNode("image", {
               class: "no-data-img",
-              src: _imports_1$5,
+              src: _imports_1$6,
               mode: "aspectFit"
             }),
             vue.createElementVNode("view", { class: "no-data-text" }, "暂无数据")
@@ -17037,8 +17071,8 @@ This will fail in production.`);
       )
     ]);
   }
-  const PagesPhotoPhoto = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-5140b150"], ["__file", "F:/项目文件/uniapp版本/pages/photo/photo.vue"]]);
-  const _sfc_main$k = {
+  const PagesPhotoPhoto = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-5140b150"], ["__file", "F:/项目文件/uniapp版本/pages/photo/photo.vue"]]);
+  const _sfc_main$l = {
     __name: "photos-upload",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17078,7 +17112,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "photos-upload" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -17145,7 +17179,7 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesPhotosUploadPhotosUpload = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-a55f83b1"], ["__file", "F:/项目文件/uniapp版本/pages/photos-upload/photos-upload.vue"]]);
+  const PagesPhotosUploadPhotosUpload = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-a55f83b1"], ["__file", "F:/项目文件/uniapp版本/pages/photos-upload/photos-upload.vue"]]);
   function uploadToBackend(filePath, url2, formData = {}) {
     return new Promise((resolve, reject) => {
       uni.uploadFile({
@@ -17168,7 +17202,7 @@ This will fail in production.`);
   async function uploadToOSS(filePath, activityId) {
     return uploadToBackend(filePath, "photo/picture/upload", { activityId });
   }
-  const _sfc_main$j = {
+  const _sfc_main$k = {
     __name: "live-photo",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17241,7 +17275,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "live-photo" }, [
       vue.createElementVNode("view", { class: "top-bar" }, [
         vue.createElementVNode(
@@ -17333,8 +17367,8 @@ This will fail in production.`);
       vue.createElementVNode("view", { class: "tip" }, " 原项目使用 USB 连接单反相机（PTP 协议）取片后自动上传，uniapp 无 USB host 能力无法实现， 此处改为手机摄像头拍照 / 相册选图后自动上传（选图即传，无需点按钮）。 ")
     ]);
   }
-  const PagesPhotoLivePhoto = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-021154e6"], ["__file", "F:/项目文件/uniapp版本/pages/photo/live-photo.vue"]]);
-  const _sfc_main$i = {
+  const PagesPhotoLivePhoto = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-021154e6"], ["__file", "F:/项目文件/uniapp版本/pages/photo/live-photo.vue"]]);
+  const _sfc_main$j = {
     __name: "large-view",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17375,7 +17409,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "large-view" }, [
       vue.createElementVNode("swiper", {
         class: "swiper",
@@ -17411,8 +17445,8 @@ This will fail in production.`);
       )) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const PagesPreviewLargeView = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-f6219a2c"], ["__file", "F:/项目文件/uniapp版本/pages/preview/large-view.vue"]]);
-  const _sfc_main$h = {
+  const PagesPreviewLargeView = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-f6219a2c"], ["__file", "F:/项目文件/uniapp版本/pages/preview/large-view.vue"]]);
+  const _sfc_main$i = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17450,7 +17484,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
       null,
@@ -17479,8 +17513,8 @@ This will fail in production.`);
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesAgreementIndex = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-dd75091a"], ["__file", "F:/项目文件/uniapp版本/pages/agreement/index.vue"]]);
-  const _sfc_main$g = {
+  const PagesAgreementIndex = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-dd75091a"], ["__file", "F:/项目文件/uniapp版本/pages/agreement/index.vue"]]);
+  const _sfc_main$h = {
     __name: "index",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17498,7 +17532,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "placeholder" }, [
       vue.createVNode($setup["customNav"], { title: $setup.title }, null, 8, ["title"]),
       vue.createElementVNode("view", { class: "content" }, [
@@ -17513,12 +17547,12 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesPlaceholderIndex = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-29f28d5e"], ["__file", "F:/项目文件/uniapp版本/pages/placeholder/index.vue"]]);
+  const PagesPlaceholderIndex = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-29f28d5e"], ["__file", "F:/项目文件/uniapp版本/pages/placeholder/index.vue"]]);
   const _imports_0$7 = "/static/images/camera.png";
   const _imports_0$6 = "/static/images/delete.png";
   const _imports_2$2 = "/static/images/copy.png";
   const _imports_2$1 = "/static/images/continue.png";
-  const _sfc_main$f = {
+  const _sfc_main$g = {
     __name: "manage",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17628,7 +17662,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "账号管理" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -17742,8 +17776,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineManage = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-58b6fa5b"], ["__file", "F:/项目文件/uniapp版本/pages/mine/manage.vue"]]);
-  const _sfc_main$e = {
+  const PagesMineManage = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-58b6fa5b"], ["__file", "F:/项目文件/uniapp版本/pages/mine/manage.vue"]]);
+  const _sfc_main$f = {
     __name: "identity",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17771,7 +17805,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("view", { class: "page-bg" }, [
         vue.createElementVNode("image", {
@@ -17815,8 +17849,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineIdentity = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-0499d014"], ["__file", "F:/项目文件/uniapp版本/pages/mine/identity.vue"]]);
-  const _sfc_main$d = {
+  const PagesMineIdentity = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-0499d014"], ["__file", "F:/项目文件/uniapp版本/pages/mine/identity.vue"]]);
+  const _sfc_main$e = {
     __name: "phone",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -17885,7 +17919,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("image", {
         class: "back-btn",
@@ -17944,8 +17978,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMinePhone = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-bad7965c"], ["__file", "F:/项目文件/uniapp版本/pages/mine/phone.vue"]]);
-  const _sfc_main$c = {
+  const PagesMinePhone = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-bad7965c"], ["__file", "F:/项目文件/uniapp版本/pages/mine/phone.vue"]]);
+  const _sfc_main$d = {
     __name: "phone-new",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18026,7 +18060,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("image", {
         class: "back-btn",
@@ -18101,11 +18135,11 @@ This will fail in production.`);
       }, null, 8, ["show"])
     ]);
   }
-  const PagesMinePhoneNew = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$b], ["__scopeId", "data-v-061abb29"], ["__file", "F:/项目文件/uniapp版本/pages/mine/phone-new.vue"]]);
-  const _imports_1$1 = "/static/images/transparent_coin.png";
+  const PagesMinePhoneNew = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-061abb29"], ["__file", "F:/项目文件/uniapp版本/pages/mine/phone-new.vue"]]);
+  const _imports_1$2 = "/static/images/transparent_coin.png";
   const _imports_0$5 = "/static/images/bankcard.png";
   const _imports_3 = "/static/images/golook.png";
-  const _sfc_main$b = {
+  const _sfc_main$c = {
     __name: "wallet",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18165,7 +18199,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("image", {
         class: "back-btn",
@@ -18196,7 +18230,7 @@ This will fail in production.`);
             ]),
             vue.createElementVNode("image", {
               class: "coin-img",
-              src: _imports_1$1
+              src: _imports_1$2
             })
           ]),
           vue.createElementVNode("view", {
@@ -18303,8 +18337,8 @@ This will fail in production.`);
       ]))
     ]);
   }
-  const PagesMineWallet = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$a], ["__scopeId", "data-v-d346a3d5"], ["__file", "F:/项目文件/uniapp版本/pages/mine/wallet.vue"]]);
-  const _sfc_main$a = {
+  const PagesMineWallet = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$b], ["__scopeId", "data-v-d346a3d5"], ["__file", "F:/项目文件/uniapp版本/pages/mine/wallet.vue"]]);
+  const _sfc_main$b = {
     __name: "withdraw",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18384,7 +18418,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_0$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createElementVNode("image", {
@@ -18534,8 +18568,8 @@ This will fail in production.`);
       }, 8, ["show"])
     ]);
   }
-  const PagesMineWithdraw = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$9], ["__scopeId", "data-v-50421715"], ["__file", "F:/项目文件/uniapp版本/pages/mine/withdraw.vue"]]);
-  const _sfc_main$9 = {
+  const PagesMineWithdraw = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$a], ["__scopeId", "data-v-50421715"], ["__file", "F:/项目文件/uniapp版本/pages/mine/withdraw.vue"]]);
+  const _sfc_main$a = {
     __name: "bankcard",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18576,7 +18610,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "银行卡" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -18634,9 +18668,9 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineBankcard = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-b29eef19"], ["__file", "F:/项目文件/uniapp版本/pages/mine/bankcard.vue"]]);
+  const PagesMineBankcard = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$9], ["__scopeId", "data-v-b29eef19"], ["__file", "F:/项目文件/uniapp版本/pages/mine/bankcard.vue"]]);
   const _imports_0$4 = "/static/images/suc.png";
-  const _sfc_main$8 = {
+  const _sfc_main$9 = {
     __name: "withdraw-result",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18645,9 +18679,9 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$8(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
-      vue.createVNode($setup["customNav"], { title: "绑定结果" }),
+      vue.createVNode($setup["customNav"], { title: "提现结果" }),
       vue.createElementVNode("view", { class: "body" }, [
         vue.createElementVNode("image", {
           class: "suc-img",
@@ -18663,8 +18697,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineWithdrawResult = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__scopeId", "data-v-c84accfc"], ["__file", "F:/项目文件/uniapp版本/pages/mine/withdraw-result.vue"]]);
-  const _sfc_main$7 = {
+  const PagesMineWithdrawResult = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-c84accfc"], ["__file", "F:/项目文件/uniapp版本/pages/mine/withdraw-result.vue"]]);
+  const _sfc_main$8 = {
     __name: "bankcard-add",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18712,7 +18746,7 @@ This will fail in production.`);
         if (!code2.value) {
           return uni.showToast({ title: "请输入验证码", icon: "none" });
         }
-        uni.showToast({ title: "绑卡接口待接入", icon: "none" });
+        uni.navigateTo({ url: "/pages/mine/bankcard-success" });
       }
       const __returned__ = { cardNo, phone, cardType, code: code2, counting, seconds, get timer() {
         return timer2;
@@ -18725,7 +18759,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "添加银行卡" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -18838,11 +18872,11 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineBankcardAdd = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__scopeId", "data-v-8ceae4ad"], ["__file", "F:/项目文件/uniapp版本/pages/mine/bankcard-add.vue"]]);
+  const PagesMineBankcardAdd = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__scopeId", "data-v-8ceae4ad"], ["__file", "F:/项目文件/uniapp版本/pages/mine/bankcard-add.vue"]]);
   const _imports_0$3 = "/static/images/letter.png";
-  const _imports_1 = "/static/images/nomes.png";
+  const _imports_1$1 = "/static/images/nomes.png";
   const _imports_2 = "/static/images/liuyan.png";
-  const _sfc_main$6 = {
+  const _sfc_main$7 = {
     __name: "feedback",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -18897,7 +18931,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "意见反馈" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -18957,7 +18991,7 @@ This will fail in production.`);
         }, [
           vue.createElementVNode("image", {
             class: "empty-img",
-            src: _imports_1,
+            src: _imports_1$1,
             mode: "aspectFit"
           }),
           vue.createElementVNode("view", { class: "empty-text" }, "您还没有相关信息哦!")
@@ -18971,8 +19005,8 @@ This will fail in production.`);
       })
     ]);
   }
-  const PagesMineFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-16a61fba"], ["__file", "F:/项目文件/uniapp版本/pages/mine/feedback.vue"]]);
-  const _sfc_main$5 = {
+  const PagesMineFeedback = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__scopeId", "data-v-16a61fba"], ["__file", "F:/项目文件/uniapp版本/pages/mine/feedback.vue"]]);
+  const _sfc_main$6 = {
     __name: "feedback-add",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -19008,7 +19042,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "意见反馈" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -19070,8 +19104,8 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineFeedbackAdd = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-e44480dc"], ["__file", "F:/项目文件/uniapp版本/pages/mine/feedback-add.vue"]]);
-  const _sfc_main$4 = {
+  const PagesMineFeedbackAdd = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-e44480dc"], ["__file", "F:/项目文件/uniapp版本/pages/mine/feedback-add.vue"]]);
+  const _sfc_main$5 = {
     __name: "certify",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -19095,7 +19129,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "实名认证" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -19148,9 +19182,9 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineCertify = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__scopeId", "data-v-16741334"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify.vue"]]);
+  const PagesMineCertify = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-16741334"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify.vue"]]);
   const _imports_0$2 = "/static/images/facescan.png";
-  const _sfc_main$3 = {
+  const _sfc_main$4 = {
     __name: "certify-face",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -19175,7 +19209,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "人脸识别" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -19230,9 +19264,9 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineCertifyFace = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__scopeId", "data-v-f38277bf"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-face.vue"]]);
+  const PagesMineCertifyFace = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__scopeId", "data-v-f38277bf"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-face.vue"]]);
   const _imports_0$1 = "/static/images/certsuc.png";
-  const _sfc_main$2 = {
+  const _sfc_main$3 = {
     __name: "certify-success",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -19263,7 +19297,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "认证成功" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -19283,9 +19317,9 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineCertifySuccess = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__scopeId", "data-v-f5110140"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-success.vue"]]);
+  const PagesMineCertifySuccess = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__scopeId", "data-v-f5110140"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-success.vue"]]);
   const _imports_0 = "/static/images/certfail.png";
-  const _sfc_main$1 = {
+  const _sfc_main$2 = {
     __name: "certify-fail",
     setup(__props, { expose: __expose }) {
       __expose();
@@ -19318,7 +19352,7 @@ This will fail in production.`);
       return __returned__;
     }
   };
-  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
       vue.createVNode($setup["customNav"], { title: "认证失败" }),
       vue.createElementVNode("view", { class: "body" }, [
@@ -19338,7 +19372,62 @@ This will fail in production.`);
       ])
     ]);
   }
-  const PagesMineCertifyFail = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-6f1528ef"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-fail.vue"]]);
+  const PagesMineCertifyFail = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__scopeId", "data-v-6f1528ef"], ["__file", "F:/项目文件/uniapp版本/pages/mine/certify-fail.vue"]]);
+  const _imports_1 = "/static/images/fail.png";
+  const _sfc_main$1 = {
+    __name: "bankcard-success",
+    setup(__props, { expose: __expose }) {
+      __expose();
+      const isFail = vue.ref(false);
+      onLoad((options) => {
+        if (options && options.result === "fail") {
+          isFail.value = true;
+        }
+      });
+      const __returned__ = { isFail, ref: vue.ref, get onLoad() {
+        return onLoad;
+      }, customNav };
+      Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+      return __returned__;
+    }
+  };
+  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock("view", { class: "page" }, [
+      vue.createVNode($setup["customNav"], { title: "绑定结果" }),
+      vue.createElementVNode("view", { class: "body" }, [
+        !$setup.isFail ? (vue.openBlock(), vue.createElementBlock(
+          vue.Fragment,
+          { key: 0 },
+          [
+            vue.createElementVNode("image", {
+              class: "suc-img",
+              src: _imports_0$4,
+              mode: "aspectFit"
+            }),
+            vue.createElementVNode("view", { class: "suc-title" }, "绑定成功"),
+            vue.createElementVNode("view", { class: "suc-tip" }, "快去接单吧！有收入后可提现到该银行卡")
+          ],
+          64
+          /* STABLE_FRAGMENT */
+        )) : (vue.openBlock(), vue.createElementBlock(
+          vue.Fragment,
+          { key: 1 },
+          [
+            vue.createElementVNode("image", {
+              class: "suc-img",
+              src: _imports_1,
+              mode: "aspectFit"
+            }),
+            vue.createElementVNode("view", { class: "suc-title" }, "绑定失败"),
+            vue.createElementVNode("view", { class: "suc-tip" }, "请返回上一页重新验证")
+          ],
+          64
+          /* STABLE_FRAGMENT */
+        ))
+      ])
+    ]);
+  }
+  const PagesMineBankcardSuccess = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-19902548"], ["__file", "F:/项目文件/uniapp版本/pages/mine/bankcard-success.vue"]]);
   __definePage("pages/loading/index", PagesLoadingIndex);
   __definePage("pages/login/index", PagesLoginIndex);
   __definePage("pages/identity/index", PagesIdentityIndex);
@@ -19383,6 +19472,7 @@ This will fail in production.`);
   __definePage("pages/mine/certify-face", PagesMineCertifyFace);
   __definePage("pages/mine/certify-success", PagesMineCertifySuccess);
   __definePage("pages/mine/certify-fail", PagesMineCertifyFail);
+  __definePage("pages/mine/bankcard-success", PagesMineBankcardSuccess);
   const _sfc_main = {
     onLaunch() {
       const userStore = useUserStore();

@@ -22,6 +22,11 @@
 		<text>和</text>
         <text class="link" @click="goAgreement(2)">《隐私政策》</text>
       </view>
+      <!-- 微信登录 -->
+      <view class="wx-login" @click="onWechatLogin">
+        <image class="wx-icon" src="/static/images/wechaticon.png" mode="aspectFit" />
+        <text class="wx-text">微信登录</text>
+      </view>
     </view>
     <!-- 底部 logo（对应原 activity_login.xml 的 @mipmap/advertdown） -->
     <image class="bottom-logo" src="/static/advertdown.png" mode="widthFix" />
@@ -32,10 +37,11 @@
 /**
  * 登录页（对应 LoginActivity）
  * 短信验证码登录：getNote 获取验证码 -> validateLogin 登录 -> 存 token -> main
+ * 微信登录：uni.login(weixin) 取 code -> user/wechat-login 换 token（后端接口待提供）
  */
 import { ref, onUnmounted } from 'vue'
 import customNav from '@/components/custom-nav/custom-nav.vue'
-import { getNote, validateLogin } from '@/api/login'
+import { getNote, validateLogin, wechatLogin } from '@/api/login'
 import { useUserStore } from '@/store/user'
 import { checkPhone } from '@/utils/validator'
 import { config } from '@/config'
@@ -92,6 +98,28 @@ async function doLogin() {
   } else {
     uni.showToast({ title: res.msg || '登录失败', icon: 'none' })
   }
+}
+
+/** 微信登录：取微信 code 换 token（App 端需在 manifest 配置微信 OAuth appid） */
+function onWechatLogin() {
+  uni.login({
+    provider: 'weixin',
+    success: (loginRes) => {
+      wechatLogin(loginRes.code).then((res) => {
+        if (res.code === 1) {
+          userStore.setAuth(String(res.data))
+          uni.reLaunch({ url: '/pages/home/index' })
+        } else {
+          uni.showToast({ title: res.msg || '微信登录失败', icon: 'none' })
+        }
+      })
+    },
+    fail: (err) => {
+      // 常见于 H5 预览 / manifest 未配置微信登录 / 手机未装微信
+      uni.showToast({ title: '微信登录不可用', icon: 'none' })
+      console.log('[wechat-login] uni.login fail:', err && err.errMsg)
+    }
+  })
 }
 
 function goAgreement(type) {
@@ -170,6 +198,22 @@ onUnmounted(() => {
   color: #ffffff;
   font-size: 32rpx;
   border-radius: 45rpx;
+}
+/* 微信登录：图标 + 文案，居中 */
+.wx-login {
+  margin-top: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wx-icon {
+  width: 44rpx;
+  height: 34rpx;
+  margin-right: 10rpx;
+}
+.wx-text {
+  font-size: 28rpx;
+  color: #666666;
 }
 .agree {
   margin-top: 40rpx;

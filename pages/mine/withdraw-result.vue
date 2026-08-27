@@ -1,7 +1,7 @@
 <template>
   <view class="page">
-    <!-- 顶部白色栏：返回键 + 标题「绑定结果」 -->
-    <custom-nav title="绑定结果" />
+    <!-- 顶部白色栏：返回键 + 标题「提现结果」 -->
+    <custom-nav title="提现结果" />
 
     <view class="body">
       <image class="suc-img" src="/static/images/suc.png" mode="aspectFit"></image>

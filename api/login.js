@@ -9,6 +9,9 @@ export const getNote = (phone) => request({ url: 'sms/login', method: 'POST', da
 /** POST user/login 验证码登录 Body{phone, code} */
 export const validateLogin = (phone, code) => request({ url: 'user/login', method: 'POST', data: { phone, code } })
 
+/** POST user/wechat-login 微信登录 Body{code}（uni.login 取的微信 code 换 token，后端接口待提供） */
+export const wechatLogin = (code) => request({ url: 'user/wechat-login', method: 'POST', data: { code } })
+
 /** GET user/info 获取个人信息 */
 export const getUserInfo = () => request({ url: 'user/info' })
 

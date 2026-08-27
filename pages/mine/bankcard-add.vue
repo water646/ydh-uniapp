@@ -111,8 +111,8 @@ function onConfirm() {
   if (!code.value) {
     return uni.showToast({ title: '请输入验证码', icon: 'none' })
   }
-  // TODO: 绑卡接口确定后提交 { cardNo, phone, code }，卡类型由后端根据卡号推断
-  uni.showToast({ title: '绑卡接口待接入', icon: 'none' })
+  // TODO: 绑卡接口确定后在此提交 { cardNo, phone, code }，卡类型由后端根据卡号推断
+  uni.navigateTo({ url: '/pages/mine/bankcard-success' })
 }
 </script>
 
