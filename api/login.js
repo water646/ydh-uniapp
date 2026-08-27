@@ -24,5 +24,8 @@ export const getFeedbackList = (pageNo) => request({ url: 'user/feedback/list', 
 /** POST user/feedback 提交意见反馈 Body{content, tag}（tag：建议/积极评价） */
 export const submitFeedback = (content, tag) => request({ url: 'user/feedback', method: 'POST', data: { content, tag } })
 
+/** POST user/authCard 实名认证（姓名+身份证核验），通过后进人脸识别 Body{actualName, idNumber} */
+export const authCard = (actualName, idNumber) => request({ url: 'user/authCard', method: 'POST', data: { actualName, idNumber } })
+
 /** GET statistics/page 同步统计数据（分页）query{gameId, pageNo} */
 export const synchr = (gameId, pageNo) => request({ url: 'statistics/page', query: { gameId, pageNo } })

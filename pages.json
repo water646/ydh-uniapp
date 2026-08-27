@@ -13,6 +13,7 @@
     { "path": "pages/identity/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/home/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/main/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/main/stats", "style": { "navigationStyle": "custom" } },
     { "path": "pages/mine/index", "style": { "navigationStyle": "custom" } },
     { "path": "pages/order/finish-service", "style": { "navigationStyle": "custom" } },
     { "path": "pages/match/basketball-setup", "style": { "navigationStyle": "custom" } },
@@ -48,7 +49,9 @@
 	{ "path": "pages/mine/withdraw-result", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/bankcard-add", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/feedback", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/feedback-add", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/feedback-add", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/certify", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/certify-face", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

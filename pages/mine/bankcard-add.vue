@@ -7,9 +7,9 @@
       <!-- 卡片1：卡号 -->
       <view class="card">
         <view class="field-col">
-          <view class="field-label field-label-divider" style="font-weight: bold;">输入卡号添加</view>
+          <view class="field-label field-label-divider label-bold">输入卡号添加</view>
           <view class="field-row no-line tight">
-            <view class="row-label" style="font-weight: bold;">卡号</view>
+            <view class="row-label label-bold">卡号</view>
             <view class="input-line">
               <input class="field-line-input" v-model="cardNo" type="number" maxlength="19" placeholder="请输入银行卡号" placeholder-class="ph-gray" />
               <image class="clear-icon" src="/static/images/delete.png" v-if="cardNo" @click="cardNo = ''"></image>
@@ -21,7 +21,7 @@
       <!-- 卡片2：卡类型 / 银行预留手机号 / 验证码（label 与值同行；卡类型由后端根据卡号推断回填，只展示不可输入） -->
       <view class="card card-gap card-rows">
         <view class="field-row">
-          <view class="row-label" style="font-weight: bold;">卡类型</view>
+          <view class="row-label label-bold">卡类型</view>
           <view class="input-line">
             <view class="field-value" :class="{ 'ph-gray': !cardType }">{{ cardType || '输入卡号后自动识别' }}</view>
           </view>
@@ -193,6 +193,11 @@ function onConfirm() {
 .field-label-divider {
   padding-bottom: 20rpx;
   border-bottom: 3rpx solid #edf1f5;
+}
+
+/* 需要加粗的字段名 */
+.label-bold {
+  font-weight: bold;
 }
 
 .input-line {

@@ -17,7 +17,10 @@
       <text class="value">{{ statusDesc }} ▼</text>
     </view>
 
-    <view v-if="hasSync" class="sync-row">
+    <view v-if="startMode" class="sync-row">
+      <view class="sync-btn start" @click="$emit('start')">开始统计</view>
+    </view>
+    <view v-else-if="hasSync" class="sync-row">
       <view class="sync-btn" :class="{ disabled: syncing }" @click="doSync">
         {{ syncing ? '同步中…' : '同步历史数据' }}
       </view>
@@ -48,9 +51,11 @@ import gameStatusDialog from '@/components/game-status-dialog/game-status-dialog
 const props = defineProps({
   gameId: { type: String, default: '' },
   sport: { type: String, default: 'basketball' },
-  hasSync: { type: Boolean, default: false }
+  hasSync: { type: Boolean, default: false },
+  // true 时同步按钮位置改为「开始统计」，点击 emit('start')（篮球赛前设置页用）
+  startMode: { type: Boolean, default: false }
 })
-const emit = defineEmits(['status-change'])
+const emit = defineEmits(['status-change', 'start'])
 
 const dateStr = ref('')
 const timeStr = ref('')
@@ -181,6 +186,9 @@ function syncPage(pageNo) {
 }
 .sync-btn.disabled {
   background-color: #cccccc;
+}
+.sync-btn.start {
+  background-color: #29a871;
 }
 .progress {
   margin-top: 20rpx;

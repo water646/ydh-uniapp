@@ -1,6 +1,6 @@
 <template>
   <view class="main">
-    <custom-nav title="智能技术台">
+    <custom-nav title="技术统计">
       <template #right>
         <text class="nav-action" @click="goPhoto">活动列表</text>
       </template>
@@ -89,7 +89,7 @@
 					</view>
 					<view class="team-cell">
 						<text class="score">{{ g.hostTeamScore }}</text>
-						<view class="action-btn blue" @click="goLive(g)">直播</view>
+						<view class="action-btn ghost"><text>占</text></view>
 					</view>
 				</view>
 
@@ -100,7 +100,7 @@
 					</view>
 					<view class="team-cell">
 						<text class="score">{{ g.guestTeamScore }}</text>
-						<view class="action-btn green" @click="goMatchSet(g)">修改状态</view>
+						<view class="action-btn green" @click="goStatsDetail(g)">技术统计</view>
 					</view>
 				</view>
 			</view>
@@ -147,39 +147,18 @@
         </view>
       </view>
     </u-popup>
-
-    <!-- 比赛状态选择弹窗（goMatchSet 弹出，从上到下列出三选项） -->
-    <u-popup :show="showStatusSheet" mode="bottom" :round="20" @close="showStatusSheet = false">
-      <view class="status-sheet">
-        <view class="sheet-title">修改比赛状态</view>
-        <view
-          v-for="s in statusOptions"
-          :key="s.value"
-          class="status-item"
-          :class="{ active: currentGame && currentGame.status && currentGame.status.value === s.value }"
-          @click="onStatusSelect(s)"
-        >
-          <text class="status-text">{{ s.desc }}</text>
-          <text
-            v-if="currentGame && currentGame.status && currentGame.status.value === s.value"
-            class="status-check"
-          >✓</text>
-        </view>
-        <view class="status-cancel" @click="showStatusSheet = false">取消</view>
-      </view>
-    </u-popup>
   </view>
 </template>
 
 <script setup>
 /**
- * 主页（对应 MainActivity）
- * 批2 完善版：抽屉（用户信息/练习模式/优肯/退出/版本）+ 版本更新检查 + 比赛列表跳赛前设置
+ * 技术统计列表页（结构与样式同 main/index）
+ * 入口：mine「技术统计」；列表数据同主页，卡片内仅一个「技术统计」按钮（功能待定）。
  */
 import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
-import { getMatchList, gameStatus, getGameDetail } from '@/api/game'
+import { getMatchList, getGameDetail } from '@/api/game'
 import { getUserInfo } from '@/api/login'
 import { versionCheck } from '@/api/version'
 import { useUserStore } from '@/store/user'
@@ -206,14 +185,6 @@ const rawList = ref([])
 const showUpdate = ref(false)
 const versionInfo = ref(null)
 
-// 比赛状态选择弹窗（goMatchSet 弹出）
-const showStatusSheet = ref(false)
-const currentGame = ref(null)
-const statusOptions = [
-  { value: 1, desc: '未开始' },
-  { value: 2, desc: '进行中' },
-  { value: 3, desc: '已结束' }
-]
 
 const groups = computed(() => {
   const map = {}
@@ -294,52 +265,12 @@ function statusText(g) {
   return '未开始'
 }
 
-// 【原 goMatchSet：直接跳赛前设置页，已注释】
-// function goMatchSet(g) {
-//   const sport = appStore.sport
-//   const url =
-//     sport === 'football'
-//       ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-//       : `/pages/match/basketball-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
-//   uni.navigateTo({ url })
-// }
-
-/**
- * 重写 goMatchSet：点击「技术统计」按钮 -> 弹出窗口，
- * 从上到下列出比赛状态三个选项（未开始/进行中/已结束）供用户选择修改
- */
-function goMatchSet(g) {
-  currentGame.value = g
-  showStatusSheet.value = true
-}
-
-/** 选中某个状态 -> 调 gameStatus 接口修改比赛状态 */
-function onStatusSelect(s) {
-  const g = currentGame.value
-  if (!g) return
-  showStatusSheet.value = false
-  const params = { gameId: g.id, status: s.value }
-  console.log('[gameStatus] 请求参数', params, 'sport=', appStore.sport)
-  gameStatus(params, appStore.sport).then((res) => {
-    console.log('[gameStatus] 响应', res)
-    if (res && res.code === 1) {
-      uni.showToast({ title: `已修改为「${s.desc}」`, icon: 'none' })
-      // 本地即时刷新该项状态
-      g.status = { value: s.value, desc: s.desc }
-      // 修改成功后自动下拉刷新列表
-      refreshing.value = true
-      loadList()
-    } else {
-      uni.showToast({ title: (res && res.msg) || '修改失败', icon: 'none' })
-    }
-  }).catch((err) => {
-    console.error('[gameStatus] 失败', err)
-    uni.showToast({ title: (err && err.msg) || '修改失败', icon: 'none' })
-  })
-}
-
-function goLive(g) {
-  uni.navigateTo({ url: `/pages/live/multiple?gameId=${g.id}&sport=${appStore.sport}` })
+/** 技术统计入口：进赛前设置页（同旧「练习模式」页面），按当前运动分流 */
+function goStatsDetail(g) {
+  const url = appStore.sport === 'football'
+    ? `/pages/match/football-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+    : `/pages/match/basketball-setup?gameId=${g.id}&hostTeamId=${g.hostGameTeamId}&guestTeamId=${g.guestGameTeamId}`
+  uni.navigateTo({ url })
 }
 
 function goPhoto() {
@@ -680,6 +611,11 @@ function doUpdate() {
   background-color: #009de9;
   color: #ffffff;
 }
+/* 主队行占位：与「技术统计」按钮同尺寸，保证上下两行比分对齐 */
+.action-btn.ghost {
+  visibility: hidden;
+}
+
 .loading-more {
   text-align: center;
   padding: 30rpx;
@@ -733,42 +669,6 @@ function doUpdate() {
 .ub.confirm {
   background-color: #29a871;
   color: #ffffff;
-}
-/* 比赛状态选择弹窗（从上到下纵向列表） */
-.status-sheet {
-  padding: 30rpx;
-}
-.status-sheet .sheet-title {
-  text-align: center;
-  font-size: 28rpx;
-  color: #999999;
-  margin-bottom: 20rpx;
-}
-.status-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100rpx;
-  padding: 0 30rpx;
-  border-bottom: 1rpx solid #eeeeee;
-  font-size: 30rpx;
-  color: #333333;
-}
-.status-item.active {
-  color: #29a871;
-  font-weight: bold;
-}
-.status-check {
-  color: #29a871;
-  font-size: 32rpx;
-}
-.status-cancel {
-  margin-top: 20rpx;
-  height: 90rpx;
-  line-height: 90rpx;
-  text-align: center;
-  color: #999999;
-  font-size: 28rpx;
 }
 	
 .search-icon{

@@ -1,10 +1,6 @@
 <template>
   <view class="basketball-setup">
-    <custom-nav title="篮球比赛设置">
-      <template #right>
-        <text class="start-btn" @click="onStart">开始统计</text>
-      </template>
-    </custom-nav>
+    <custom-nav title="篮球比赛设置" />
 
     <u-tabs :list="tabs" :current="current" @click="onTabClick"></u-tabs>
 
@@ -13,7 +9,8 @@
         v-show="current === 0"
         :game-id="gameId"
         sport="basketball"
-        :has-sync="true"
+        :start-mode="true"
+        @start="onStart"
         @status-change="onStatusChange"
       />
       <team-roster
@@ -47,7 +44,7 @@
  * 篮球赛前设置（对应 MatchSetActivity）
  * - 拉小节写入本地 game_section（getSectionList）
  * - 3 Tab：比赛信息 / 主队 / 客队
- * - 开始统计：校验后进篮球统计页（批3实现）
+ * - 开始统计按钮在「比赛信息」Tab 内（原右上角入口已移除），校验后进篮球统计页
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
@@ -137,10 +134,6 @@ function onConfirmStart() {
 .basketball-setup {
   min-height: 100vh;
   background-color: #ffffff;
-}
-.start-btn {
-  font-size: 28rpx;
-  color: #29a871;
 }
 .content {
   height: calc(100vh - 200rpx);

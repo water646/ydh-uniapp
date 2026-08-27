@@ -150,18 +150,20 @@ function popClick(type) {
   isAuthen.value = true
 }
 
-/** 弹窗确认：退出登录执行登出，其余（去认证等）暂无逻辑只关窗 */
+/** 弹窗确认：退出登录执行登出；去认证进认证页 */
 function handleConfirm() {
   isAuthen.value = false
   if (popType.value === 'outconfirm') {
     userStore.logout()
     uni.reLaunch({ url: '/pages/login/index' })
+  } else if (popType.value === 'auth') {
+    uni.navigateTo({ url: '/pages/mine/certify' })
   }
 }
 
-/** 技术统计：进技术统计页（原首页，现为普通页面，navigateTo 即可） */
+/** 技术统计：进技术统计列表页（与主页同构，卡片内为「技术统计」按钮） */
 function goStats() {
-  uni.navigateTo({ url: '/pages/main/index' })
+  uni.navigateTo({ url: '/pages/main/stats' })
 }
 
 /** 现场直播：先进技术统计页（同「技术统计」入口，后续直播入口再细分） */
@@ -181,12 +183,12 @@ function copyAccountId() {
   })
 }
 
-/** 我的认证：已认证先提示（详情页待做），未认证/审核中弹「去认证」引导 */
+/** 我的认证：已认证先提示（详情页待做），未认证/审核中直接进实名认证页 */
 function authenClick() {
   if (authState.value === 'ok') {
     uni.showToast({ title: '已认证', icon: 'none' })
   } else {
-    popClick('auth')
+    uni.navigateTo({ url: '/pages/mine/certify' })
   }
 }
 

@@ -3,13 +3,13 @@
 
 
     <!-- <button class="back-btn" @click="goBack()">返回</button> -->
-	<view style="display:flex; align-items: center;justify-content: center; height:70rpx;width: 100%;background-color: #FFFFFF; ">
-		<image @click="goBack()" style="position: absolute; left: -15rpx; width: 100rpx; height: 100rpx;" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
-		<view style="color: #717171;">{{title}}</view>
+	<view class="nav-bar">
+		<image @click="goBack()" class="nav-back" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" />
+		<view class="nav-bar-title">{{title}}</view>
 	</view>
 
     <!-- WebView 组件加载远程 URL -->
-    <web-view style="position:absolute; top:60rpx" :src="url" />
+    <web-view class="web" :src="url" />
 </template>
 
 <script setup>
@@ -60,6 +60,34 @@ const goBack = () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* 顶部白色标题栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70rpx;
+  width: 100%;
+  background-color: #FFFFFF;
+}
+
+/* 返回键：贴左露出大点击区 */
+.nav-back {
+  position: absolute;
+  left: -15rpx;
+  width: 100rpx;
+  height: 100rpx;
+}
+
+.nav-bar-title {
+  color: #717171;
+}
+
+/* 内嵌网页：顶栏下方铺满 */
+.web {
+  position: absolute;
+  top: 60rpx;
 }
 
 .top-line {

@@ -13,7 +13,7 @@
           <text v-if="m.temporary === 1" class="temp">临时</text>
           <text v-if="sport === 'football' && m.position" class="pos">{{ m.position.desc }}</text>
         </view>
-        <view class="op sign" :class="{ on: isOn(m.playing) }" @click.stop="toggleSign(m)">到场</view>
+        <view class="op sign" :class="{ on: isSigned(m) }" @click.stop="toggleSign(m)">到场</view>
         <view class="op start" :class="{ on: isOn(m.startingLineup) }" @click.stop="toggleStart(m)">首发</view>
         <view v-if="m.temporary === 1" class="op del" @click.stop="onDel(m)">删除</view>
       </view>
@@ -32,7 +32,7 @@
 <script setup>
 /**
  * 球员管理 Tab（对应 HomeInfomationFragment / GameSetHostFragment / HomeFootInfomationFragment）
- * - 拉取成员列表（对应 getMember），缓存到本地 member 表
+ * - 拉取成员列表（statistics/member/list 全队名单；行 id 即 statisticsMemberId，非空=已到场签到）
  * - 到场签到/取消（memberSign / cancelMemberSign）
  * - 首发设置/取消（startingLineup / startingLineupCancel）
  * - 添加临时球员（addMember）/ 删除临时球员（deleteMember）
@@ -50,7 +50,7 @@ import {
   deleteMember,
   memberEditPosition
 } from '@/api/game'
-import { insertOrReplace } from '@/utils/db'
+import { insertOrReplace, countWhere } from '@/utils/db'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
 import addMemberDialog from '@/components/add-member-dialog/add-member-dialog.vue'
 
@@ -79,6 +79,11 @@ function load() {
   })
 }
 
+/** 是否已到场：签到后行 id（statisticsMemberId）非空 */
+function isSigned(m) {
+  return !!m.id
+}
+
 /** 缓存到本地 member 表（对应 HomeInfomationFragment 写 GreenDAO） */
 function cacheLocal() {
   members.value.forEach((m) => {
@@ -89,7 +94,7 @@ function cacheLocal() {
       name: m.name,
       number: m.number,
       startingLineup: isOn(m.startingLineup) ? 1 : 0,
-      playing: isOn(m.playing) ? 1 : 0
+      playing: isSigned(m) ? 1 : 0
     })
   })
 }
@@ -97,10 +102,24 @@ function cacheLocal() {
 watch(() => props.gameTeamId, load, { immediate: true })
 
 function toggleSign(m) {
-  const api = isOn(m.playing) ? cancelMemberSign : memberSign
-  api({ gameTeamId: props.gameTeamId, teamMemberId: m.teamMemberId }).then((res) => {
-    if (res.code === 1) load()
-    else uni.showToast({ title: res.msg || '操作失败', icon: 'none' })
+  if (!isSigned(m)) {
+    // 未到场 -> 签到
+    memberSign({ gameTeamId: props.gameTeamId, teamMemberId: m.teamMemberId }).then((res) => {
+      if (res.code === 1) load()
+      else uni.showToast({ title: res.msg || '操作失败', icon: 'none' })
+    })
+    return
+  }
+  // 已到场 -> 取消；本地已有技术记录的球员不能取消（对应老项目校验）
+  countWhere('technical_record', `statistics_member_id='${m.id}'`).then((cnt) => {
+    if (cnt > 0) {
+      uni.showToast({ title: '该球员已经存在数据，不能取消到场', icon: 'none' })
+      return
+    }
+    cancelMemberSign({ statisticsMemberId: m.id }).then((res) => {
+      if (res.code === 1) load()
+      else uni.showToast({ title: res.msg || '操作失败', icon: 'none' })
+    })
   })
 }
 
@@ -218,6 +237,15 @@ defineExpose({ refresh: load })
 .op.on {
   background-color: #29a871;
   color: #ffffff;
+}
+/* 到场：未到场绿色（点击签到），已到场置灰（点击取消到场） */
+.op.sign {
+  background-color: #29a871;
+  color: #ffffff;
+}
+.op.sign.on {
+  background-color: #f2f2f2;
+  color: #999999;
 }
 .op.del {
   background-color: #ffeeee;

@@ -4,26 +4,22 @@
     <image class="back-btn" src="/static/mipmap-xxhdpi/black_back.png" mode="aspectFit" @click="onBack"></image>
 
     <!-- 顶部标题：居中悬浮，不用线条与内容分隔 -->
-    <view class="nav-title" style="padding-bottom:20rpx; border-bottom: 3rpx solid #f2f3f6;">绑定验证</view>
+    <view class="nav-title">绑定验证</view>
 
     <view class="content">
       <!-- 选中银行卡（只展示一张，点右侧箭头弹出所有卡换卡） -->
       <view v-if="selectedCard" class="bank-row" @click="showCardSheet = true">
-		
-		
         <view class="bank-row-main">
-		  <view style="position: relative; font-size: 25rpx; margin-bottom: 30rpx;">到账银行卡</view>
-		  <view style="position: relative;">
-			 <view style="display: flex; align-items: center; margin-bottom: 25rpx;">
-				<image src="/static/images/bankcard.png" style="width: 30rpx; height: 25rpx; margin-right: 10rpx;"></image>
-				<view class="bank-row-name">{{ selectedCard.bankName || '银行卡' }} {{ fmtCard(selectedCard.bankCardNumber) }}</view>
-			 </view>
-			 
-			 <view class="bank-row-holder" style="font-size: 25rpx; position: relative; left: 40rpx;">预计48小时内到账</view> 
-		  </view>
+          <view class="bank-row-title">到账银行卡</view>
+          <view class="bank-row-body">
+            <view class="bank-row-line">
+              <image class="bank-row-icon" src="/static/images/bankcard.png"></image>
+              <view class="bank-row-name">{{ selectedCard.bankName || '银行卡' }} {{ fmtCard(selectedCard.bankCardNumber) }}</view>
+            </view>
+            <view class="bank-row-tip">预计48小时内到账</view>
+          </view>
         </view>
-		<image class="bank-row-arrow" style="position: relative;top:25rpx;" src="/static/images/continue.png"></image>
-        
+        <image class="bank-row-arrow" src="/static/images/continue.png"></image>
       </view>
       <view v-else class="empty">未绑定银行卡</view>
 
@@ -32,7 +28,7 @@
 
       <!-- 提现金额（白卡片包裹，￥前缀，卡底可提现余额） -->
       <view class="amount-card">
-        <view class="amount-label" style="margin-bottom: 70rpx;">提现金额</view>
+        <view class="amount-label">提现金额</view>
         <view class="amount-line">
           <view class="amount-yen">￥</view>
           <input class="amount-input" v-model="amount" type="digit" placeholder="请输入提现金额" placeholder-class="ph-gray" />
@@ -191,7 +187,7 @@ function onBack() {
   z-index: 10;
 }
 
-/* 标题：与返回键同一水平带，居中，无分隔线 */
+/* 标题：与返回键同一水平带，居中，底部细线 */
 .nav-title {
   position: fixed;
   top: calc(var(--status-bar-height) + 40rpx);
@@ -200,6 +196,8 @@ function onBack() {
   text-align: center;
   font-size: 34rpx;
   color: #333333;
+  padding-bottom: 20rpx;
+  border-bottom: 3rpx solid #f2f3f6;
 }
 
 .content {
@@ -214,10 +212,45 @@ function onBack() {
   padding: 0rpx 60rpx 30rpx 48rpx;
 }
 
-/* 换卡箭头（同账号管理页入口箭头尺寸） */
+/* 到账银行卡小标题 */
+.bank-row-title {
+  position: relative;
+  font-size: 25rpx;
+  margin-bottom: 30rpx;
+}
+
+.bank-row-body {
+  position: relative;
+}
+
+/* 银行图标 + 卡名一行 */
+.bank-row-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.bank-row-icon {
+  width: 30rpx;
+  height: 25rpx;
+  margin-right: 10rpx;
+}
+
+/* 到账时长提示：相对卡名缩进 */
+.bank-row-tip {
+  color: #999999;
+  font-size: 25rpx;
+  margin-top: 8rpx;
+  position: relative;
+  left: 40rpx;
+}
+
+/* 换卡箭头（同账号管理页入口箭头尺寸，随内容下移） */
 .bank-row-arrow {
   width: 15rpx;
   height: 25rpx;
+  position: relative;
+  top: 25rpx;
 }
 
 .bank-row-name {
@@ -295,7 +328,7 @@ function onBack() {
 
 .amount-label {
   font-size: 25rpx;
-  margin-bottom: 28rpx;
+  margin-bottom: 70rpx;
 }
 
 /* 输入行：￥前缀 + 输入框，坐在横线上 */

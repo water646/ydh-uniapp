@@ -21,7 +21,7 @@
       <view v-else-if="!hasMore && list.length" class="more">已加载全部</view>
       <view v-if="!list.length && !loading" class="no-data">
         <image class="no-data-img" src="/static/mipmap-xxhdpi/no_shuju.png" mode="aspectFit" />
-        <view style="color: #BBBBBB;">暂无数据</view>
+        <view class="no-data-text">暂无数据</view>
       </view>
     </scroll-view>
   </view>
@@ -165,6 +165,11 @@ function back() {
   width: 100rpx;
   height: 100rpx;
   margin: 100rpx auto 50rpx auto;
+}
+
+/* 空态文字 */
+.no-data-text {
+  color: #BBBBBB;
 }
 .no-data {
   display: flex;

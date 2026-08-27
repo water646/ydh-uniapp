@@ -30,7 +30,7 @@
     </view>
 
     <!-- 服务详情：现场图片/视频上传（URL 上传待接入，先留本地临时路径） -->
-    <view class="card" style="padding-bottom: 30rpx;">
+    <view class="card card-pad">
       <view class="card-title">服务详情</view>
 
       <view class="upload-label">现场图片</view>
@@ -62,7 +62,7 @@
     </view>
 
     <!-- 服务总结 -->
-    <view class="card" style="padding-bottom: 30rpx;">
+    <view class="card card-pad">
       <view class="card-title">服务总结</view>
       <textarea class="summary"  v-model="summary" placeholder="填写服务总结（选填）" placeholder-class="summary-ph" />
     </view>
@@ -199,6 +199,11 @@ function onSubmit() {
   padding: 28rpx 28rpx 0 28rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 卡内末尾有上传区/输入区时补一点底部内距 */
+.card-pad {
+  padding-bottom: 30rpx;
 }
 
 .card-title {

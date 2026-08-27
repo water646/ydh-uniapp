@@ -645,7 +645,7 @@ function back() {
 .person-card{
 	width: 140rpx; 
 	height:80rpx;
-	padding:10rpx;
+	padding:5rpx 10rpx;
 	margin:10rpx;
 	background-color: #FFFFFF; 
 	display: flex;
@@ -687,8 +687,8 @@ function back() {
 }
 
 .person-ball{
-	width: 12rpx; 
-	height:12rpx; 
+	width: 14rpx; 
+	height:14rpx; 
 	padding:18rpx;
 	border-radius: 50%;
 	background-color: red;
@@ -710,16 +710,14 @@ function back() {
   padding: 10rpx 0;
   border-bottom: 1rpx solid #f2f2f2;
 }
-// .player-list {
-//   flex: 1;
-//   min-height: 0;
-// }
+
 .player-list{
 	height:50vh; 
 	background-color: #F8F8F8; 
 	display: flex;
 	flex-wrap: wrap; 
-	justify-content: space-around;
+	padding:5rpx;
+	// justify-content: space-around;
 }
 
 
