@@ -123,7 +123,7 @@ function onConfirmStart() {
     uni.showToast({ title: '请将比赛状态设置为进行中', icon: 'none' })
     return
   }
-  // 进篮球统计页（离线版，对应 Statidtics1Activity）
+  // 进篮球统计页（横屏直连版，比赛时 id 由页面内 game-detail-basketball 提供）
   uni.navigateTo({
     url: `/pages/statistics/basketball-operate?gameId=${gameId.value}`
   })

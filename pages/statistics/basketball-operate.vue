@@ -117,6 +117,8 @@
     <transition name="slide-up">
       <view v-if="selectedId" class="bottom-bar" @click.stop>
       <scroll-view scroll-y class="action-scroll">
+        <!-- 最近一次录入的操作提示（新操作覆盖旧的） -->
+        <view v-if="latestRecord" class="record-chip">{{ latestRecord }}</view>
         <view class="action-grid">
           <view
             v-for="a in quickActions"
@@ -174,6 +176,8 @@
  * 篮球技术统计（横屏操作页，直连服务器）
  * - 进页 getGameBasketballDetail 一次拉全量（game/球员/小节/比分/犯规/暂停）
  * - 点动作 uploadData(statistics/add)，成功后 loadData/loadRecords 刷新
+ * - 上报用「比赛时 id」：即 game-detail-basketball 成员行的 id（statisticsMemberId），
+ *   命中/犯规/换人等记录均以它上报
  * - 换人(13/14)：先传下场成功后传上场；小节开始/结束(16/15)、上一/下一节 sectionRunning
  * - 删除 cancelData(statistics/cancel)；记录列表 statisticsPage(statistics/page)
  * - 不使用本地 db，比分/犯规/暂停以服务端返回为准
@@ -212,6 +216,8 @@ const guestFoul = computed(() => guestMembers.value.reduce((s, m) => s + (m.foul
 const hostPause = ref(0)
 const guestPause = ref(0)
 const records = ref([])
+// 动作按钮上方的最近一次操作提示（x号 xxx 动作），新操作覆盖旧的
+const latestRecord = ref('')
 const battery = ref(100)
 const showChange = ref(false)
 const showSection = ref(false)
@@ -240,6 +246,7 @@ function onRecordRefresh() {
 function adaptMember(m) {
   return {
     team_member_id: m.teamMemberId,
+    id: m.id, // 比赛时 id（statisticsMemberId），上报用
     number: m.number,
     name: m.name,
     playing: m.playing?.boolean ? 1 : 0,
@@ -272,11 +279,12 @@ function loadData() {
     // 定位当前运行中的小节
     const running = sections.value.find((s) => s.running && s.running.boolean)
     if (running) {
-      currentSection.value = running.gameSectionId
+      // statisticsSectionId 用小节行的 id（非 gameSectionId）
+      currentSection.value = running.id
       currentSectionName.value = running.name
       currentSectionIdx.value = sections.value.findIndex((s) => s.gameSectionId === running.gameSectionId)
     } else if (sections.value.length) {
-      currentSection.value = sections.value[0].gameSectionId
+      currentSection.value = sections.value[0].id
       currentSectionName.value = sections.value[0].name
       currentSectionIdx.value = 0
     }
@@ -344,13 +352,14 @@ function doAction(a) {
   uploadData({
     description: `${member.name} ${a.desc}`,
     recordNumber: Date.now(),
-    statisticsMemberId: member.team_member_id,
+    statisticsMemberId: member.id || member.team_member_id,
     statisticsSectionId: currentSection.value,
     type: a.type,
     index: 0,
     host_guest: teamType
   }).then((res) => {
     if (res.code === 1) {
+      latestRecord.value = `${member.number}号 ${member.name} ${a.desc}`
       loadData()
       loadRecords()
     }
@@ -383,17 +392,24 @@ function onDelete(r) {
   })
 }
 
+/** 换人弹窗传的是 team_member_id，换算成比赛时 id */
+function matchIdOf(teamMemberId) {
+  const all = hostMembers.value.concat(guestMembers.value)
+  const m = all.find((x) => x.team_member_id === teamMemberId)
+  return (m && m.id) || teamMemberId
+}
+
 function onChange({ offId, onId }) {
   const team = selectedTeam.value || 'host'
   const teamType = team === 'host' ? 1 : 0
   const base = Date.now()
   uploadData({
-    description: '换下', recordNumber: base, statisticsMemberId: offId,
+    description: '换下', recordNumber: base, statisticsMemberId: matchIdOf(offId),
     statisticsSectionId: currentSection.value, type: 13, index: 0, host_guest: teamType
   }).then((res) => {
     if (res.code === 1) {
       return uploadData({
-        description: '换上', recordNumber: base + 1, statisticsMemberId: onId,
+        description: '换上', recordNumber: base + 1, statisticsMemberId: matchIdOf(onId),
         statisticsSectionId: currentSection.value, type: 14, index: 0, host_guest: teamType
       })
     }
@@ -414,7 +430,7 @@ function onSection(t) {
   if (t === 'next' && currentSectionIdx.value < sections.value.length - 1) currentSectionIdx.value++
   const sec = sections.value[currentSectionIdx.value]
   if (sec) {
-    currentSection.value = sec.gameSectionId
+    currentSection.value = sec.id
     currentSectionName.value = sec.name
   }
   sectionRunning(currentSection.value).then((res) => {
@@ -772,6 +788,16 @@ function back() {
   flex: 1;
   min-height: 0;
   margin-bottom: 20rpx;
+}
+/* 最近一次操作提示白框（按钮集合上方，新操作覆盖旧的） */
+.record-chip {
+  background-color: #ffffff;
+  border: 1rpx solid #e5e5e5;
+  border-radius: 8rpx;
+  padding: 12rpx 20rpx;
+  margin-bottom: 10rpx;
+  font-size: 26rpx;
+  color: #333333;
 }
 .action-grid {
   display: flex;
