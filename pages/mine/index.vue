@@ -17,12 +17,12 @@
 					<p class="mestop-text">{{ molist.nickname }}</p>
 				</view>
 				
-				<view class="idmes copy-btn" @click="doManage">管理</view>
+				<view class="idmes copy-btn" @click.stop="doManage">管理</view>
 			</view>
 
 			<view class="mesbot">
 				<view class="idmes">账户ID：{{ molist.accountId }}</view>	
-				<view class="idmes copy-btn" @click="copyAccountId">复制</view>
+				<view class="idmes copy-btn" @click.stop="copyAccountId">复制</view>
 			</view>
         </view>
       </view>
@@ -156,7 +156,8 @@ function handleConfirm() {
   if (popType.value === 'outconfirm') {
     userStore.logout()
     uni.reLaunch({ url: '/pages/login/index' })
-  } else if (popType.value === 'auth') {
+  } else {
+    // 去认证：进实名认证页
     uni.navigateTo({ url: '/pages/mine/certify' })
   }
 }

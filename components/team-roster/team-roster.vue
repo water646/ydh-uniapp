@@ -132,12 +132,10 @@ function toggleStart(m) {
 }
 
 function onAdd(form) {
-  addMember({
-    gameTeamId: props.gameTeamId,
-    number: form.number,
-    name: form.name,
-    position: form.position
-  }).then((res) => {
+  // position 为后端枚举（篮球 1-5：中锋/大前锋/小前锋/得分后卫/控球后卫），传空串/中文会被 400 拒绝，为空时不传
+  const payload = { gameTeamId: props.gameTeamId, number: form.number, name: form.name }
+  if (form.position) payload.position = form.position
+  addMember(payload).then((res) => {
     if (res.code === 1) {
       showAdd.value = false
       load()
