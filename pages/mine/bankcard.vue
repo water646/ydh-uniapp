@@ -10,6 +10,7 @@
           <view class="carditem-top">
             <image class="carditem-icon" src="/static/images/bankcard.png"></image>
             <text class="carditem-bank">{{ c.bankName || '银行卡' }}</text>
+            <view class="carditem-unbind" @click="onUnbind(c)">解绑</view>
           </view>
           <view class="carditem-num">{{ fmtCard(c.bankCardNumber) }}</view>
           <view class="carditem-holder">持卡人：{{ c.name || '—' }}</view>
@@ -64,6 +65,12 @@ function onAdd() {
   uni.navigateTo({ url: '/pages/mine/bankcard-add' })
 }
 
+/** 解绑银行卡（接口待定） */
+function onUnbind(c) {
+  // TODO: 解绑接口确定后在此提交（预计带 c.id），成功后 loadCards() 刷新
+  uni.showToast({ title: '解绑接口待接入', icon: 'none' })
+}
+
 function onBack() {
   if (getCurrentPages().length > 1) {
     uni.navigateBack()
@@ -110,6 +117,16 @@ function onBack() {
   color: #ffffff;
   font-size: 28rpx;
   font-weight: bold;
+}
+
+/* 解绑小胶囊：靠卡片右上角，白描边 */
+.carditem-unbind {
+  margin-left: auto;
+  padding: 6rpx 24rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  border-radius: 24rpx;
+  color: #ffffff;
+  font-size: 22rpx;
 }
 
 .carditem-num {
