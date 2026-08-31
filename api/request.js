@@ -2,19 +2,45 @@
  * 统一请求封装
  * 对应 Android Retrofit + OkHttp + GlobalHttpHandlerImpl
  * - 请求拦截：注入 token 请求头（对应 onHttpRequestBefore）
- * - 响应拦截：code === -8/-9 自动登出跳登录页（对应 onHttpResultResponse）
+ * - 响应拦截：HTTP 401 或 code === -8/-9 自动清凭证并跳登录页（对应 onHttpResultResponse）
  * - 成功判据：status === 1 || code === 1（原项目两套判据并存）
  * - 路径参数 {gameId} 替换（对应 @Path）
  * - GET query 拼接（对应 @Query/@QueryMap）
  * - POST body（对应 @Body RequestParams）
  */
 import { config } from '@/config'
-import { getToken, clearAuth } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
+import { useUserStore } from '@/store/user'
 import { mockResolve } from '@/mock/mock-data'
 
 /** 成功判据（兼容 ApiEntity 的 status===1 与其余的 code===1） */
 export function isSuccess(body) {
   return !!body && (body.status === 1 || body.code === 1)
+}
+
+/** token 失效跳登录去重标记（并发多请求同时失效时只清一次、跳一次） */
+let redirectingToLogin = false
+
+/**
+ * token 失效统一处理：清凭证，任何页面都重定向到登录页
+ * 后端失效返回 HTTP 401 + code 0（msg「token失效，请重新登录」）；-8/-9 为旧端历史码，一并兼容
+ */
+function onTokenExpired() {
+  // store.logout()：同时清 storage 与 pinia 状态（isLogin 立即变 false）
+  useUserStore().logout()
+  if (redirectingToLogin) return
+  // 已在登录页（如登录接口本身 401）不重复跳
+  const pages = getCurrentPages()
+  const cur = pages[pages.length - 1]
+  if (cur && cur.route && cur.route.indexOf('pages/login/index') !== -1) return
+  redirectingToLogin = true
+  uni.showToast({ title: '登录已过期，请重新登录', icon: 'none' })
+  uni.reLaunch({
+    url: '/pages/login/index',
+    complete: () => {
+      setTimeout(() => { redirectingToLogin = false }, 1000)
+    }
+  })
 }
 
 /**
@@ -94,6 +120,12 @@ export function request(options) {
 
         // HTTP 状态码异常（业务错误会用非 2xx + body.msg 返回，如「只有进行中的比赛才能直播」）
         if (res.statusCode < 200 || res.statusCode >= 300) {
+          // token 失效：后端返回 401，清凭证跳登录页（不受 hideError 影响）
+          if (res.statusCode === 401) {
+            onTokenExpired()
+            reject(body || res)
+            return
+          }
           if (!hideError) {
             const errMsg = (body && (body.msg || body.message)) || `请求失败(${res.statusCode})`
             uni.showToast({ title: errMsg, icon: 'none' })
@@ -104,8 +136,7 @@ export function request(options) {
 
         // token 失效登出（对应 GlobalHttpHandlerImpl 的 -8/-9 逻辑）
         if (body && config.tokenExpiredCodes.includes(body.code)) {
-          clearAuth()
-          uni.reLaunch({ url: '/pages/login/index' })
+          onTokenExpired()
           reject(body)
           return
         }
