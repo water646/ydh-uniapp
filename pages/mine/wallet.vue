@@ -34,7 +34,7 @@
     <!-- 明细类型 tab：黑色字体，选中绿色下划线，贴 topcontent 底部居中 -->
     <view class="tabs">
       <view class="tab" :class="{ active: tab === 'income' }" @click="tab = 'income'">收入明细</view>
-      <view class="tab" :class="{ active: tab === 'withdraw' }" @click="tab = 'withdraw'">提现明细</view>
+      <view class="tab" :class="{ active: tab === 'withdraw' }" @click="seeWithdraw()">提现明细</view>
     </view>
     </view>
 
@@ -142,6 +142,11 @@ function onBack() {
     // 兜底：热同步重载后页面栈只剩本页时，回首页 tab
     uni.switchTab({ url: '/pages/home/index' })
   }
+}
+
+const seeWithdraw = () =>{
+	uni.showToast({ title: '提现明细接口待接入', icon: 'none' })
+	tab = 'withdraw'
 }
 </script>
 

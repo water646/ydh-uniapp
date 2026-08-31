@@ -55,6 +55,7 @@ function onBack() {
 /** 确定：提交所选身份（selected.value 为已选数组），接口待定 */
 function onConfirm() {
   // TODO: 提交接口确定后接入
+  uni.showToast({ title: '身份接口待接入', icon: 'none' })
 }
 </script>
 

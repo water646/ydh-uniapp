@@ -245,6 +245,7 @@ if (uni.restoreGlobal) {
    */
   let activePinia;
   const setActivePinia = (pinia) => activePinia = pinia;
+  const getActivePinia = () => vue.hasInjectionContext() && vue.inject(piniaSymbol) || activePinia;
   const piniaSymbol = Symbol("pinia");
   function isPlainObject$2(o) {
     return o && typeof o === "object" && Object.prototype.toString.call(o) === "[object Object]" && typeof o.toJSON !== "function";
@@ -1039,6 +1040,9 @@ Only state can be modified.`);
     }
     return pinia;
   }
+  const isUseStore = (fn) => {
+    return typeof fn === "function" && typeof fn.$id === "string";
+  };
   function patchObject(newState, oldState) {
     for (const key in oldState) {
       const subPatch = oldState[key];
@@ -1055,6 +1059,31 @@ Only state can be modified.`);
       }
     }
     return newState;
+  }
+  function acceptHMRUpdate(initialUseStore, hot) {
+    return (newModule) => {
+      const pinia = hot.data.pinia || initialUseStore._pinia;
+      if (!pinia) {
+        return;
+      }
+      hot.data.pinia = pinia;
+      for (const exportName in newModule) {
+        const useStore = newModule[exportName];
+        if (isUseStore(useStore) && pinia._s.has(useStore.$id)) {
+          const id = useStore.$id;
+          if (id !== initialUseStore.$id) {
+            console.warn(`The id of the store changed from "${initialUseStore.$id}" to "${id}". Reloading.`);
+            return hot.invalidate();
+          }
+          const existingStore = pinia._s.get(id);
+          if (!existingStore) {
+            console.log(`[Pinia]: skipping hmr because store doesn't exist yet`);
+            return;
+          }
+          useStore(pinia, existingStore);
+        }
+      }
+    };
   }
   const noop = () => {
   };
@@ -1099,6 +1128,9 @@ Only state can be modified.`);
     return target;
   }
   const skipHydrateSymbol = Symbol("pinia:skipHydration");
+  function skipHydrate(obj) {
+    return Object.defineProperty(obj, skipHydrateSymbol, {});
+  }
   function shouldHydrate(obj) {
     return !isPlainObject$2(obj) || !obj.hasOwnProperty(skipHydrateSymbol);
   }
@@ -1516,6 +1548,146 @@ This will fail in production.`);
     useStore.$id = id;
     return useStore;
   }
+  let mapStoreSuffix = "Store";
+  function setMapStoreSuffix(suffix) {
+    mapStoreSuffix = suffix;
+  }
+  function mapStores(...stores) {
+    if (Array.isArray(stores[0])) {
+      console.warn(`[🍍]: Directly pass all stores to "mapStores()" without putting them in an array:
+Replace
+	mapStores([useAuthStore, useCartStore])
+with
+	mapStores(useAuthStore, useCartStore)
+This will fail in production if not fixed.`);
+      stores = stores[0];
+    }
+    return stores.reduce((reduced, useStore) => {
+      reduced[useStore.$id + mapStoreSuffix] = function() {
+        return useStore(this.$pinia);
+      };
+      return reduced;
+    }, {});
+  }
+  function mapState(useStore, keysOrMapper) {
+    return Array.isArray(keysOrMapper) ? keysOrMapper.reduce((reduced, key) => {
+      reduced[key] = function() {
+        return useStore(this.$pinia)[key];
+      };
+      return reduced;
+    }, {}) : Object.keys(keysOrMapper).reduce((reduced, key) => {
+      reduced[key] = function() {
+        const store = useStore(this.$pinia);
+        const storeKey = keysOrMapper[key];
+        return typeof storeKey === "function" ? storeKey.call(this, store) : store[storeKey];
+      };
+      return reduced;
+    }, {});
+  }
+  const mapGetters = mapState;
+  function mapActions(useStore, keysOrMapper) {
+    return Array.isArray(keysOrMapper) ? keysOrMapper.reduce((reduced, key) => {
+      reduced[key] = function(...args) {
+        return useStore(this.$pinia)[key](...args);
+      };
+      return reduced;
+    }, {}) : Object.keys(keysOrMapper).reduce((reduced, key) => {
+      reduced[key] = function(...args) {
+        return useStore(this.$pinia)[keysOrMapper[key]](...args);
+      };
+      return reduced;
+    }, {});
+  }
+  function mapWritableState(useStore, keysOrMapper) {
+    return Array.isArray(keysOrMapper) ? keysOrMapper.reduce((reduced, key) => {
+      reduced[key] = {
+        get() {
+          return useStore(this.$pinia)[key];
+        },
+        set(value) {
+          return useStore(this.$pinia)[key] = value;
+        }
+      };
+      return reduced;
+    }, {}) : Object.keys(keysOrMapper).reduce((reduced, key) => {
+      reduced[key] = {
+        get() {
+          return useStore(this.$pinia)[keysOrMapper[key]];
+        },
+        set(value) {
+          return useStore(this.$pinia)[keysOrMapper[key]] = value;
+        }
+      };
+      return reduced;
+    }, {});
+  }
+  function storeToRefs(store) {
+    {
+      store = vue.toRaw(store);
+      const refs = {};
+      for (const key in store) {
+        const value = store[key];
+        if (vue.isRef(value) || vue.isReactive(value)) {
+          refs[key] = // ---
+          vue.toRef(store, key);
+        }
+      }
+      return refs;
+    }
+  }
+  const PiniaVuePlugin = function(_Vue) {
+    _Vue.mixin({
+      beforeCreate() {
+        const options = this.$options;
+        if (options.pinia) {
+          const pinia = options.pinia;
+          if (!this._provided) {
+            const provideCache = {};
+            Object.defineProperty(this, "_provided", {
+              get: () => provideCache,
+              set: (v) => Object.assign(provideCache, v)
+            });
+          }
+          this._provided[piniaSymbol] = pinia;
+          if (!this.$pinia) {
+            this.$pinia = pinia;
+          }
+          pinia._a = this;
+          if (IS_CLIENT) {
+            setActivePinia(pinia);
+          }
+          if (USE_DEVTOOLS) {
+            registerPiniaDevtools(pinia._a, pinia);
+          }
+        } else if (!this.$pinia && options.parent && options.parent.$pinia) {
+          this.$pinia = options.parent.$pinia;
+        }
+      },
+      destroyed() {
+        delete this._pStores;
+      }
+    });
+  };
+  const Pinia = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    get MutationType() {
+      return MutationType;
+    },
+    PiniaVuePlugin,
+    acceptHMRUpdate,
+    createPinia,
+    defineStore,
+    getActivePinia,
+    mapActions,
+    mapGetters,
+    mapState,
+    mapStores,
+    mapWritableState,
+    setActivePinia,
+    setMapStoreSuffix,
+    skipHydrate,
+    storeToRefs
+  }, Symbol.toStringTag, { value: "Module" }));
   const KEY_TOKEN = "auth_token";
   const KEY_USER_ID = "auth_user_id";
   function getToken() {
@@ -2751,6 +2923,26 @@ This will fail in production.`);
     formatAppLog("warn", "at mock/mock-data.js:553", `%c【MOCK】未匹配到静态数据，走真实请求：${m} ${url2}`, "color:#f56c6c");
     return null;
   }
+  let redirectingToLogin = false;
+  function onTokenExpired() {
+    useUserStore().logout();
+    if (redirectingToLogin)
+      return;
+    const pages2 = getCurrentPages();
+    const cur = pages2[pages2.length - 1];
+    if (cur && cur.route && cur.route.indexOf("pages/login/index") !== -1)
+      return;
+    redirectingToLogin = true;
+    uni.showToast({ title: "登录已过期，请重新登录", icon: "none" });
+    uni.reLaunch({
+      url: "/pages/login/index",
+      complete: () => {
+        setTimeout(() => {
+          redirectingToLogin = false;
+        }, 1e3);
+      }
+    });
+  }
   function request(options) {
     const {
       url: url2,
@@ -2767,7 +2959,7 @@ This will fail in production.`);
     if (mocked !== null) {
       if (loading)
         uni.showLoading({ title: typeof loading === "string" ? loading : "加载中", mask: true });
-      formatAppLog("log", "at api/request.js:51", "%c【MOCK】" + method.toUpperCase() + " " + url2, "color:#e6a23c;font-weight:bold", mocked);
+      formatAppLog("log", "at api/request.js:77", "%c【MOCK】" + method.toUpperCase() + " " + url2, "color:#e6a23c;font-weight:bold", mocked);
       return new Promise((resolve) => {
         setTimeout(() => {
           if (loading)
@@ -2805,6 +2997,11 @@ This will fail in production.`);
             uni.hideLoading();
           const body = res.data;
           if (res.statusCode < 200 || res.statusCode >= 300) {
+            if (res.statusCode === 401) {
+              onTokenExpired();
+              reject(body || res);
+              return;
+            }
             if (!hideError) {
               const errMsg = body && (body.msg || body.message) || `请求失败(${res.statusCode})`;
               uni.showToast({ title: errMsg, icon: "none" });
@@ -2813,8 +3010,7 @@ This will fail in production.`);
             return;
           }
           if (body && config$1.tokenExpiredCodes.includes(body.code)) {
-            clearAuth();
-            uni.reLaunch({ url: "/pages/login/index" });
+            onTokenExpired();
             reject(body);
             return;
           }
@@ -7377,7 +7573,10 @@ This will fail in production.`);
           submitting.value = false;
         });
       }
-      const __returned__ = { keyword, city, statusTabs, activeStatus, onStatusClick, orders, pageNo, loading, finished, loadCity, refresh, loadOrders, onOrderClick, showConfirm, confirmMsg, confirmTarget, submitting, onAccept, onReject, onStartService, onFinishService, doConfirm, ref: vue.ref, get onLoad() {
+      const onSearch = () => {
+        uni.showToast({ title: "搜索接口待接入", icon: "none" });
+      };
+      const __returned__ = { keyword, city, statusTabs, activeStatus, onStatusClick, orders, pageNo, loading, finished, loadCity, refresh, loadOrders, onOrderClick, showConfirm, confirmMsg, confirmTarget, submitting, onAccept, onReject, onStartService, onFinishService, doConfirm, onSearch, ref: vue.ref, get onLoad() {
         return onLoad;
       }, get onShow() {
         return onShow;
@@ -7421,7 +7620,10 @@ This will fail in production.`);
           )
         ]),
         vue.createElementVNode("view", { class: "search-box" }, [
-          vue.createElementVNode("view", { class: "search-icon" }),
+          vue.createElementVNode("view", {
+            class: "search-icon",
+            onClick: $setup.onSearch
+          }),
           vue.withDirectives(vue.createElementVNode(
             "input",
             {
@@ -8919,7 +9121,7 @@ This will fail in production.`);
         if (popType.value === "outconfirm") {
           userStore.logout();
           uni.reLaunch({ url: "/pages/login/index" });
-        } else if (popType.value === "auth") {
+        } else {
           uni.navigateTo({ url: "/pages/mine/certify" });
         }
       }
@@ -9009,7 +9211,7 @@ This will fail in production.`);
               ]),
               vue.createElementVNode("view", {
                 class: "idmes copy-btn",
-                onClick: $setup.doManage
+                onClick: vue.withModifiers($setup.doManage, ["stop"])
               }, "管理")
             ]),
             vue.createElementVNode("view", { class: "mesbot" }, [
@@ -9022,7 +9224,7 @@ This will fail in production.`);
               ),
               vue.createElementVNode("view", {
                 class: "idmes copy-btn",
-                onClick: $setup.copyAccountId
+                onClick: vue.withModifiers($setup.copyAccountId, ["stop"])
               }, "复制")
             ])
           ])
@@ -11577,12 +11779,10 @@ This will fail in production.`);
         });
       }
       function onAdd(form) {
-        addMember({
-          gameTeamId: props2.gameTeamId,
-          number: form.number,
-          name: form.name,
-          position: form.position
-        }).then((res) => {
+        const payload = { gameTeamId: props2.gameTeamId, number: form.number, name: form.name };
+        if (form.position)
+          payload.position = form.position;
+        addMember(payload).then((res) => {
           if (res.code === 1) {
             showAdd.value = false;
             load();
@@ -17799,6 +17999,7 @@ This will fail in production.`);
         }
       }
       function onConfirm() {
+        uni.showToast({ title: "身份接口待接入", icon: "none" });
       }
       const __returned__ = { identity, selected, onToggle, onBack, onConfirm, ref: vue.ref };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
@@ -18188,7 +18389,11 @@ This will fail in production.`);
           uni.switchTab({ url: "/pages/home/index" });
         }
       }
-      const __returned__ = { tab, balance, loading, incomeList, loadBalance, loadIncome, amountFmt, goWithdraw, goBankcard, onBack, ref: vue.ref, get onShow() {
+      const seeWithdraw = () => {
+        uni.showToast({ title: "提现明细接口待接入", icon: "none" });
+        tab = "withdraw";
+      };
+      const __returned__ = { tab, balance, loading, incomeList, loadBalance, loadIncome, amountFmt, goWithdraw, goBankcard, onBack, seeWithdraw, ref: vue.ref, get onShow() {
         return onShow;
       }, get getOrderList() {
         return getOrderList;
@@ -18265,7 +18470,7 @@ This will fail in production.`);
             "view",
             {
               class: vue.normalizeClass(["tab", { active: $setup.tab === "withdraw" }]),
-              onClick: _cache[1] || (_cache[1] = ($event) => $setup.tab = "withdraw")
+              onClick: _cache[1] || (_cache[1] = ($event) => $setup.seeWithdraw())
             },
             "提现明细",
             2
@@ -18594,6 +18799,9 @@ This will fail in production.`);
       function onAdd() {
         uni.navigateTo({ url: "/pages/mine/bankcard-add" });
       }
+      function onUnbind(c) {
+        uni.showToast({ title: "解绑接口待接入", icon: "none" });
+      }
       function onBack() {
         if (getCurrentPages().length > 1) {
           uni.navigateBack();
@@ -18601,7 +18809,7 @@ This will fail in production.`);
           uni.switchTab({ url: "/pages/home/index" });
         }
       }
-      const __returned__ = { cards, loadCards, fmtCard, onAdd, onBack, ref: vue.ref, get onShow() {
+      const __returned__ = { cards, loadCards, fmtCard, onAdd, onUnbind, onBack, ref: vue.ref, get onShow() {
         return onShow;
       }, customNav, get getAuthInfo() {
         return getAuthInfo;
@@ -18634,7 +18842,11 @@ This will fail in production.`);
                     vue.toDisplayString(c.bankName || "银行卡"),
                     1
                     /* TEXT */
-                  )
+                  ),
+                  vue.createElementVNode("view", {
+                    class: "carditem-unbind",
+                    onClick: ($event) => $setup.onUnbind(c)
+                  }, "解绑", 8, ["onClick"])
                 ]),
                 vue.createElementVNode(
                   "view",
@@ -18674,7 +18886,10 @@ This will fail in production.`);
     __name: "withdraw-result",
     setup(__props, { expose: __expose }) {
       __expose();
-      const __returned__ = { customNav };
+      vue.onMounted(() => {
+        uni.showToast({ title: "提现接口待接入", icon: "none" });
+      });
+      const __returned__ = { onMounted: vue.onMounted, customNav };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -19383,6 +19598,7 @@ This will fail in production.`);
         if (options && options.result === "fail") {
           isFail.value = true;
         }
+        uni.showToast({ title: "绑定接口待接入", icon: "none" });
       });
       const __returned__ = { isFail, ref: vue.ref, get onLoad() {
         return onLoad;
@@ -20443,7 +20659,8 @@ This will fail in production.`);
     app.use(uviewPlus);
     app.use(createPinia());
     return {
-      app
+      app,
+      Pinia
     };
   }
   const { app: __app__, Vuex: __Vuex__, Pinia: __Pinia__ } = createApp();

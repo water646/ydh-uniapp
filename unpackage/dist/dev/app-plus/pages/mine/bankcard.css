@@ -90,6 +90,16 @@
   font-size: 0.875rem;
   font-weight: bold;
 }
+
+/* 解绑小胶囊：靠卡片右上角，白描边 */
+.carditem-unbind[data-v-b29eef19] {
+  margin-left: auto;
+  padding: 0.1875rem 0.75rem;
+  border: 0.03125rem solid rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  color: #ffffff;
+  font-size: 0.6875rem;
+}
 .carditem-num[data-v-b29eef19] {
   color: #ffffff;
   font-size: 0.9375rem;

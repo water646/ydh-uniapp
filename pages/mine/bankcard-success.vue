@@ -38,6 +38,7 @@ onLoad((options) => {
   if (options && options.result === 'fail') {
     isFail.value = true
   }
+  uni.showToast({ title: '绑定接口待接入', icon: 'none' })
 })
 </script>
 

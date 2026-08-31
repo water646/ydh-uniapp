@@ -17,6 +17,12 @@
  * 提现申请结果页
  * 入口：提现页点「提现」通过校验后进入；提现提交接口待定（当前进页即视为已受理展示）。
  */
+onMounted(()=>{
+	  uni.showToast({ title: '提现接口待接入', icon: 'none' })
+})
+
+
+import { onMounted } from 'vue';
 import customNav from '@/components/custom-nav/custom-nav.vue'
 </script>
 

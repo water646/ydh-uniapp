@@ -7,7 +7,7 @@
         <view class="loc-text">{{ city }}</view>
       </view>
       <view class="search-box">
-        <view class="search-icon"></view>
+        <view class="search-icon" @click="onSearch"></view>
         <input class="search-input" v-model="keyword" placeholder="请输入您要搜索的内容" placeholder-class="search-ph" confirm-type="search" />
       </view>
     </view>
@@ -244,6 +244,11 @@ function doConfirm() {
     submitting.value = false
   })
 }
+
+const onSearch = () =>{
+	uni.showToast({ title: '搜索接口待接入', icon: 'none' })
+}
+
 </script>
 
 <style scoped>
