@@ -633,7 +633,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #f8f8f8;
   border-right: 0.03125rem solid #eeeeee;
   height: 15.625rem;
 }
@@ -701,9 +701,9 @@
   color: #29a871;
   padding: 0.3125rem 0;
   border-bottom: 0.03125rem solid #f2f2f2;
+  background-color: white;
 }
 .player-list[data-v-ef0dfe21] {
-  height: 50vh;
   background-color: #F8F8F8;
   display: flex;
   flex-wrap: wrap;

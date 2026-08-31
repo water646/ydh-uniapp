@@ -64,7 +64,7 @@
     <view class="mid">
       <view class="team-col">
         <view class="col-head">{{ homeName }}</view>
-        <view class="player-list"> <!-- class="player-list" -->
+        <view class="player-list">
           <view
             v-for="m in hostMembers"
             :key="m.team_member_id"
@@ -78,15 +78,14 @@
             	<text class="num">{{ m.number }}</text>
             </view>
             <text class="name">{{ m.name }}</text>
-			<!-- 犯规次数 -->
-            <!-- <text v-if="m.foul > 0" class="foul-c" :class="{ red: m.foul >= 5, yellow: m.foul === 4 }">{{ m.foul }}</text> -->
+
           </view>
         </view>
       </view>
 	  
       <view class="team-col" style="border-left: 1rpx solid rgba(0,0,0,0.1);">
         <view class="col-head">{{ guestName }}</view>
-        <view class="player-list">  <!-- class="player-list" -->
+        <view class="player-list"> 
           <view
             v-for="m in guestMembers"
             :key="m.team_member_id"
@@ -650,7 +649,7 @@ function back() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #f8f8f8;
   border-right: 1rpx solid #eeeeee;
   height: 500rpx;
 }
@@ -670,6 +669,7 @@ function back() {
 	align-items: center;
 	position: relative;
 	overflow: hidden;
+	// row-gap:20rpx;
 }
 
 .person-foul{
@@ -725,14 +725,16 @@ function back() {
   color: #29a871;
   padding: 10rpx 0;
   border-bottom: 1rpx solid #f2f2f2;
+  background-color: white;
 }
 
 .player-list{
-	height:50vh; 
+	// height:50%; 
 	background-color: #F8F8F8; 
 	display: flex;
 	flex-wrap: wrap; 
 	padding:5rpx;
+	// row-gap:1rpx;
 	// justify-content: space-around;
 }
 
