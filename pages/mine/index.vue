@@ -402,8 +402,8 @@ function goWallet() {
 }
 
 .cell-imgb {
-  width: 36rpx;
-  height: 32rpx;
+  width: 43rpx;
+  height: 37rpx;
   margin: 42rpx 28rpx 40rpx 18rpx;
 }
 
