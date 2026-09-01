@@ -18,35 +18,49 @@
         </view>
       </view>
 
-      <!-- 卡片2：卡类型 / 银行预留手机号 / 验证码（label 与值同行；卡类型由后端根据卡号推断回填，只展示不可输入） -->
-      <view class="card card-gap card-rows">
-        <view class="field-row">
-          <view class="row-label label-bold">卡类型</view>
-          <view class="input-line">
-            <view class="field-value" :class="{ 'ph-gray': !cardType }">{{ cardType || '输入卡号后自动识别' }}</view>
-          </view>
+      <!-- 卡号为空：免输入卡号添加（按银行列表选行，功能待接入） -->
+      <view v-if="!cardNo" class="card card-gap">
+        <view class="field-label field-label-divider label-bold">免输入卡号添加</view>
+        <view class="qa-row" v-for="b in shownBanks" :key="b.name" @click="onPick(b)">
+          <image class="qa-icon" :src="'/static/images/bank/' + b.icon" mode="aspectFit"></image>
+          <view class="qa-name">{{ b.name }}</view>
+          <view class="qa-arrow">›</view>
         </view>
-
-        <view class="field-row">
-          <view class="row-label">银行预留手机号</view>
-          <view class="input-line">
-            <input class="field-line-input" v-model="phone" type="number" maxlength="11" placeholder="请输入银行预留手机号" placeholder-class="ph-gray" />
-          </view>
-        </view>
-
-        <view class="field-row no-line">
-          <view class="row-label">验证码</view>
-          <view class="input-line">
-            <input class="field-line-input" v-model="code" type="number" maxlength="6" placeholder="请输入验证码" placeholder-class="ph-gray" />
-            <view class="send-btn" :class="{ counting: counting }" @click="onSendCode">{{ counting ? seconds + 's后重新发送' : '发送验证码' }}</view>
-          </view>
-        </view>
+        <!-- 展开/收起：常态前6家，点「全部银行」展开，展开后显示「收起」 -->
+        <view class="qa-toggle" @click="expanded = !expanded">{{ expanded ? '收起' : '全部银行' }}</view>
       </view>
 
-      <!-- 确认 -->
-      <view class="center-wrap">
-        <view class="confirm-btn" @click="onConfirm">确认</view>
-      </view>
+      <!-- 卡号非空：卡类型 / 银行预留手机号 / 验证码 + 确认（label 与值同行；卡类型由后端根据卡号推断回填，只展示不可输入） -->
+      <template v-else>
+        <view class="card card-gap card-rows">
+          <view class="field-row">
+            <view class="row-label label-bold">卡类型</view>
+            <view class="input-line">
+              <view class="field-value" :class="{ 'ph-gray': !cardType }">{{ cardType || '输入卡号后自动识别' }}</view>
+            </view>
+          </view>
+
+          <view class="field-row">
+            <view class="row-label">银行预留手机号</view>
+            <view class="input-line">
+              <input class="field-line-input" v-model="phone" type="number" maxlength="11" placeholder="请输入银行预留手机号" placeholder-class="ph-gray" />
+            </view>
+          </view>
+
+          <view class="field-row no-line">
+            <view class="row-label">验证码</view>
+            <view class="input-line">
+              <input class="field-line-input" v-model="code" type="number" maxlength="6" placeholder="请输入验证码" placeholder-class="ph-gray" />
+              <view class="send-btn" :class="{ counting: counting }" @click="onSendCode">{{ counting ? seconds + 's后重新发送' : '发送验证码' }}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 确认 -->
+        <view class="center-wrap">
+          <view class="confirm-btn" @click="onConfirm">确认</view>
+        </view>
+      </template>
     </view>
   </view>
 </template>
@@ -57,12 +71,40 @@
  * 入口：银行卡列表页「添加银行卡」；卡类型由后端根据卡号推断回填展示，不可输入；
  * 发码暂用登录短信接口 sms/login，绑卡提交接口待定。
  */
-import { ref, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import customNav from '@/components/custom-nav/custom-nav.vue'
 import { getNote } from '@/api/login'
 
 const cardNo = ref('')
 const phone = ref('')
+
+// 免输入卡号添加：银行列表（图标与银行卡页同源），点击行为待定
+const QUICK_BANKS = [
+  { name: '中国工商银行', icon: 'gongshang.png' },
+  { name: '中国农业银行', icon: 'nongye.png' },
+  { name: '中国银行', icon: 'zhongguo.png' },
+  { name: '中国建设银行', icon: 'jianshe.png' },
+  { name: '交通银行', icon: 'jiaotong.png' },
+  { name: '中国邮政储蓄银行', icon: 'youzheng.png' },
+  { name: '招商银行', icon: 'zhaoshang.png' },
+  { name: '浦发银行', icon: 'pufa.png' },
+  { name: '中信银行', icon: 'zhongxin.png' },
+  { name: '民生银行', icon: 'minsheng.png' },
+  { name: '兴业银行', icon: 'xinye.jpeg' },
+  { name: '光大银行', icon: 'guangda.png' },
+  { name: '华夏银行', icon: 'huaxia.png' },
+  { name: '广发银行', icon: 'guangfa.png' },
+  { name: '平安银行', icon: 'pingan.png' },
+  { name: '北京银行', icon: 'beijing.png' },
+  { name: '上海银行', icon: 'shanghai.png' },
+  { name: '南京银行', icon: 'nanjing.jpeg' },
+  { name: '浙商银行', icon: 'zheshang.jpeg' },
+  { name: '中国农业发展银行', icon: 'nongyefazhan.png' }
+]
+
+// 免输入列表展开状态：常态只显示前6家
+const expanded = ref(false)
+const shownBanks = computed(() => (expanded.value ? QUICK_BANKS : QUICK_BANKS.slice(0, 6)))
 
 // 卡类型：后端根据卡号推断后回填，仅展示
 const cardType = ref('')
@@ -99,6 +141,11 @@ function onSendCode() {
 onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
+
+/** 免输入添加：点击某行进该银行的选卡页（取卡接口后端未实现，页面内先空态） */
+function onPick(b) {
+  uni.navigateTo({ url: '/pages/mine/bankcard-select?bank=' + encodeURIComponent(b.name) + '&icon=' + b.icon })
+}
 
 /** 确认：提交绑卡（接口待定） */
 function onConfirm() {
@@ -243,6 +290,46 @@ function onConfirm() {
 
 .send-btn.counting {
   background-color: #CACACA;
+}
+
+/* 免输入卡号添加行：银行图标 + 名称 + 灰色>箭头，浅灰横线分割 */
+.qa-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 3rpx solid #f1f2f6;
+}
+
+.qa-row:last-of-type {
+  border-bottom: none;
+}
+
+.qa-icon {
+  width: 44rpx;
+  height: 44rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.qa-name {
+  flex: 1;
+  font-size: 25rpx;
+  color: #333333;
+}
+
+/* 灰色前进箭头 */
+.qa-arrow {
+  font-size: 32rpx;
+  color: #bbbbbb;
+  line-height: 32rpx;
+}
+
+/* 全部银行/收起：主题绿文字，居中 */
+.qa-toggle {
+  text-align: center;
+  padding: 24rpx 0 12rpx;
+  font-size: 26rpx;
+  color: #00B39B;
 }
 
 /* 居中包裹（按钮所在行） */

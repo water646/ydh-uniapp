@@ -54,7 +54,8 @@
 	{ "path": "pages/mine/certify-face", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/certify-success", "style": { "navigationStyle": "custom" } },
 	{ "path": "pages/mine/certify-fail", "style": { "navigationStyle": "custom" } },
-	{ "path": "pages/mine/bankcard-success", "style": { "navigationStyle": "custom" } }
+	{ "path": "pages/mine/bankcard-success", "style": { "navigationStyle": "custom" } },
+	{ "path": "pages/mine/bankcard-select", "style": { "navigationStyle": "custom" } }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
