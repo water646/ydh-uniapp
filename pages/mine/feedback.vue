@@ -6,7 +6,7 @@
     <!-- 主体：灰底，每条反馈一张白卡 -->
     <view class="body">
       <view v-if="list.length">
-        <view v-for="(f, i) in list" :key="f.id || i" class="fb-card">
+        <view v-for="(f, i) in list" :key="f.id || i" class="fb-card" @click="detail = f">
           <view class="fb-icon">
             <image class="fb-icon-img" src="/static/images/letter.png" mode="aspectFit"></image>
           </view>
@@ -28,6 +28,20 @@
 
     <!-- 右下角悬浮留言按钮：进填写意见反馈页 -->
     <image class="liuyan-btn" src="/static/images/liuyan.png" mode="aspectFit" @click="onWrite"></image>
+
+    <!-- 意见详情弹窗：点击记录展示完整内容 -->
+    <u-popup :show="!!detail" mode="center" :round="20" @close="detail = null">
+      <view class="detail-dialog" v-if="detail">
+        <view class="detail-title">意见详情</view>
+        <view class="detail-time">{{ detail.createTime || '—' }}</view>
+        <view class="detail-content">{{ detail.content }}</view>
+        <view class="fb-reply" v-if="detail.reply">
+          <view class="fb-reply-label">回复：</view>
+          <view class="fb-reply-text">{{ detail.reply }}</view>
+        </view>
+        <view class="detail-btn" @click="detail = null">知道了</view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -43,6 +57,9 @@ import { getFeedbackList } from '@/api/login'
 
 // 反馈记录列表 + 分页状态
 const list = ref([])
+
+// 详情弹窗当前展示的记录（null 关闭）
+const detail = ref(null)
 const pageNo = ref(1)
 const loading = ref(false)
 const finished = ref(false)
@@ -184,6 +201,46 @@ function onWrite() {
   width: 150rpx;
   height: 150rpx;
   z-index: 10;
+}
+
+/* 意见详情弹窗（u-popup 居中白卡） */
+.detail-dialog {
+  width: 600rpx;
+  padding: 40rpx;
+}
+
+.detail-title {
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 24rpx;
+}
+
+.detail-time {
+  font-size: 24rpx;
+  color: #bbbbbb;
+}
+
+/* 完整内容：不限行数，超长换行 */
+.detail-content {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 44rpx;
+  word-break: break-all;
+}
+
+/* 知道了按钮：主题绿胶囊 */
+.detail-btn {
+  margin-top: 36rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #00B39B;
+  color: #ffffff;
+  font-size: 28rpx;
 }
 
 /* 空态占位：居中插图 + 文字 */
