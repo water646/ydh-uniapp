@@ -30,6 +30,10 @@
       <view class="center-wrap">
         <view class="join-btn" @click="onJoin">加入星河联盟服务平台</view>
       </view>
+
+      <!-- 更多内容：服务大厅图（跳转待接入） -->
+      <view class="panel-title panel-title-more">更多内容</view>
+      <image class="more-img" src="/static/images/fuwudating.png" mode="widthFix"></image>
     </view>
     <!-- 城市选择弹层：底部弹出（目前只有北京）；零尺寸 fixed 宿主，不参与页面 flex 布局 -->
     <view class="popup-host">
@@ -152,6 +156,18 @@ function goLogin() {
   font-weight: bold;
   color: #333333;
   padding: 36rpx 32rpx 0;
+}
+
+/* 「更多内容」小标题：字号同主标题，与上方按钮间距减半 */
+.panel-title-more {
+  padding-top: 40rpx;
+}
+
+/* 服务大厅图：左右只留卡片内距，高度按原图比例自适应 */
+.more-img {
+  display: block;
+  width: calc(100% - 64rpx);
+  margin: 24rpx 32rpx 40rpx;
 }
 
 /* 身份宫格：四行三列 */
