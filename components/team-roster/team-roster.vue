@@ -1,9 +1,23 @@
 <template>
-  <view class="team-roster" :class="{ 'team-roster--setup': setupMode }">
-    <!-- setup 模式头部行：左队名 + 右红色「添加球员」按钮 -->
+  <view
+    class="team-roster"
+    :class="{ 'team-roster--setup': setupMode }"
+    :style="setupMode ? { '--tc': pageColor, '--tcl': pageColorLight, '--cc': circleColor } : null"
+  >
+    <!-- setup 模式头部行：左队名 + 右球衣颜色圆 + 「添加球员」按钮 -->
     <view v-if="setupMode" class="head">
       <text class="head-name" style="font-size: 27rpx;">{{ teamName || (type === 1 ? '主队' : '客队') }}</text>
-      <view class="head-add" style="font-size: 27rpx; " @click="showAdd = true">添加球员</view>
+      <view class="head-right">
+        <!-- 球衣颜色圆：点击弹层选色，选中色替换本 tab 各处红色 -->
+        <view class="jersey-circle" @click="openColorSheet">
+          <view class="jersey">
+            <view class="jersey-sleeve l"></view>
+            <view class="jersey-body"></view>
+            <view class="jersey-sleeve r"></view>
+          </view>
+        </view>
+        <view class="head-add" style="font-size: 27rpx; " @click="showAdd = true">添加球员</view>
+      </view>
     </view>
 
     <scroll-view scroll-y class="list">
@@ -44,6 +58,46 @@
     </view>
 
     <add-member-dialog :show="showAdd" :sport="sport" @confirm="onAdd" @close="showAdd = false" />
+
+    <!-- setup 模式：球队颜色选择弹层（主/客队各自独立）：自由选色 + 常用预设 -->
+    <u-popup v-if="setupMode" :show="showColorSheet" mode="bottom" :round="20" @close="showColorSheet = false">
+      <view class="sheet-colors">
+        <view class="cs-title">选择球队颜色</view>
+
+        <!-- 自由选色：SV 面板 + 色相条，拖动实时预览，完成后应用 -->
+        <view class="cp-preview">
+          <view class="cp-preview-color" :style="{ backgroundColor: pickHex }"></view>
+          <text class="cp-preview-hex">{{ pickHex.toUpperCase() }}</text>
+        </view>
+        <view
+          class="cp-sv"
+          :style="{ backgroundColor: 'hsl(' + hue + ', 100%, 50%)' }"
+          @touchstart="onSvTouch"
+          @touchmove.stop.prevent="onSvTouch"
+        >
+          <view class="cp-sv-white"></view>
+          <view class="cp-sv-black"></view>
+          <view class="cp-cursor" :style="{ left: sat * 100 + '%', top: (1 - val) * 100 + '%', backgroundColor: pickHex }"></view>
+        </view>
+        <view class="cp-hue" @touchstart="onHueTouch" @touchmove.stop.prevent="onHueTouch">
+          <view class="cp-hue-cursor" :style="{ left: (hue / 360) * 100 + '%', backgroundColor: 'hsl(' + hue + ', 100%, 50%)' }"></view>
+        </view>
+        <view class="cp-done" @click="onPickColor(pickHex)">完成</view>
+
+        <view class="cs-title cs-title2">常用颜色</view>
+        <view class="cs-grid">
+          <view
+            v-for="c in COLORS"
+            :key="c"
+            class="cs-item"
+            :style="{ backgroundColor: c }"
+            @click="onPickColor(c)"
+          >
+            <text v-if="teamColor === c" class="cs-check" :style="{ color: c === '#FFFFFF' ? '#333333' : '#ffffff' }">✓</text>
+          </view>
+        </view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -57,7 +111,7 @@
  * - 足球长按改位置（memberEditPosition）
  * type: 1 主队 / 0 客队
  */
-import { ref, watch } from 'vue'
+import { ref, computed, watch, getCurrentInstance } from 'vue'
 import {
   getMember,
   memberSign,
@@ -85,6 +139,121 @@ const props = defineProps({
 
 const members = ref([])
 const showAdd = ref(false)
+
+// 组件实例：节点查询要用，必须在 setup 期间捕获（事件回调里 getCurrentInstance() 是 null）
+const instance = getCurrentInstance()
+
+// ---- setup 模式球队颜色（主/客队为两个实例天然独立，按 gameTeamId 持久化） ----
+const COLORS = ['#F4584C', '#00B39B', '#1890FF', '#722ED1', '#FA8C16', '#FADB14', '#52C41A', '#13C2C2', '#EB2F96', '#2F3542', '#8C8C8C', '#FFFFFF']
+const teamColor = ref('')
+const showColorSheet = ref(false)
+// 页面各处"红色"用选中色（未选回落默认红）；球衣圆初始与页面统一为默认红
+const pageColor = computed(() => teamColor.value || '#F4584C')
+const pageColorLight = computed(() => mixWhite(pageColor.value, 0.88))
+const circleColor = computed(() => teamColor.value || '#F4584C')
+
+watch(() => props.gameTeamId, () => {
+  teamColor.value = uni.getStorageSync('team_color_' + props.gameTeamId) || ''
+}, { immediate: true })
+
+/** 选色：记录并按 gameTeamId 存本地 */
+function onPickColor(c) {
+  teamColor.value = c
+  uni.setStorageSync('team_color_' + props.gameTeamId, c)
+  showColorSheet.value = false
+}
+
+// ---- 自由选色（HSV：色相条 + 饱和度/明度面板） ----
+const hue = ref(4)
+const sat = ref(1)
+const val = ref(0.957)
+const pickHex = computed(() => hsv2hex(hue.value, sat.value, val.value))
+let svRect = null
+let hueRect = null
+
+/** 打开弹层：游标初始化为当前颜色，并量取选色区尺寸供触摸换算 */
+function openColorSheet() {
+  const hsv = hex2hsv(teamColor.value || '#F4584C')
+  hue.value = hsv[0]
+  sat.value = hsv[1]
+  val.value = hsv[2]
+  showColorSheet.value = true
+  // 等弹层动画结束再量，避免量到动画中的位置
+  setTimeout(queryPickerRects, 350)
+}
+
+function queryPickerRects() {
+  uni.createSelectorQuery().in(instance.proxy).select('.cp-sv').boundingClientRect().select('.cp-hue').boundingClientRect().exec((res) => {
+    if (res[0]) svRect = res[0]
+    if (res[1]) hueRect = res[1]
+  })
+}
+
+/** SV 面板：横向饱和度、纵向明度 */
+function onSvTouch(e) {
+  const t = e.touches && e.touches[0]
+  if (!t) return
+  if (!svRect) {
+    queryPickerRects() // 兜底：量到后下一次触摸生效
+    return
+  }
+  sat.value = clamp((t.clientX - svRect.left) / svRect.width)
+  val.value = 1 - clamp((t.clientY - svRect.top) / svRect.height)
+}
+
+/** 色相条：横向 0-360° */
+function onHueTouch(e) {
+  const t = e.touches && e.touches[0]
+  if (!t) return
+  if (!hueRect) {
+    queryPickerRects()
+    return
+  }
+  hue.value = Math.round(clamp((t.clientX - hueRect.left) / hueRect.width) * 359)
+}
+
+function clamp(x) {
+  return Math.min(Math.max(x, 0), 1)
+}
+
+/** HSV -> #RRGGBB */
+function hsv2hex(h, s, v) {
+  const f = (n) => {
+    const k = (n + h / 60) % 6
+    const x = v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)
+    return Math.round(x * 255).toString(16).padStart(2, '0')
+  }
+  return '#' + f(5) + f(3) + f(1)
+}
+
+/** #RRGGBB -> [h, s, v] */
+function hex2hsv(hex) {
+  const n = (hex || '').replace('#', '')
+  if (n.length !== 6) return [4, 1, 0.957]
+  const r = parseInt(n.slice(0, 2), 16) / 255
+  const g = parseInt(n.slice(2, 4), 16) / 255
+  const b = parseInt(n.slice(4, 6), 16) / 255
+  const mx = Math.max(r, g, b)
+  const mn = Math.min(r, g, b)
+  const d = mx - mn
+  let h = 0
+  if (d !== 0) {
+    if (mx === r) h = ((g - b) / d) % 6
+    else if (mx === g) h = (b - r) / d + 2
+    else h = (r - g) / d + 4
+    h = Math.round(h * 60)
+    if (h < 0) h += 360
+  }
+  return [h, mx === 0 ? 0 : d / mx, mx]
+}
+
+/** 颜色向白混合（ratio 为白权重），给删除标签做浅底 */
+function mixWhite(hex, ratio) {
+  const n = (hex || '').replace('#', '')
+  if (n.length !== 6) return hex
+  const f = (x) => Math.round(x + (255 - x) * ratio).toString(16).padStart(2, '0')
+  return '#' + f(parseInt(n.slice(0, 2), 16)) + f(parseInt(n.slice(2, 4), 16)) + f(parseInt(n.slice(4, 6), 16))
+}
 
 /** EnumValueBool 是否开启 */
 function isOn(v) {
@@ -250,10 +419,59 @@ defineExpose({ refresh: load })
   height: 72rpx;
   line-height: 72rpx;
   padding: 0 30rpx;
-  background-color: #F4584C;
+  background-color: var(--tc, #F4584C);
   border-radius: 4rpx;
   color: #ffffff;
   font-size: 30rpx;
+}
+/* 头部右侧组：球衣颜色圆 + 添加球员按钮 */
+.head-right {
+  display: flex;
+  align-items: center;
+}
+/* 球衣颜色圆：白底 + 当前色描边（默认主题绿），内画同色球衣 */
+.jersey-circle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 3rpx solid var(--cc, #F4584C);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.jersey {
+  position: relative;
+  width: 30rpx;
+  height: 28rpx;
+}
+.jersey-body {
+  position: absolute;
+  left: 8rpx;
+  top: 5rpx;
+  width: 14rpx;
+  height: 22rpx;
+  background-color: var(--cc, #F4584C);
+  border-radius: 0 0 5rpx 5rpx;
+}
+.jersey-sleeve {
+  position: absolute;
+  top: 5rpx;
+  width: 9rpx;
+  height: 11rpx;
+  background-color: var(--cc, #F4584C);
+}
+.jersey-sleeve.l {
+  left: 0;
+  border-radius: 4rpx 0 2rpx 2rpx;
+  transform: skewY(18deg);
+}
+.jersey-sleeve.r {
+  right: 0;
+  border-radius: 0 4rpx 2rpx 2rpx;
+  transform: skewY(-18deg);
 }
 .list {
   flex: 1;
@@ -316,10 +534,7 @@ defineExpose({ refresh: load })
   background-color: #f2f2f2;
   color: #999999;
 }
-.op.del {
-  background-color: #ffeeee;
-  color: #ff2d2d;
-}
+/* .op.del 的颜色在文件末尾统一用球队色变量定义 */
 .bottom {
   display: flex;
   padding: 20rpx 30rpx;
@@ -356,7 +571,7 @@ defineExpose({ refresh: load })
   height: 88rpx;
   line-height: 88rpx;
   border-radius: 6rpx;
-  background-color: #F3584E;
+  background-color: var(--tc, #F3584E);
   color: #ffffff;
   font-size: 30rpx;
 }
@@ -384,9 +599,9 @@ defineExpose({ refresh: load })
   align-items: center;
   padding: 0 12rpx;
 }
-/* 序号红色；定宽与文字高度一致的方形单元格，让虚线分割线在不同号码位数下都对齐在同一位置 */
+/* 序号；定宽与文字高度一致的方形单元格，让虚线分割线在不同号码位数下都对齐在同一位置 */
 .team-roster--setup .num {
-  color: #F4584C;
+  color: var(--tc, #F4584C);
   width: 40rpx;
   height: 40rpx;
   line-height: 40rpx;
@@ -412,10 +627,10 @@ defineExpose({ refresh: load })
   color: #ffffff;
   margin-left: 12rpx;
 }
-/* 亮起态红色：到场=已签到亮、未签到灭；首发选中亮 */
+/* 亮起态：到场=已签到亮、未签到灭；首发选中亮；颜色随球队色 */
 .team-roster--setup .op.sign.on,
 .team-roster--setup .op.start.on {
-  background-color: #F4584C;
+  background-color: var(--tc, #F4584C);
 }
 /* 到场按钮吃掉剩余空间，把到场/首发推到行右缘；两圆钮间距加倍 */
 .team-roster--setup .op.sign {
@@ -436,5 +651,118 @@ defineExpose({ refresh: load })
   height: 36rpx;
   border-left: 3rpx dashed rgba(175, 175, 175, 0.3);
   margin: 0 10rpx;
+}
+/* 临时球员删除标签：浅色随球队色（--tcl 由 JS 混白得出） */
+.op.del {
+  background-color: var(--tcl, #ffeeee);
+  color: var(--tc, #ff2d2d);
+}
+/* 球队颜色选择弹层 */
+.sheet-colors {
+  padding: 30rpx 30rpx 50rpx;
+}
+.cs-title {
+  text-align: center;
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 30rpx;
+}
+.cs-title2 {
+  margin-top: 10rpx;
+  text-align: left;
+}
+/* 自由选色：预览 + SV 面板 + 色相条 */
+.cp-preview {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+.cp-preview-color {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  border: 2rpx solid #eeeeee;
+  margin-right: 20rpx;
+}
+.cp-preview-hex {
+  font-size: 28rpx;
+  color: #333333;
+}
+.cp-sv {
+  position: relative;
+  height: 300rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+.cp-sv-white {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+}
+.cp-sv-black {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, #000000, rgba(0, 0, 0, 0));
+}
+.cp-cursor {
+  position: absolute;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 0 6rpx rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%);
+}
+.cp-hue {
+  position: relative;
+  height: 36rpx;
+  border-radius: 18rpx;
+  margin-top: 24rpx;
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+.cp-hue-cursor {
+  position: absolute;
+  top: 50%;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 0 6rpx rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%);
+}
+.cp-done {
+  margin-top: 30rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #00B39B;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+.cs-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.cs-item {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  border: 2rpx solid #eeeeee;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 28rpx 28rpx 0;
+}
+.cs-check {
+  font-size: 34rpx;
+  font-weight: bold;
 }
 </style>
