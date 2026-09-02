@@ -356,7 +356,7 @@ defineExpose({ refresh: load })
   height: 88rpx;
   line-height: 88rpx;
   border-radius: 6rpx;
-  background-color: #F4584C;
+  background-color: #F3584E;
   color: #ffffff;
   font-size: 30rpx;
 }
@@ -379,15 +379,17 @@ defineExpose({ refresh: load })
   width: 260rpx;
   height: 70rpx;
   box-sizing: border-box;
-  border: 3rpx dashed rgba(175, 175, 175, 0.5);
+  border: 3rpx dashed rgba(175, 175, 175, 0.3);
   display: flex;
   align-items: center;
   padding: 0 12rpx;
 }
-/* 序号红色、宽度自适应让序号与名字靠近 */
+/* 序号红色；定宽与文字高度一致的方形单元格，让虚线分割线在不同号码位数下都对齐在同一位置 */
 .team-roster--setup .num {
   color: #F4584C;
-  width: auto;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
   flex: none;
 }
 .team-roster--setup .name {
@@ -410,8 +412,8 @@ defineExpose({ refresh: load })
   color: #ffffff;
   margin-left: 12rpx;
 }
-/* 亮起态红色：到场未签到亮、已签到灭；首发选中亮 */
-.team-roster--setup .op.sign:not(.on),
+/* 亮起态红色：到场=已签到亮、未签到灭；首发选中亮 */
+.team-roster--setup .op.sign.on,
 .team-roster--setup .op.start.on {
   background-color: #F4584C;
 }
@@ -432,7 +434,7 @@ defineExpose({ refresh: load })
   display: block;
   width: 0;
   height: 36rpx;
-  border-left: 3rpx dashed rgba(175, 175, 175, 0.5);
+  border-left: 3rpx dashed rgba(175, 175, 175, 0.3);
   margin: 0 10rpx;
 }
 </style>
