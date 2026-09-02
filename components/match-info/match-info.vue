@@ -1,21 +1,36 @@
 <template>
-  <view class="match-info">
-    <view class="row">
-      <text class="label">日期</text>
-      <picker class="picker" mode="date" :value="dateStr" @change="onDateChange">
-        <view class="value">{{ dateStr || '请选择' }} ▼</view>
-      </picker>
-    </view>
-    <view class="row">
-      <text class="label">时间</text>
-      <picker class="picker" mode="time" :value="timeStr" @change="onTimeChange">
-        <view class="value">{{ timeStr || '请选择' }} ▼</view>
-      </picker>
-    </view>
-    <view class="row" @click="showStatus = true">
-      <text class="label">状态</text>
-      <text class="value">{{ statusDesc }} ▼</text>
-    </view>
+  <view class="match-info" :class="{ 'match-info--ro': readonly }">
+    <!-- 只读模式：白底卡片，日期+时间合并展示、状态纯展示，value 靠右，不可修改（篮球赛前设置页用） -->
+    <template v-if="readonly">
+      <view class="ro-card">
+        <view class="row">
+          <text class="label">比赛时间</text>
+          <text class="value">{{ dateStr || timeStr ? dateStr + ' ' + timeStr : '—' }}</text>
+        </view>
+        <view class="row">
+          <text class="label">比赛状态</text>
+          <text class="value">{{ statusDesc || '—' }}</text>
+        </view>
+      </view>
+    </template>
+    <template v-else>
+      <view class="row">
+        <text class="label">日期</text>
+        <picker class="picker" mode="date" :value="dateStr" @change="onDateChange">
+          <view class="value">{{ dateStr || '请选择' }} ▼</view>
+        </picker>
+      </view>
+      <view class="row">
+        <text class="label">时间</text>
+        <picker class="picker" mode="time" :value="timeStr" @change="onTimeChange">
+          <view class="value">{{ timeStr || '请选择' }} ▼</view>
+        </picker>
+      </view>
+      <view class="row" @click="showStatus = true">
+        <text class="label">状态</text>
+        <text class="value">{{ statusDesc }} ▼</text>
+      </view>
+    </template>
 
     <view v-if="startMode" class="sync-row">
       <view class="sync-btn start" @click="$emit('start')">开始统计</view>
@@ -29,7 +44,10 @@
       </view>
     </view>
 
-    <game-status-dialog :show="showStatus" @select="onStatus" @close="showStatus = false" />
+    <!-- 只读模式页脚标语 -->
+    <view v-if="readonly" class="ro-slogan">运动汇赛事服务</view>
+
+    <game-status-dialog v-if="!readonly" :show="showStatus" @select="onStatus" @close="showStatus = false" />
   </view>
 </template>
 
@@ -53,7 +71,9 @@ const props = defineProps({
   sport: { type: String, default: 'basketball' },
   hasSync: { type: Boolean, default: false },
   // true 时同步按钮位置改为「开始统计」，点击 emit('start')（篮球赛前设置页用）
-  startMode: { type: Boolean, default: false }
+  startMode: { type: Boolean, default: false },
+  // 只读：日期/时间/状态不可改，合并展示为「比赛时间」「比赛状态」两栏（篮球赛前设置页用）
+  readonly: { type: Boolean, default: false }
 })
 const emit = defineEmits(['status-change', 'start'])
 
@@ -171,6 +191,42 @@ function syncPage(pageNo) {
 }
 .picker {
   flex: 1;
+}
+/* 只读模式：与顶栏留 20rpx 空隙，白底矩形通栏拉满 */
+.match-info--ro {
+  padding: 20rpx 0 0;
+}
+.ro-card {
+  background-color: #ffffff;
+}
+.ro-card .row {
+  padding: 0 30rpx;
+}
+.ro-card .row:last-child {
+  border-bottom: none;
+}
+.ro-card .value {
+  text-align: right;
+}
+/* 只读模式的「开始统计」：#F3584E 圆角矩形，约 72% 屏宽，水平居中 */
+.match-info--ro .sync-row {
+  padding: 0 30rpx;
+  margin-top: 200rpx;
+}
+.match-info--ro .sync-btn.start {
+  background-color: #F3584E;
+  border-radius: 16rpx;
+  width: 540rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  margin: 0 auto;
+}
+/* 按钮下方标语 */
+.ro-slogan {
+  margin-top: 40rpx;
+  text-align: center;
+  font-size: 50rpx;
+  color: #9B9B9B;
 }
 .sync-row {
   margin-top: 40rpx;

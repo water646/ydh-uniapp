@@ -2,7 +2,17 @@
   <view class="basketball-setup">
     <custom-nav title="篮球比赛设置" />
 
-    <u-tabs :list="tabs" :current="current" @click="onTabClick"></u-tabs>
+    <!-- tab 栏：scrollable 关掉后每项 flex:1，平分整屏宽度；选中态主题色 + 加长下划线 -->
+    <u-tabs
+      :list="tabs"
+      :current="current"
+      :scrollable="false"
+      lineColor="#008183"
+      :lineWidth="40"
+      :activeStyle="{ color: '#008183' }"
+      :itemStyle="{ height: '57px' }"
+      @click="onTabClick"
+    ></u-tabs>
 
     <view class="content">
       <match-info
@@ -10,6 +20,7 @@
         :game-id="gameId"
         sport="basketball"
         :start-mode="true"
+        :readonly="true"
         @start="onStart"
         @status-change="onStatusChange"
       />
@@ -19,6 +30,8 @@
         :game-team-id="hostTeamId"
         sport="basketball"
         :type="1"
+        :setup-mode="true"
+        :team-name="hostTeamName"
       />
       <team-roster
         v-show="current === 2"
@@ -26,6 +39,8 @@
         :game-team-id="guestTeamId"
         sport="basketball"
         :type="0"
+        :setup-mode="true"
+        :team-name="guestTeamName"
       />
     </view>
 
@@ -51,7 +66,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import customNav from '@/components/custom-nav/custom-nav.vue'
 import matchInfo from '@/components/match-info/match-info.vue'
 import teamRoster from '@/components/team-roster/team-roster.vue'
-import { getSectionList } from '@/api/game'
+import { getSectionList, getGameDetail } from '@/api/game'
 import { insertOrReplace, countWhere } from '@/utils/db'
 
 const gameId = ref('')
@@ -59,6 +74,9 @@ const hostTeamId = ref('')
 const guestTeamId = ref('')
 const statusValue = ref(1)
 const matchType = ref('5v5')
+// 主/客队名（详情接口返回，给球队 Tab 头部行显示）
+const hostTeamName = ref('')
+const guestTeamName = ref('')
 
 const tabs = [{ name: '比赛信息' }, { name: '主队' }, { name: '客队' }]
 const current = ref(0)
@@ -72,7 +90,20 @@ onLoad((opt) => {
   statusValue.value = Number(opt.statusValue || 1)
   matchType.value = opt.type || '5v5'
   loadSections()
+  loadTeamNames()
 })
+
+/** 拉比赛详情取主/客队名（列表接口同实体字段 hostTeamName/guestTeamName） */
+function loadTeamNames() {
+  if (!gameId.value) return
+  getGameDetail(gameId.value, 'basketball').then((res) => {
+    if (res.code === 1) {
+      const g = (res.data && res.data.game) || res.data || {}
+      hostTeamName.value = g.hostTeamName || '主队'
+      guestTeamName.value = g.guestTeamName || '客队'
+    }
+  }).catch(() => {})
+}
 
 function onTabClick(e) {
   current.value = e.index
@@ -135,7 +166,9 @@ function onConfirmStart() {
   min-height: 100vh;
   background-color: #ffffff;
 }
+/* tab 栏以下内容区：浅灰底；高度精确算到屏幕底 = 状态栏 + 50px 导航 + 1rpx 线 + 57px tab 栏 */
 .content {
-  height: calc(100vh - 200rpx);
+  height: calc(100vh - var(--status-bar-height) - 51px - 57px);
+  background-color: #F3F3F3;
 }
 </style>

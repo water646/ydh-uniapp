@@ -1,5 +1,11 @@
 <template>
-  <view class="team-roster">
+  <view class="team-roster" :class="{ 'team-roster--setup': setupMode }">
+    <!-- setup 模式头部行：左队名 + 右红色「添加球员」按钮 -->
+    <view v-if="setupMode" class="head">
+      <text class="head-name" style="font-size: 27rpx;">{{ teamName || (type === 1 ? '主队' : '客队') }}</text>
+      <view class="head-add" style="font-size: 27rpx; " @click="showAdd = true">添加球员</view>
+    </view>
+
     <scroll-view scroll-y class="list">
       <view
         v-for="m in members"
@@ -7,11 +13,16 @@
         class="member-item"
         @longpress="onLongPress(m)"
       >
-        <view class="num">{{ m.number }}</view>
-        <view class="name">
-          {{ m.name }}
-          <text v-if="m.temporary === 1" class="temp">临时</text>
-          <text v-if="sport === 'football' && m.position" class="pos">{{ m.position.desc }}</text>
+        <!-- 序号+名字包裹层：旧模式等价于原布局；setup 模式为 260rpx 虚线矩形框 -->
+        <view class="numwrap">
+          <view class="num">{{ m.number }}</view>
+          <!-- setup 模式：序号与名字之间的虚线竖线（旧模式 display:none） -->
+          <view class="vline"></view>
+          <view class="name">
+            {{ m.name }}
+            <text v-if="m.temporary === 1" class="temp">临时</text>
+            <text v-if="sport === 'football' && m.position" class="pos">{{ m.position.desc }}</text>
+          </view>
         </view>
         <view class="op sign" :class="{ on: isSigned(m) }" @click.stop="toggleSign(m)">到场</view>
         <view class="op start" :class="{ on: isOn(m.startingLineup) }" @click.stop="toggleStart(m)">首发</view>
@@ -20,9 +31,16 @@
       <empty-layout v-if="!members.length" status="empty" />
     </scroll-view>
 
-    <view class="bottom">
-      <view class="btn add" @click="showAdd = true">添加队员</view>
-      <view class="btn forfeit" @click="onForfeit">弃权</view>
+    <!-- setup 模式：底部只有「主队/客队弃权」红按钮；旧模式保留添加队员+弃权 -->
+    <view class="bottom" :class="{ setup: setupMode }">
+      <template v-if="setupMode">
+        <view class="btn forfeit-red" @click="onForfeit">{{ type === 1 ? '主队弃权' : '客队弃权' }}</view>
+        <view class="forfeit-note">注:弃权比分默认20:0，弃权0积分</view>
+      </template>
+      <template v-else>
+        <view class="btn add" @click="showAdd = true">添加队员</view>
+        <view class="btn forfeit" @click="onForfeit">弃权</view>
+      </template>
     </view>
 
     <add-member-dialog :show="showAdd" :sport="sport" @confirm="onAdd" @close="showAdd = false" />
@@ -48,7 +66,8 @@ import {
   startingLineupCancel,
   addMember,
   deleteMember,
-  memberEditPosition
+  memberEditPosition,
+  teamWaiver
 } from '@/api/game'
 import { insertOrReplace, countWhere } from '@/utils/db'
 import emptyLayout from '@/components/empty-layout/empty-layout.vue'
@@ -58,7 +77,10 @@ const props = defineProps({
   gameId: { type: String, default: '' },
   gameTeamId: { type: String, default: '' },
   sport: { type: String, default: 'basketball' },
-  type: { type: Number, default: 1 }
+  type: { type: Number, default: 1 },
+  // 篮球赛前设置页新布局：头部队名+添加球员、底部弃权红按钮、列表与顶栏留隙
+  setupMode: { type: Boolean, default: false },
+  teamName: { type: String, default: '' }
 })
 
 const members = ref([])
@@ -159,8 +181,24 @@ function onDel(m) {
   })
 }
 
+/** 弃权：二次确认后调 game/team/{gameTeamId}/waiver（被弃权方判 0:20，比赛直接结束，不可撤销） */
 function onForfeit() {
-  uni.showToast({ title: '弃权功能待实现', icon: 'none' })
+  const side = props.type === 1 ? '主队' : '客队'
+  uni.showModal({
+    title: '提示',
+    content: `确定${side}弃权吗？弃权后按 0:20 判负，比赛将直接结束且不可撤销`,
+    success: (r) => {
+      if (!r.confirm) return
+      teamWaiver(props.gameTeamId).then((res) => {
+        if (res.code === 1) {
+          uni.showToast({ title: '已弃权', icon: 'none' })
+          load()
+        } else {
+          uni.showToast({ title: res.msg || '弃权失败', icon: 'none' })
+        }
+      })
+    }
+  })
 }
 
 /** 足球长按改位置（对应 HomeFootInfomationFragment 长按改位置） */
@@ -190,6 +228,33 @@ defineExpose({ refresh: load })
   display: flex;
   flex-direction: column;
 }
+/* setup 模式：列表与顶栏留 10rpx 空隙（露出灰底） */
+.team-roster--setup {
+  padding-top: 10rpx;
+}
+/* 头部行：随基底灰底，左队名 + 右红色圆角矩形按钮；行定高 60rpx，
+   按钮高 64rpx 上下溢出行外占满灰色空隙（上下各只留 8rpx），10rpx 空隙布局不变 */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 66rpx;
+  padding: 0 30rpx 10rpx;
+  background-color: transparent;
+}
+.head-name {
+  font-size: 30rpx;
+  color: #333333;
+}
+.head-add {
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0 30rpx;
+  background-color: #F4584C;
+  border-radius: 4rpx;
+  color: #ffffff;
+  font-size: 30rpx;
+}
 .list {
   flex: 1;
 }
@@ -199,6 +264,12 @@ defineExpose({ refresh: load })
   padding: 24rpx 30rpx;
   border-bottom: 1rpx solid #f2f2f2;
   background-color: #ffffff;
+}
+/* 序号+名字包裹层：旧模式下与原横向布局等价 */
+.numwrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 .num {
   width: 70rpx;
@@ -271,5 +342,97 @@ defineExpose({ refresh: load })
 .forfeit {
   background-color: #f2f2f2;
   color: #666666;
+}
+/* setup 模式底栏：透明底无上边线，弃权红按钮 + 说明文字纵向居中 */
+.bottom.setup {
+  background-color: transparent;
+  border-top: none;
+  flex-direction: column;
+  align-items: center;
+}
+.btn.forfeit-red {
+  flex: none;
+  width: 250rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 6rpx;
+  background-color: #F4584C;
+  color: #ffffff;
+  font-size: 30rpx;
+}
+/* 弃权按钮下方灰色小字说明 */
+.forfeit-note {
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* ---- setup 模式列表样式（旧页面保持绿色不变） ---- */
+/* 球员条目上下内距压缩（行高约为原来的 0.8 倍） */
+.team-roster--setup .member-item {
+  padding: 10rpx 30rpx;
+}
+/* 序号+名字：260rpx 宽、3rpx 粗灰色虚线矩形框（透明度 0.5），内容靠左紧挨（框高 70rpx，字与框上下间距 1.5 倍） */
+.team-roster--setup .numwrap {
+  flex: none;
+  width: 260rpx;
+  height: 70rpx;
+  box-sizing: border-box;
+  border: 3rpx dashed rgba(175, 175, 175, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 0 12rpx;
+}
+/* 序号红色、宽度自适应让序号与名字靠近 */
+.team-roster--setup .num {
+  color: #F4584C;
+  width: auto;
+  flex: none;
+}
+.team-roster--setup .name {
+  flex: none;
+  height: auto;
+  border: none;
+  padding: 0;
+}
+/* 到场/首发：圆形按钮，不亮 #AFAFAF 白字 */
+.team-roster--setup .op.sign,
+.team-roster--setup .op.start {
+  width: 64rpx;
+  height: 64rpx;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #AFAFAF;
+  color: #ffffff;
+  margin-left: 12rpx;
+}
+/* 亮起态红色：到场未签到亮、已签到灭；首发选中亮 */
+.team-roster--setup .op.sign:not(.on),
+.team-roster--setup .op.start.on {
+  background-color: #F4584C;
+}
+/* 到场按钮吃掉剩余空间，把到场/首发推到行右缘；两圆钮间距加倍 */
+.team-roster--setup .op.sign {
+  margin-left: auto;
+}
+.team-roster--setup .op.start {
+  margin-left: 40rpx;
+  /* 右侧让出 25rpx 使首发整体左移；间距 50→40 再让到场相对左移 15 */
+  margin-right: 25rpx;
+}
+/* 序号与名字之间的虚线竖线（旧模式不显示） */
+.vline {
+  display: none;
+}
+.team-roster--setup .vline {
+  display: block;
+  width: 0;
+  height: 36rpx;
+  border-left: 3rpx dashed rgba(175, 175, 175, 0.5);
+  margin: 0 10rpx;
 }
 </style>

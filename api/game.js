@@ -57,6 +57,10 @@ export const deleteMember = (id, teamMemberId) => request({ url: 'statistics/mem
 /** 修改球员上场位置 POST statistics/member/edit-position */
 export const memberEditPosition = (params) => request({ url: 'statistics/member/edit-position', method: 'POST', data: params })
 
+/** 球队弃权（仅篮球）POST game/team/{gameTeamId}/waiver：被弃权方判 0:20，比赛直接置为结束，不可撤销 */
+export const teamWaiver = (gameTeamId) =>
+  request({ url: 'game/team/{gameTeamId}/waiver', path: { gameTeamId }, method: 'POST' })
+
 /** 比赛连接信息 GET game//info (双斜杠原样保留) query{gameId} */
 export const getConnect = (gameId, sport = SportType.BASKETBALL) =>
   request({ url: `${sportPrefix(sport)}game//info`, query: { gameId } })
