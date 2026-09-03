@@ -74,7 +74,7 @@
           >
 			<view class="person-foul" :class="{ red: m.foul > 4, yellow: m.foul === 4 }"></view>
 			<p class="foul-times">{{ m.foul }}</p>
-            <view class="person-ball" style="background-color:#F05A4E">
+            <view class="person-ball ball-host">
             	<text class="num">{{ m.number }}</text>
             </view>
             <text class="name">{{ m.name }}</text>
@@ -83,7 +83,7 @@
         </view>
       </view>
 	  
-      <view class="team-col" style="border-left: 1rpx solid rgba(0,0,0,0.1);">
+      <view class="team-col">
         <view class="col-head">{{ guestName }}</view>
         <view class="player-list"> 
           <view
@@ -95,7 +95,7 @@
           >
 			<view class="person-foul" :class="{ red: m.foul > 4, yellow: m.foul === 4 }"></view>
 			<p class="foul-times">{{ m.foul }}</p>
-			<view class="person-ball" style="background-color:#1D9DE8">
+			<view class="person-ball ball-guest">
 				<text class="num">{{ m.number }}</text>
 			</view>
             
@@ -655,6 +655,8 @@ function back() {
 }
 .team-col:last-child {
   border-right: none;
+  /* 客队列左侧分割线（原内联样式） */
+  border-left: 1rpx solid rgba(0,0,0,0.1);
 }
 
 .person-card{
@@ -703,8 +705,8 @@ function back() {
 }
 
 .person-ball{
-	width: 14rpx; 
-	height:14rpx; 
+	width: 14rpx;
+	height:14rpx;
 	padding:18rpx;
 	border-radius: 50%;
 	background-color: red;
@@ -712,6 +714,13 @@ function back() {
 	justify-content: center;
 	align-items: center;
 	margin-bottom: 5rpx;
+}
+/* 主/客队号码球底色（原内联样式）：主队红、客队蓝 */
+.ball-host {
+	background-color: #F05A4E;
+}
+.ball-guest {
+	background-color: #1D9DE8;
 }
 
 .sel{

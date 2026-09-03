@@ -100,7 +100,7 @@
 					</view>
 					<view class="team-cell">
 						<text class="score">{{ g.guestTeamScore }}</text>
-						<view class="action-btn green" style="transform: translateY(-50%);" @click="goStatsDetail(g)">技术统计</view>
+						<view class="action-btn green centered" @click="goStatsDetail(g)">技术统计</view>
 					</view>
 				</view>
 			</view>
@@ -606,6 +606,10 @@ function doUpdate() {
 .action-btn.green {
   background-color: #29a871;
   color: #ffffff;
+}
+/* 已结束行：按钮上移半高与比分对齐（原内联样式） */
+.action-btn.centered {
+  transform: translateY(-50%);
 }
 .action-btn.blue {
   background-color: #009de9;

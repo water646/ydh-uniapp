@@ -6,7 +6,7 @@
   >
     <!-- setup 模式头部行：左队名 + 右球衣颜色圆 + 「添加球员」按钮 -->
     <view v-if="setupMode" class="head">
-      <text class="head-name" style="font-size: 27rpx;">{{ teamName || (type === 1 ? '主队' : '客队') }}</text>
+      <text class="head-name">{{ teamName || (type === 1 ? '主队' : '客队') }}</text>
       <view class="head-right">
         <!-- 球衣颜色圆：点击弹层选色，选中色替换本 tab 各处红色 -->
         <view class="jersey-circle" @click="openColorSheet">
@@ -16,7 +16,7 @@
             <view class="jersey-sleeve r"></view>
           </view>
         </view>
-        <view class="head-add" style="font-size: 27rpx; " @click="showAdd = true">添加球员</view>
+        <view class="head-add" @click="showAdd = true">添加球员</view>
       </view>
     </view>
 
@@ -412,7 +412,7 @@ defineExpose({ refresh: load })
   background-color: transparent;
 }
 .head-name {
-  font-size: 30rpx;
+  font-size: 27rpx;
   color: #333333;
 }
 .head-add {
@@ -422,7 +422,7 @@ defineExpose({ refresh: load })
   background-color: var(--tc, #F4584C);
   border-radius: 4rpx;
   color: #ffffff;
-  font-size: 30rpx;
+  font-size: 27rpx;
 }
 /* 头部右侧组：球衣颜色圆 + 添加球员按钮 */
 .head-right {

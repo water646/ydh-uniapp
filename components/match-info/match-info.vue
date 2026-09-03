@@ -205,8 +205,13 @@ function syncPage(pageNo) {
 .ro-card .row:last-child {
   border-bottom: none;
 }
+/* 只读模式行配色：label 黑、value 灰（覆盖默认 #999999 / #333333） */
+.ro-card .label {
+  color: #000000;
+}
 .ro-card .value {
   text-align: right;
+  color: #99999c;
 }
 /* 只读模式的「开始统计」：#F3584E 圆角矩形，约 72% 屏宽，水平居中 */
 .match-info--ro .sync-row {
@@ -220,6 +225,7 @@ function syncPage(pageNo) {
   height: 96rpx;
   line-height: 96rpx;
   margin: 0 auto;
+  font-size: 32rpx;
 }
 /* 按钮下方标语 */
 .ro-slogan {
