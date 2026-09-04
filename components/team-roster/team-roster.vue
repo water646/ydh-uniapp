@@ -558,12 +558,22 @@ defineExpose({ refresh: load })
   background-color: #f2f2f2;
   color: #666666;
 }
-/* setup 模式底栏：透明底无上边线，弃权红按钮 + 说明文字纵向居中 */
+/* setup 模式底栏：固定在手机屏幕底部，透明改同色灰底避免滚动内容透出 */
 .bottom.setup {
-  background-color: transparent;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background-color: #F3F3F3;
   border-top: none;
   flex-direction: column;
   align-items: center;
+  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+}
+/* 列表底部留出固定底栏的高度，最后一名球员不被遮挡 */
+.team-roster--setup .list {
+  padding-bottom: 260rpx;
 }
 .btn.forfeit-red {
   flex: none;
